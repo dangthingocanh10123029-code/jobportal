@@ -15,6 +15,7 @@ A web app with two roles. An Employer creates Job Postings, publishes them immed
 ### Accounts
 1. As a visitor, I want to sign up with email and password and choose Candidate or Employer, so that I get the right features.
 2. As a user, I want to sign in and sign out, so that my data stays private.
+2a. As a visitor, I want to confirm my email by entering the OTP code sent to me after sign-up (and request a new code), so that only real email owners get accounts.
 3. As an Employer, I want to set my company name, so that Candidates know who is hiring.
 4. As a Candidate, I want to set my full name and phone number, so that Employers can contact me.
 5. As a user, I want pages for the other role to be blocked for me, so that I cannot reach actions I am not allowed to do.

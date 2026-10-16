@@ -53,6 +53,14 @@ signInAction(input: { email: string; password: string }): Promise<ActionResult<P
 signOutAction(): Promise<ActionResult<null>>
 updateProfileAction(input: { fullName?: string; phone?: string; companyName?: string }): Promise<ActionResult<Profile>>
 getCurrentProfile(): Promise<Profile | null>
+
+// 11 — Xác nhận email bằng mã OTP (Supabase bật Confirm email)
+verifySignupOtpAction(input: { email: string; token: string }): Promise<ActionResult<Profile>>
+  // token: 6–10 chữ số trong email "Confirm signup"; thành công = đã xác nhận + đăng nhập (set session cookie)
+  // lỗi: mã sai hoặc hết hạn, quá nhiều lần thử
+resendSignupOtpAction(input: { email: string }): Promise<ActionResult<null>>
+  // gửi lại mã; lỗi: gửi quá nhanh / hết lượt gửi email
+// signInAction với tài khoản chưa xác nhận trả lỗi 'Email chưa được xác nhận…' → UI cho nhập mã
 ```
 
 ## 02 — Employer quản lý tin (`@/actions/postings`)
