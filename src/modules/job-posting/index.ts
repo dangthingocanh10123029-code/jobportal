@@ -1,5 +1,5 @@
 import { JobPostingError } from './domain/errors';
-import type { OpenPostingsPage, PostingDetail } from '@/actions/types';
+import type { OpenPostingsPage, PostingDetail, SearchFilter } from '@/actions/types';
 import { displayStatus, EDITABLE, isOpen, TRANSITIONS } from './domain/status';
 import type {
   Clock,
@@ -59,9 +59,12 @@ export class JobPostingService {
     return posting?.employerId === employerId ? this.view(posting) : null;
   }
 
-  /** Public list: open postings only, newest first. `page` starts at 1. */
-  async listOpen(page: number): Promise<OpenPostingsPage> {
-    const { rows, total } = await this.repo.listOpen({ offset: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE });
+  /** Public search: open postings matching every given criterion, newest first. `page` starts at 1. */
+  async listOpen({ q, location, employmentType, minSalary, page = 1 }: SearchFilter): Promise<OpenPostingsPage> {
+    const { rows, total } = await this.repo.listOpen(
+      { q: blankToUndefined(q), location: blankToUndefined(location), employmentType, minSalary },
+      { offset: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE },
+    );
     const items = rows.map(
       ({ id, title, companyName, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt }) => ({
         id, title, companyName, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt,
@@ -95,4 +98,8 @@ export class JobPostingService {
 
 function assertSalary({ salaryMin, salaryMax }: PostingInput) {
   if (salaryMin !== null && salaryMax !== null && salaryMin > salaryMax) throw new JobPostingError('INVALID_SALARY');
+}
+
+function blankToUndefined(text: string | undefined) {
+  return text?.trim() || undefined;
 }

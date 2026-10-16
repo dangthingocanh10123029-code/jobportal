@@ -7,7 +7,7 @@ import {
   publishPostingAction,
   updatePostingAction,
 } from './postings';
-import { pageSchema, postingInputSchema } from './postings-schema';
+import { pageSchema, postingInputSchema, searchFilterSchema } from './postings-schema';
 import type { PostingInput } from './types';
 
 const valid: PostingInput = {
@@ -60,5 +60,26 @@ describe('schema — input hợp lệ', () => {
 describe('pageSchema', () => {
   it.each([[undefined, 1], ['3', 3], [2, 2], [0, 1], [-1, 1], [1.5, 1], ['abc', 1]])('%s → %s', (input, page) => {
     expect(pageSchema.parse(input)).toBe(page);
+  });
+});
+
+describe('searchFilterSchema', () => {
+  it('giữ giá trị hợp lệ, cắt khoảng trắng, ép số từ chuỗi', () => {
+    expect(
+      searchFilterSchema.parse({ q: '  ke toan ', location: 'Hà Nội', employmentType: 'PART_TIME', minSalary: '10000000', page: '2' }),
+    ).toEqual({ q: 'ke toan', location: 'Hà Nội', employmentType: 'PART_TIME', minSalary: 10_000_000, page: 2 });
+  });
+
+  it('giá trị rỗng hoặc rác → bỏ qua bộ lọc đó, không lỗi', () => {
+    expect(
+      searchFilterSchema.parse({ q: '', location: '   ', employmentType: 'ABC', minSalary: '-5', page: 'x' }),
+    ).toEqual({ page: 1 });
+    expect(searchFilterSchema.parse(undefined)).toEqual({ page: 1 });
+    expect(searchFilterSchema.parse({ minSalary: 'abc', q: ['a', 'b'] })).toEqual({ page: 1 });
+    expect(searchFilterSchema.parse({ minSalary: '1e30' })).toEqual({ page: 1 }); // would overflow bigint
+  });
+
+  it('từ khóa quá 100 ký tự bị cắt', () => {
+    expect(searchFilterSchema.parse({ q: 'a'.repeat(150) }).q).toHaveLength(100);
   });
 });

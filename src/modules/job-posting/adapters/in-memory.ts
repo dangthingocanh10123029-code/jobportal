@@ -1,5 +1,6 @@
+import { foldAccents, meetsMinSalary } from '../domain/search';
 import { isOpen } from '../domain/status';
-import type { Clock, EmployerId, IJobPostingRepository, JobPostingId, StoredJobPosting } from '../domain/types';
+import type { Clock, EmployerId, IJobPostingRepository, JobPostingId, SearchCriteria, StoredJobPosting } from '../domain/types';
 
 export class InMemoryJobPostingRepository implements IJobPostingRepository {
   private readonly rows = new Map<JobPostingId, StoredJobPosting>();
@@ -43,8 +44,17 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
     return [...this.rows.values()].filter((r) => r.employerId === employerId).reverse().map((r) => ({ ...r }));
   }
 
-  async listOpen({ offset, limit }: { offset: number; limit: number }) {
-    const open = [...this.rows.values()].filter((r) => isOpen(r.status, r.applicationDeadline, this.now())).reverse();
+  async listOpen(
+    { q, location, employmentType, minSalary }: SearchCriteria,
+    { offset, limit }: { offset: number; limit: number },
+  ) {
+    const open = [...this.rows.values()]
+      .filter((r) => isOpen(r.status, r.applicationDeadline, this.now()))
+      .filter((r) => q === undefined || foldAccents(`${r.title} ${r.description}`).includes(foldAccents(q)))
+      .filter((r) => location === undefined || foldAccents(r.location) === foldAccents(location))
+      .filter((r) => employmentType === undefined || r.employmentType === employmentType)
+      .filter((r) => minSalary === undefined || meetsMinSalary(r.salaryMax, minSalary))
+      .reverse();
     return { rows: open.slice(offset, offset + limit).map((r) => ({ ...r })), total: open.length };
   }
 }

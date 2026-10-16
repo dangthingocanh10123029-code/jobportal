@@ -1,6 +1,7 @@
 import type { DisplayPostingStatus, PostingInput, PostingStatus } from '@/actions/types';
+import type { SearchCriteria } from './search';
 
-export type { PostingInput };
+export type { PostingInput, SearchCriteria };
 
 export type JobPostingId = string & { readonly __brand: 'JobPostingId' };
 export type EmployerId = string & { readonly __brand: 'EmployerId' };
@@ -23,8 +24,11 @@ export interface IJobPostingRepository {
   update(id: JobPostingId, changes: Partial<PostingInput> & { status?: PostingStatus }): Promise<StoredJobPosting>;
   /** Newest first. */
   listByEmployer(employerId: EmployerId): Promise<StoredJobPosting[]>;
-  /** Open postings (see isOpen), newest first, sliced to the range; total counts all open postings. */
-  listOpen(range: { offset: number; limit: number }): Promise<{ rows: StoredJobPosting[]; total: number }>;
+  /** Open postings (see isOpen) matching every given criterion, newest first, sliced to the range; total counts all matches. */
+  listOpen(
+    criteria: SearchCriteria,
+    range: { offset: number; limit: number },
+  ): Promise<{ rows: StoredJobPosting[]; total: number }>;
 }
 
 export type Clock = () => Date;

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const EMPLOYMENT_TYPES = ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'] as const;
+
 // Kept in sync with the CHECK constraints in supabase/migrations/*_job_postings.sql.
 const salary = z
   .number({ invalid_type_error: 'Lương phải là số' })
@@ -19,9 +21,7 @@ export const postingInputSchema = z.object({
     .trim()
     .min(1, 'Vui lòng nhập địa điểm')
     .max(100, 'Địa điểm tối đa 100 ký tự'),
-  employmentType: z.enum(['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'], {
-    errorMap: () => ({ message: 'Loại hình công việc không hợp lệ' }),
-  }),
+  employmentType: z.enum(EMPLOYMENT_TYPES, { errorMap: () => ({ message: 'Loại hình công việc không hợp lệ' }) }),
   salaryMin: salary,
   salaryMax: salary,
   // Offset required: a bare "2026-10-20T10:00" would be read in the server's timezone.
@@ -35,3 +35,21 @@ export const postingIdSchema = z.string().uuid('Mã tin không hợp lệ');
 
 // From ?page= in the URL: anything that is not a positive integer means page 1.
 export const pageSchema = z.coerce.number().int().min(1).catch(1);
+
+// Search Filter straight from the URL: a missing, blank or malformed field means "no filter", never an error.
+const text = z
+  .string()
+  .trim()
+  .transform((s) => s.slice(0, 100) || undefined)
+  .optional()
+  .catch(undefined);
+
+export const searchFilterSchema = z
+  .object({
+    q: text,
+    location: text,
+    employmentType: z.enum(EMPLOYMENT_TYPES).optional().catch(undefined),
+    minSalary: z.coerce.number().int().positive().safe().optional().catch(undefined),
+    page: pageSchema,
+  })
+  .catch({ page: 1 });

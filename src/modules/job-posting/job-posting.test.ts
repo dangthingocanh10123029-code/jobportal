@@ -182,7 +182,7 @@ describe('listOpen', () => {
     const newer = await published({ title: 'Tin mới hơn' });
     now = new Date('2026-10-18T00:00:00Z');
 
-    const page = await service.listOpen(1);
+    const page = await service.listOpen({ page: 1 });
     expect(page).toMatchObject({ total: 2, page: 1, pageSize: 20 });
     expect(page.items.map((p) => p.id)).toEqual([newer.id, older.id]);
     expect(page.items[0]).toEqual({
@@ -201,20 +201,78 @@ describe('listOpen', () => {
   it('tin hết hạn đúng thời điểm deadline vẫn còn mở, qua deadline thì ẩn', async () => {
     await published({ applicationDeadline: '2026-10-17T00:00:00.000Z' });
     now = new Date('2026-10-17T00:00:00.000Z');
-    expect((await service.listOpen(1)).total).toBe(1);
+    expect((await service.listOpen({ page: 1 })).total).toBe(1);
     now = new Date('2026-10-17T00:00:00.001Z');
-    expect((await service.listOpen(1)).total).toBe(0);
+    expect((await service.listOpen({ page: 1 })).total).toBe(0);
   });
 
   it('phân trang 20 tin mỗi trang', async () => {
     const ids: string[] = [];
     for (let i = 0; i < 45; i++) ids.unshift((await published({ title: `Tin số ${i}` })).id);
 
-    const pages = await Promise.all([1, 2, 3, 4].map((n) => service.listOpen(n)));
+    const pages = await Promise.all([1, 2, 3, 4].map((n) => service.listOpen({ page: n })));
     expect(pages.map((p) => p.items.length)).toEqual([20, 20, 5, 0]);
     expect(pages.flatMap((p) => p.items.map((i) => i.id))).toEqual(ids);
     expect(pages.every((p) => p.total === 45)).toBe(true);
     expect(pages[2].page).toBe(3);
+  });
+});
+
+describe('listOpen với Search Filter', () => {
+  const titles = async (filter: Parameters<JobPostingService['listOpen']>[0]) =>
+    (await service.listOpen(filter)).items.map((p) => p.title);
+
+  it('từ khóa không dấu khớp tiêu đề có dấu, không phân biệt hoa thường, gồm cả "đ"', async () => {
+    await published({ title: 'Kế toán tổng hợp' });
+    await published({ title: 'Điều dưỡng viên' });
+    await published({ title: 'Lập trình viên' });
+    expect(await titles({ q: 'ke toan' })).toEqual(['Kế toán tổng hợp']);
+    expect(await titles({ q: 'DIEU DUONG' })).toEqual(['Điều dưỡng viên']);
+    expect(await titles({ q: 'Kế Toán' })).toEqual(['Kế toán tổng hợp']);
+  });
+
+  it('từ khóa khớp cả mô tả; từ khóa rỗng hoặc toàn khoảng trắng = không lọc', async () => {
+    await published({ title: 'Nhân viên văn phòng', description: 'Làm báo cáo thuế và sổ sách kế toán hằng tháng.' });
+    await published({ title: 'Lập trình viên' });
+    expect(await titles({ q: 'so sach' })).toEqual(['Nhân viên văn phòng']);
+    expect(await titles({ q: '   ' })).toHaveLength(2);
+  });
+
+  it('ký tự % và _ trong từ khóa là chữ thường, không phải wildcard', async () => {
+    await published({ title: 'Lập trình viên' });
+    expect(await titles({ q: '%' })).toEqual([]);
+    expect(await titles({ q: '_' })).toEqual([]);
+  });
+
+  it('địa điểm khớp nguyên giá trị, không cần dấu và hoa thường', async () => {
+    await published({ title: 'Ở Hà Nội', location: 'Hà Nội' });
+    await published({ title: 'Ở Hà Nam', location: 'Hà Nam' });
+    expect(await titles({ location: 'ha noi' })).toEqual(['Ở Hà Nội']);
+    expect(await titles({ location: 'Hà' })).toEqual([]);
+  });
+
+  it('lương tối thiểu: khớp tin có salaryMax ≥ mức yêu cầu hoặc salaryMax null (thỏa thuận)', async () => {
+    await published({ title: 'Thấp', salaryMin: 5_000_000, salaryMax: 8_000_000 });
+    await published({ title: 'Đúng mức', salaryMin: 8_000_000, salaryMax: 10_000_000 });
+    await published({ title: 'Thỏa thuận', salaryMin: null, salaryMax: null });
+    await published({ title: 'Từ 12 triệu', salaryMin: 12_000_000, salaryMax: null });
+    expect(await titles({ minSalary: 10_000_000 })).toEqual(['Từ 12 triệu', 'Thỏa thuận', 'Đúng mức']);
+  });
+
+  it('kết hợp nhiều bộ lọc (AND), total đếm sau khi lọc, vẫn ẩn tin không mở', async () => {
+    await published({ title: 'Kế toán trưởng', location: 'Hà Nội', employmentType: 'FULL_TIME', salaryMax: 30_000_000 });
+    await published({ title: 'Kế toán part-time', location: 'Hà Nội', employmentType: 'PART_TIME', salaryMax: 30_000_000 });
+    await published({ title: 'Kế toán TP.HCM', location: 'TP. Hồ Chí Minh', employmentType: 'FULL_TIME', salaryMax: 30_000_000 });
+    await published({ title: 'Kế toán lương thấp', location: 'Hà Nội', employmentType: 'FULL_TIME', salaryMin: null, salaryMax: 9_000_000 });
+    await service.createDraft(A, input({ title: 'Kế toán nháp', salaryMax: 30_000_000 }));
+    const page = await service.listOpen({ q: 'ke toan', location: 'Hà Nội', employmentType: 'FULL_TIME', minSalary: 10_000_000 });
+    expect(page.items.map((p) => p.title)).toEqual(['Kế toán trưởng']);
+    expect(page.total).toBe(1);
+  });
+
+  it('không truyền page → trang 1', async () => {
+    await published();
+    expect(await service.listOpen({})).toMatchObject({ page: 1, total: 1 });
   });
 });
 
