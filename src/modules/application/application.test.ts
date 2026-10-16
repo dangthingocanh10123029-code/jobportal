@@ -12,16 +12,18 @@ const NOW = new Date('2026-10-16T00:00:00Z');
 
 let now: Date;
 let postings: InMemoryJobPostingRepository;
+let repo: InMemoryApplicationRepository;
 let service: ApplicationService;
 
 beforeEach(() => {
   now = NOW;
-  postings = new InMemoryJobPostingRepository({}, () => now);
-  service = new ApplicationService(new InMemoryApplicationRepository(postings, () => now));
+  postings = new InMemoryJobPostingRepository({ [EMPLOYER]: 'ACME' }, () => now);
+  repo = new InMemoryApplicationRepository(postings, () => now);
+  service = new ApplicationService(repo);
 });
 
 async function posting(status: 'DRAFT' | 'PUBLISHED' | 'CLOSED', deadline = '2026-11-01T00:00:00.000Z') {
-  const { id } = await postings.insert(EMPLOYER, fromPartial<PostingInput>({ applicationDeadline: deadline }));
+  const { id } = await postings.insert(EMPLOYER, fromPartial<PostingInput>({ title: `Tin ${deadline}`, applicationDeadline: deadline }));
   if (status !== 'DRAFT') await postings.update(id, { status });
   return id;
 }
@@ -90,6 +92,106 @@ describe('getMine / getHistory', () => {
     expect(await service.getMine(ANNA, postingId)).toEqual(application);
     expect(await service.getMine(BINH, postingId)).toBeNull();
     expect(await service.getHistory(BINH, application.id as ApplicationId)).toBeNull();
+  });
+});
+
+describe('listMine / getMineWithHistory', () => {
+  it('liệt kê đơn của Candidate, mới nhất trước, kèm tiêu đề tin và tên công ty', async () => {
+    const first = await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+    now = new Date('2026-10-17T00:00:00Z');
+    const second = await service.submit(ANNA, await posting('PUBLISHED', '2026-12-01T00:00:00.000Z'), resume(ANNA));
+    await service.submit(BINH, first.jobPostingId as JobPostingId, resume(BINH));
+
+    expect(await service.listMine(ANNA)).toEqual([
+      { ...second, postingTitle: 'Tin 2026-12-01T00:00:00.000Z', companyName: 'ACME' },
+      { ...first, postingTitle: 'Tin 2026-11-01T00:00:00.000Z', companyName: 'ACME' },
+    ]);
+  });
+
+  it('chi tiết đơn kèm lịch sử; Candidate khác nhận null', async () => {
+    const application = await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+    const id = application.id as ApplicationId;
+    expect(await service.getMineWithHistory(ANNA, id)).toEqual({
+      ...application,
+      postingTitle: 'Tin 2026-11-01T00:00:00.000Z',
+      companyName: 'ACME',
+      history: [{ fromStatus: null, toStatus: 'SUBMITTED', changedByRole: 'CANDIDATE', changedAt: application.createdAt }],
+    });
+    expect(await service.getMineWithHistory(BINH, id)).toBeNull();
+    expect(await service.getMineWithHistory(ANNA, 'application-404' as ApplicationId)).toBeNull();
+  });
+});
+
+describe('withdraw', () => {
+  async function applicationIn(status: 'SUBMITTED' | 'REVIEWING' | 'INTERVIEWING' | 'OFFERED' | 'HIRED' | 'REJECTED') {
+    const { id } = await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+    const path = { SUBMITTED: [], REVIEWING: ['REVIEWING'], INTERVIEWING: ['REVIEWING', 'INTERVIEWING'],
+      OFFERED: ['REVIEWING', 'INTERVIEWING', 'OFFERED'], HIRED: ['REVIEWING', 'INTERVIEWING', 'OFFERED', 'HIRED'],
+      REJECTED: ['REJECTED'] } as const;
+    for (const to of path[status]) await repo.changeStatus(id as ApplicationId, to, { userId: EMPLOYER, role: 'EMPLOYER' });
+    return id as ApplicationId;
+  }
+
+  it.each(['SUBMITTED', 'REVIEWING', 'INTERVIEWING', 'OFFERED'] as const)(
+    'rút đơn đang %s: WITHDRAWN và ghi Status Change',
+    async (status) => {
+      const id = await applicationIn(status);
+      now = new Date('2026-10-18T00:00:00Z');
+      expect(await service.withdraw(ANNA, id)).toMatchObject({ status: 'WITHDRAWN', updatedAt: now.toISOString() });
+      expect((await service.getHistory(ANNA, id))?.at(-1)).toEqual({
+        fromStatus: status,
+        toStatus: 'WITHDRAWN',
+        changedByRole: 'CANDIDATE',
+        changedAt: now.toISOString(),
+      });
+    },
+  );
+
+  it.each(['HIRED', 'REJECTED'] as const)('đơn đã %s không rút được', async (status) => {
+    const id = await applicationIn(status);
+    await expect(service.withdraw(ANNA, id)).rejects.toMatchObject({ code: 'INVALID_TRANSITION' });
+    expect((await service.getMineWithHistory(ANNA, id))?.status).toBe(status);
+  });
+
+  it('đơn đã WITHDRAWN không rút lại được', async () => {
+    const id = await applicationIn('SUBMITTED');
+    await service.withdraw(ANNA, id);
+    await expect(service.withdraw(ANNA, id)).rejects.toMatchObject({ code: 'INVALID_TRANSITION' });
+  });
+
+  it('không rút được đơn của Candidate khác hoặc đơn không tồn tại', async () => {
+    const id = await applicationIn('SUBMITTED');
+    await expect(service.withdraw(BINH, id)).rejects.toMatchObject({ code: 'APPLICATION_NOT_FOUND' });
+    await expect(service.withdraw(ANNA, 'application-404' as ApplicationId)).rejects.toMatchObject({
+      code: 'APPLICATION_NOT_FOUND',
+    });
+    expect((await service.getMineWithHistory(ANNA, id))?.status).toBe('SUBMITTED');
+  });
+
+  it('hai lần rút cùng lúc chỉ ghi một Status Change', async () => {
+    const id = await applicationIn('SUBMITTED');
+    const results = await Promise.allSettled([service.withdraw(ANNA, id), service.withdraw(ANNA, id)]);
+    expect(results.map((r) => r.status).sort()).toEqual(['fulfilled', 'rejected']);
+    expect(await service.getHistory(ANNA, id)).toHaveLength(2);
+  });
+});
+
+describe('changeStatus (RPC dùng chung với ticket 07)', () => {
+  it('Candidate không đổi sang trạng thái khác WITHDRAWN, Employer không rút thay', async () => {
+    const { id } = await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+    await expect(repo.changeStatus(id as ApplicationId, 'REVIEWING', { userId: ANNA, role: 'CANDIDATE' })).rejects.toMatchObject({
+      code: 'INVALID_TRANSITION',
+    });
+    await expect(repo.changeStatus(id as ApplicationId, 'WITHDRAWN', { userId: EMPLOYER, role: 'EMPLOYER' })).rejects.toMatchObject({
+      code: 'INVALID_TRANSITION',
+    });
+  });
+
+  it('Employer không phải chủ tin không đổi được', async () => {
+    const { id } = await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+    await expect(repo.changeStatus(id as ApplicationId, 'REVIEWING', { userId: 'employer-b', role: 'EMPLOYER' })).rejects.toMatchObject({
+      code: 'APPLICATION_NOT_FOUND',
+    });
   });
 });
 
