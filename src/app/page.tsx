@@ -1,30 +1,8 @@
 import Link from 'next/link';
-import { z } from 'zod';
 import { listOpenPostings } from '@/actions/postings';
-import type { EmploymentType, PostingSummary, SearchFilter } from '@/actions/types';
-
-const employmentTypes = ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'] as const;
-
-const employmentLabels: Record<EmploymentType, string> = {
-  FULL_TIME: 'Toàn thời gian',
-  PART_TIME: 'Bán thời gian',
-  INTERNSHIP: 'Thực tập',
-  CONTRACT: 'Hợp đồng',
-};
-
-function formatSalary(posting: PostingSummary) {
-  if (posting.salaryMin === null && posting.salaryMax === null) return 'Thỏa thuận';
-  const amount = (value: number) => `${new Intl.NumberFormat('vi-VN').format(value)} ₫`;
-  if (posting.salaryMin !== null && posting.salaryMax !== null) {
-    return `${amount(posting.salaryMin)} – ${amount(posting.salaryMax)} / tháng`;
-  }
-  if (posting.salaryMin !== null) return `Từ ${amount(posting.salaryMin)} / tháng`;
-  return `Đến ${amount(posting.salaryMax!)} / tháng`;
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(value));
-}
+import { searchFilterSchema } from '@/actions/postings-schema';
+import type { PostingSummary, SearchFilter } from '@/actions/types';
+import { employmentLabels, formatDate, formatSalary } from '@/components/format';
 
 function PostingCard({ posting }: { posting: PostingSummary }) {
   return (
@@ -40,7 +18,7 @@ function PostingCard({ posting }: { posting: PostingSummary }) {
         </div>
         <div className="public-posting-meta">
           <span><span aria-hidden="true">⌖</span> {posting.location}</span>
-          <span><span aria-hidden="true">◷</span> {formatSalary(posting)}</span>
+          <span><span aria-hidden="true">◷</span> {formatSalary(posting.salaryMin, posting.salaryMax)}</span>
           <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
         </div>
       </div>
@@ -53,28 +31,11 @@ function PostingCard({ posting }: { posting: PostingSummary }) {
 
 type HomeSearchParams = Record<string, string | string[] | undefined>;
 
-const searchText = z.string().trim().transform((value) => value.slice(0, 100) || undefined).optional().catch(undefined);
-const homeSearchParamsSchema = z.object({
-  q: searchText,
-  location: searchText,
-  type: z.enum(employmentTypes).optional().catch(undefined),
-  minSalary: z.coerce.number().int().positive().safe().optional().catch(undefined),
-  page: z.coerce.number().int().min(1).catch(1),
-}).catch({ page: 1 });
-
 function searchFilterFromParams(params: HomeSearchParams): SearchFilter {
   const firstValues = Object.fromEntries(
     Object.entries(params).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]),
   );
-  const parsed = homeSearchParamsSchema.parse(firstValues);
-
-  return {
-    q: parsed.q,
-    location: parsed.location,
-    employmentType: parsed.type,
-    minSalary: parsed.minSalary,
-    page: parsed.page,
-  };
+  return searchFilterSchema.parse({ ...firstValues, employmentType: firstValues.type });
 }
 
 function searchHref(filter: SearchFilter, page: number) {
