@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { closePostingAction, createPostingDraftAction, getMyPosting, publishPostingAction, updatePostingAction } from './postings';
-import { postingInputSchema } from './postings-schema';
+import {
+  closePostingAction,
+  createPostingDraftAction,
+  getMyPosting,
+  getPostingDetail,
+  publishPostingAction,
+  updatePostingAction,
+} from './postings';
+import { pageSchema, postingInputSchema } from './postings-schema';
 import type { PostingInput } from './types';
 
 const valid: PostingInput = {
@@ -37,6 +44,7 @@ describe('id sai', () => {
     expect(await publishPostingAction({ id: '1' })).toEqual(error);
     expect(await closePostingAction({ id: '1' })).toEqual(error);
     expect(await getMyPosting('1')).toBeNull();
+    expect(await getPostingDetail('1')).toBeNull();
   });
 });
 
@@ -46,5 +54,11 @@ describe('schema — input hợp lệ', () => {
       ...valid,
       applicationDeadline: '2026-11-01T10:00:00.000Z',
     });
+  });
+});
+
+describe('pageSchema', () => {
+  it.each([[undefined, 1], ['3', 3], [2, 2], [0, 1], [-1, 1], [1.5, 1], ['abc', 1]])('%s → %s', (input, page) => {
+    expect(pageSchema.parse(input)).toBe(page);
   });
 });

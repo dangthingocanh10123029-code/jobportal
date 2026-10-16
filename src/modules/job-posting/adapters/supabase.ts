@@ -90,6 +90,18 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
     return data.map(toPosting);
   }
 
+  async listOpen({ offset, limit }: { offset: number; limit: number }) {
+    const { data, error, count } = await this.supabase
+      .from('open_job_postings')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .order('id') // stable order across pages when created_at ties
+      .range(offset, offset + limit - 1)
+      .returns<Row[]>();
+    if (error) throw new Error(`Không đọc được danh sách tin: ${error.message}`);
+    return { rows: data.map(toPosting), total: count ?? 0 };
+  }
+
   private async mustFind(id: JobPostingId) {
     const posting = await this.findById(id);
     if (!posting) throw new Error(`Không đọc lại được tin ${id}`);

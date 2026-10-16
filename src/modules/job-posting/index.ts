@@ -1,5 +1,6 @@
 import { JobPostingError } from './domain/errors';
-import { displayStatus, EDITABLE, TRANSITIONS } from './domain/status';
+import type { OpenPostingsPage, PostingDetail } from '@/actions/types';
+import { displayStatus, EDITABLE, isOpen, TRANSITIONS } from './domain/status';
 import type {
   Clock,
   EmployerId,
@@ -13,7 +14,9 @@ import type {
 export { JobPostingError, type JobPostingErrorCode } from './domain/errors';
 export type * from './domain/types';
 
-/** Employer-side posting lifecycle: DRAFT --publish--> PUBLISHED --close--> CLOSED. */
+export const PAGE_SIZE = 20;
+
+/** Posting lifecycle (DRAFT --publish--> PUBLISHED --close--> CLOSED) plus the public read side. */
 export class JobPostingService {
   constructor(
     private readonly repo: IJobPostingRepository,
@@ -54,6 +57,24 @@ export class JobPostingService {
   async getMine(employerId: EmployerId, id: JobPostingId): Promise<JobPosting | null> {
     const posting = await this.repo.findById(id);
     return posting?.employerId === employerId ? this.view(posting) : null;
+  }
+
+  /** Public list: open postings only, newest first. `page` starts at 1. */
+  async listOpen(page: number): Promise<OpenPostingsPage> {
+    const { rows, total } = await this.repo.listOpen({ offset: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE });
+    const items = rows.map(
+      ({ id, title, companyName, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt }) => ({
+        id, title, companyName, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt,
+      }),
+    );
+    return { items, total, page, pageSize: PAGE_SIZE };
+  }
+
+  /** Public detail: CLOSED/EXPIRED still readable (isOpen = false); DRAFT looks missing. */
+  async getPublic(id: JobPostingId): Promise<PostingDetail | null> {
+    const posting = await this.repo.findById(id);
+    if (!posting || posting.status === 'DRAFT') return null;
+    return { ...this.view(posting), isOpen: isOpen(posting.status, posting.applicationDeadline, this.now()) };
   }
 
   private async owned(employerId: EmployerId, id: JobPostingId): Promise<StoredJobPosting> {

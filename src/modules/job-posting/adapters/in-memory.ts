@@ -1,10 +1,14 @@
-import type { EmployerId, IJobPostingRepository, JobPostingId, StoredJobPosting } from '../domain/types';
+import { isOpen } from '../domain/status';
+import type { Clock, EmployerId, IJobPostingRepository, JobPostingId, StoredJobPosting } from '../domain/types';
 
 export class InMemoryJobPostingRepository implements IJobPostingRepository {
   private readonly rows = new Map<JobPostingId, StoredJobPosting>();
   private nextId = 1;
 
-  constructor(private readonly companyNames: Record<string, string> = {}) {}
+  constructor(
+    private readonly companyNames: Record<string, string> = {},
+    private readonly now: Clock = () => new Date(),
+  ) {}
 
   async insert(...[employerId, input]: Parameters<IJobPostingRepository['insert']>) {
     const at = new Date().toISOString();
@@ -37,5 +41,10 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
   async listByEmployer(employerId: EmployerId) {
     // Insertion order stands in for created_at.
     return [...this.rows.values()].filter((r) => r.employerId === employerId).reverse().map((r) => ({ ...r }));
+  }
+
+  async listOpen({ offset, limit }: { offset: number; limit: number }) {
+    const open = [...this.rows.values()].filter((r) => isOpen(r.status, r.applicationDeadline, this.now())).reverse();
+    return { rows: open.slice(offset, offset + limit).map((r) => ({ ...r })), total: open.length };
   }
 }

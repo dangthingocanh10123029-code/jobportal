@@ -32,3 +32,6 @@ export const postingInputSchema = z.object({
 });
 
 export const postingIdSchema = z.string().uuid('Mã tin không hợp lệ');
+
+// From ?page= in the URL: anything that is not a positive integer means page 1.
+export const pageSchema = z.coerce.number().int().min(1).catch(1);
