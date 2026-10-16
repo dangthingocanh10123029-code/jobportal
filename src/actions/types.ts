@@ -18,3 +18,23 @@ export type Profile = {
   phone: string | null;
   companyName: string | null;
 };
+
+export type PostingInput = {
+  title: string;
+  description: string;
+  location: string;
+  employmentType: EmploymentType;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  applicationDeadline: string;
+};
+
+export type JobPosting = PostingInput & {
+  id: string;
+  employerId: string;
+  companyName: string;
+  status: PostingStatus;
+  displayStatus: DisplayPostingStatus;
+  createdAt: string;
+  updatedAt: string;
+};
