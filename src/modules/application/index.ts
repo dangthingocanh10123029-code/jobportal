@@ -1,5 +1,12 @@
 import type { JobPostingId } from '@/modules/job-posting';
-import type { Application, ApplicationId, CandidateId, IApplicationRepository, StatusChange } from './domain/types';
+import type {
+  Application,
+  ApplicationId,
+  CandidateApplicationSummary,
+  CandidateId,
+  IApplicationRepository,
+  StatusChange,
+} from './domain/types';
 
 export { ApplicationError, type ApplicationErrorCode } from './domain/errors';
 export type * from './domain/types';
@@ -23,5 +30,25 @@ export class ApplicationService {
   async getHistory(candidateId: CandidateId, id: ApplicationId): Promise<StatusChange[] | null> {
     const application = await this.repo.findById(id);
     return application?.candidateId === candidateId ? this.repo.listStatusChanges(id) : null;
+  }
+
+  /** The Candidate's Applications, newest first. */
+  async listMine(candidateId: CandidateId): Promise<CandidateApplicationSummary[]> {
+    return this.repo.listByCandidate(candidateId);
+  }
+
+  /** One of the Candidate's own Applications with its history; null if not theirs. */
+  async getMineWithHistory(
+    candidateId: CandidateId,
+    id: ApplicationId,
+  ): Promise<(CandidateApplicationSummary & { history: StatusChange[] }) | null> {
+    // ponytail: scans the Candidate's list (tens of rows); add a findSummary query if that grows.
+    const summary = (await this.repo.listByCandidate(candidateId)).find((a) => a.id === id);
+    return summary ? { ...summary, history: await this.repo.listStatusChanges(id) } : null;
+  }
+
+  /** Candidate moves their own Application to WITHDRAWN, the only transition a Candidate may make. */
+  async withdraw(candidateId: CandidateId, id: ApplicationId): Promise<Application> {
+    return this.repo.changeStatus(id, 'WITHDRAWN', { userId: candidateId, role: 'CANDIDATE' });
   }
 }

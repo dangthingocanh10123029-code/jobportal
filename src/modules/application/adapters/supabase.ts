@@ -1,8 +1,15 @@
 import type { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
-import type { ApplicationStatus, Role } from '@/actions/types';
+import type { Actor, ApplicationStatus, Role } from '@/actions/types';
 import type { JobPostingId } from '@/modules/job-posting';
 import { ApplicationError, isApplicationErrorCode } from '../domain/errors';
-import type { Application, ApplicationId, CandidateId, IApplicationRepository, StatusChange } from '../domain/types';
+import type {
+  Application,
+  ApplicationId,
+  CandidateApplicationSummary,
+  CandidateId,
+  IApplicationRepository,
+  StatusChange,
+} from '../domain/types';
 
 type Row = {
   id: string;
@@ -29,10 +36,8 @@ function toApplication(row: Row): Application {
 }
 
 /** RPC errors whose message is an ApplicationErrorCode are business-rule refusals, not system failures. */
-function rpcError(error: PostgrestError): Error {
-  return isApplicationErrorCode(error.message)
-    ? new ApplicationError(error.message)
-    : new Error(`Không nộp được hồ sơ: ${error.message}`);
+function rpcError(error: PostgrestError, what: string): Error {
+  return isApplicationErrorCode(error.message) ? new ApplicationError(error.message) : new Error(`${what}: ${error.message}`);
 }
 
 /** Runs as the signed-in user: RLS limits reads, and writes go only through RPCs that use auth.uid() as the actor. */
@@ -44,7 +49,7 @@ export class SupabaseApplicationRepository implements IApplicationRepository {
     const { data, error } = await this.supabase
       .rpc('submit_application', { p_job_posting_id: jobPostingId, p_resume_path: resumePath })
       .single<Row>();
-    if (error) throw rpcError(error);
+    if (error) throw rpcError(error, 'Không nộp được hồ sơ');
     return toApplication(data);
   }
 
@@ -82,5 +87,32 @@ export class SupabaseApplicationRepository implements IApplicationRepository {
         changedAt: new Date(c.changed_at).toISOString(),
       }),
     );
+  }
+
+  async listByCandidate(candidateId: CandidateId) {
+    const { data, error } = await this.supabase
+      .from('candidate_application_summaries')
+      .select(`${COLUMNS},posting_title,company_name`)
+      // RLS also lets an Employer read Applications on their postings; the filter keeps this to one Candidate.
+      .eq('candidate_id', candidateId)
+      .order('created_at', { ascending: false })
+      .returns<(Row & { posting_title: string; company_name: string })[]>();
+    if (error) throw new Error(`Không đọc được danh sách hồ sơ: ${error.message}`);
+    return data.map(
+      (row): CandidateApplicationSummary => ({
+        ...toApplication(row),
+        postingTitle: row.posting_title,
+        companyName: row.company_name,
+      }),
+    );
+  }
+
+  /** `actor` is not sent: change_application_status takes the actor and role from the session (auth.uid()). */
+  async changeStatus(id: ApplicationId, toStatus: ApplicationStatus, _actor: Actor) {
+    const { data, error } = await this.supabase
+      .rpc('change_application_status', { p_application_id: id, p_to_status: toStatus })
+      .single<Row>();
+    if (error) throw rpcError(error, 'Không đổi được trạng thái hồ sơ');
+    return toApplication(data);
   }
 }

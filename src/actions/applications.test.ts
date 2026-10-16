@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getMyApplicationForPosting, submitApplicationAction } from './applications';
+import { getMyApplication, getMyApplicationForPosting, submitApplicationAction, withdrawApplicationAction } from './applications';
 import { MAX_RESUME_BYTES } from './applications-schema';
 
 const POSTING_ID = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b';
@@ -40,5 +40,18 @@ describe('submitApplicationAction — input sai', () => {
 describe('getMyApplicationForPosting', () => {
   it('mã tin sai → null', async () => {
     expect(await getMyApplicationForPosting('1')).toBeNull();
+  });
+});
+
+describe('ticket 06 — input sai', () => {
+  it('getMyApplication: mã hồ sơ sai → null', async () => {
+    expect(await getMyApplication('1')).toBeNull();
+  });
+
+  it.each([
+    ['mã hồ sơ không phải uuid', { applicationId: '1' }],
+    ['thiếu mã hồ sơ', {}],
+  ])('withdrawApplicationAction: %s', async (_, input) => {
+    expect(await withdrawApplicationAction(input as never)).toEqual({ success: false, error: 'Mã hồ sơ không hợp lệ' });
   });
 });

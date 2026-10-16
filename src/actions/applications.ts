@@ -1,13 +1,13 @@
 'use server';
 
 import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
-import { ApplicationError, ApplicationService, type CandidateId } from '@/modules/application';
+import { ApplicationError, ApplicationService, type ApplicationId, type CandidateId } from '@/modules/application';
 import { SupabaseApplicationRepository } from '@/modules/application/adapters/supabase';
 import type { JobPostingId } from '@/modules/job-posting';
-import { submitApplicationSchema } from './applications-schema';
+import { applicationIdSchema, submitApplicationSchema, withdrawApplicationSchema } from './applications-schema';
 import { firstError } from './auth-schema';
 import { postingIdSchema } from './postings-schema';
-import type { ActionResult, Application } from './types';
+import type { ActionResult, Application, CandidateApplicationSummary, StatusChange } from './types';
 
 const fail = (error: string) => ({ success: false, error }) as const;
 
@@ -62,4 +62,37 @@ export async function getMyApplicationForPosting(postingId: string): Promise<App
   if (!parsed.success) return null;
   const ctx = await candidateContext();
   return ctx ? ctx.service.getMine(ctx.candidateId, parsed.data as JobPostingId) : null;
+}
+
+/** The signed-in Candidate's Applications, newest first; empty when not a Candidate. */
+export async function listMyApplications(): Promise<CandidateApplicationSummary[]> {
+  const ctx = await candidateContext();
+  return ctx ? ctx.service.listMine(ctx.candidateId) : [];
+}
+
+/** One of the signed-in Candidate's Applications with its Status Change history; null when not theirs. */
+export async function getMyApplication(
+  id: string,
+): Promise<(CandidateApplicationSummary & { history: StatusChange[] }) | null> {
+  const parsed = applicationIdSchema.safeParse(id);
+  if (!parsed.success) return null;
+  const ctx = await candidateContext();
+  return ctx ? ctx.service.getMineWithHistory(ctx.candidateId, parsed.data as ApplicationId) : null;
+}
+
+/** Candidate withdraws their own Application unless it is already HIRED, REJECTED or WITHDRAWN. */
+export async function withdrawApplicationAction(input: { applicationId: string }): Promise<ActionResult<Application>> {
+  const parsed = withdrawApplicationSchema.safeParse(input);
+  if (!parsed.success) return fail(firstError(parsed.error));
+
+  const ctx = await candidateContext();
+  if (!ctx) return fail('Chỉ ứng viên đã đăng nhập mới rút được hồ sơ');
+
+  try {
+    return { success: true, data: await ctx.service.withdraw(ctx.candidateId, parsed.data.applicationId as ApplicationId) };
+  } catch (error) {
+    if (error instanceof ApplicationError) return fail(error.message);
+    console.error(error);
+    return fail('Có lỗi xảy ra, vui lòng thử lại');
+  }
 }

@@ -66,6 +66,8 @@ export type Application = {
   updatedAt: string;
 };
 
+export type CandidateApplicationSummary = Application & { postingTitle: string; companyName: string };
+
 export type StatusChange = {
   fromStatus: ApplicationStatus | null;
   toStatus: ApplicationStatus;
