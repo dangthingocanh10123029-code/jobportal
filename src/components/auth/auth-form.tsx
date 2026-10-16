@@ -3,8 +3,9 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signInAction, signUpAction } from '@/actions/auth';
+import { resendSignupOtpAction, signInAction, signUpAction } from '@/actions/auth';
 import type { Role } from '@/actions/types';
+import { OtpStep } from './otp-step';
 
 type AuthMode = 'login' | 'signup';
 
@@ -14,49 +15,75 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const next = searchParams.get('next');
   const isSignup = mode === 'signup';
   const [role, setRole] = useState<Role>('CANDIDATE');
+  const [email, setEmail] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const [showOtp, setShowOtp] = useState(false);
+  const [canEnterOtp, setCanEnterOtp] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const submittedEmail = String(formData.get('email') ?? '');
+    setEmail(submittedEmail);
     setPending(true);
     setError('');
-    setMessage('');
 
-    const result = isSignup
-      ? await signUpAction({
-          email: String(formData.get('email') ?? ''),
-          password: String(formData.get('password') ?? ''),
-          role,
-          ...(role === 'CANDIDATE' ? { fullName: String(formData.get('fullName') ?? '') } : {}),
-          ...(role === 'EMPLOYER' ? { companyName: String(formData.get('companyName') ?? '') } : {}),
-        })
-      : await signInAction({
-          email: String(formData.get('email') ?? ''),
-          password: String(formData.get('password') ?? ''),
-        });
+    try {
+      const result = isSignup
+        ? await signUpAction({
+            email: submittedEmail,
+            password: String(formData.get('password') ?? ''),
+            role,
+            ...(role === 'CANDIDATE' ? { fullName: String(formData.get('fullName') ?? '') } : {}),
+            ...(role === 'EMPLOYER' ? { companyName: String(formData.get('companyName') ?? '') } : {}),
+          })
+        : await signInAction({
+            email: submittedEmail,
+            password: String(formData.get('password') ?? ''),
+          });
 
-    setPending(false);
-    if (!result.success) {
-      setError(result.error);
-      return;
+      if (!result.success) {
+        setError(result.error);
+        setCanEnterOtp(!isSignup && result.error.toLocaleLowerCase('vi').includes('chưa được xác nhận'));
+        return;
+      }
+
+      setCanEnterOtp(false);
+      if (isSignup && 'needsEmailConfirmation' in result.data && result.data.needsEmailConfirmation) {
+        setShowOtp(true);
+        return;
+      }
+
+      const destination = !isSignup && next?.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\')
+        ? next
+        : isSignup
+          ? '/account'
+          : '/';
+      router.push(destination);
+      router.refresh();
+    } finally {
+      setPending(false);
     }
-
-    if (isSignup && 'needsEmailConfirmation' in result.data && result.data.needsEmailConfirmation) {
-      setMessage('Kiểm tra email để xác nhận tài khoản');
-      return;
-    }
-
-    const destination = !isSignup && next?.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\')
-      ? next
-      : isSignup
-        ? '/account'
-        : '/';
-    router.push(destination);
-    router.refresh();
   }
+
+  async function handleEnterOtp() {
+    setPending(true);
+    setError('');
+    try {
+      const result = await resendSignupOtpAction({ email });
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      setShowOtp(true);
+      setCanEnterOtp(false);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (showOtp) return <OtpStep email={email} />;
 
   return (
     <form className="form-stack" onSubmit={handleSubmit}>
@@ -90,14 +117,18 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       ) : null}
       <label className="field-label">
         Email
-        <input autoComplete="email" className="text-input" name="email" placeholder="ban@example.com" required type="email" />
+        <input autoComplete="email" className="text-input" name="email" onChange={(event) => setEmail(event.target.value)} placeholder="ban@example.com" required type="email" value={email} />
       </label>
       <label className="field-label">
         Mật khẩu
         <input autoComplete={isSignup ? 'new-password' : 'current-password'} className="text-input" minLength={isSignup ? 8 : undefined} name="password" placeholder={isSignup ? 'Ít nhất 8 ký tự' : 'Nhập mật khẩu'} required type="password" />
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
-      {message ? <p className="form-success" role="status">{message}</p> : null}
+      {canEnterOtp ? (
+        <button className="button button-quiet button-wide" disabled={pending} onClick={handleEnterOtp} type="button">
+          {pending ? 'Đang gửi mã…' : 'Nhập mã xác nhận'}
+        </button>
+      ) : null}
       <button className="button button-primary button-wide" disabled={pending} type="submit">
         {pending ? 'Đang xử lý…' : isSignup ? 'Tạo tài khoản' : 'Đăng nhập'}
       </button>
