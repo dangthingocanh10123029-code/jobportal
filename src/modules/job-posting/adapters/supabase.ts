@@ -1,6 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { EmploymentType, PostingStatus } from '@/actions/types';
-import type { EmployerId, IJobPostingRepository, JobPostingId, PostingInput, StoredJobPosting } from '../domain/types';
+import { foldAccents } from '../domain/search';
+import type {
+  EmployerId,
+  IJobPostingRepository,
+  JobPostingId,
+  PostingInput,
+  SearchCriteria,
+  StoredJobPosting,
+} from '../domain/types';
 
 type Row = {
   id: string;
@@ -19,6 +27,13 @@ type Row = {
 };
 
 const VIEW = 'job_postings_with_company';
+// Explicit list: open_job_postings also carries the folded search columns, which are not needed back.
+const ROW_COLUMNS =
+  'id,employer_id,company_name,title,description,location,employment_type,salary_min,salary_max,application_deadline,status,created_at,updated_at';
+
+// The user's text is literal in LIKE patterns.
+// ponytail: PostgREST still turns '*' into '%', so '*' in a keyword acts as a wildcard; harmless for search.
+const escapeLike = (text: string) => text.replace(/[\\%_]/g, '\\$&');
 
 function toPosting(row: Row): StoredJobPosting {
   return {
@@ -90,10 +105,17 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
     return data.map(toPosting);
   }
 
-  async listOpen({ offset, limit }: { offset: number; limit: number }) {
-    const { data, error, count } = await this.supabase
-      .from('open_job_postings')
-      .select('*', { count: 'exact' })
+  async listOpen(
+    { q, location, employmentType, minSalary }: SearchCriteria,
+    { offset, limit }: { offset: number; limit: number },
+  ) {
+    let query = this.supabase.from('open_job_postings').select(ROW_COLUMNS, { count: 'exact' });
+    if (q !== undefined) query = query.ilike('search_text', `%${escapeLike(foldAccents(q))}%`);
+    if (location !== undefined) query = query.ilike('search_location', escapeLike(foldAccents(location)));
+    if (employmentType !== undefined) query = query.eq('employment_type', employmentType);
+    // salary_max null = negotiable / no upper bound: always matches. minSalary is a validated integer.
+    if (minSalary !== undefined) query = query.or(`salary_max.is.null,salary_max.gte.${minSalary}`);
+    const { data, error, count } = await query
       .order('created_at', { ascending: false })
       .order('id') // stable order across pages when created_at ties
       .range(offset, offset + limit - 1)
