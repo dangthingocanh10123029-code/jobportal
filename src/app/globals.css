@@ -268,6 +268,22 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .posting-detail-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 32px; border-top: 1px solid var(--color-border); background: var(--color-surface); }
 .posting-detail-footer p { max-width: 480px; margin: 0; color: var(--color-muted); font-size: 13px; line-height: 1.5; }
 .posting-detail-footer .button { flex: 0 0 auto; }
+.application-form { display: grid; width: 100%; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px 20px; }
+.application-form-copy { grid-column: 1 / -1; }
+.application-form-copy h2 { margin: 0 0 5px; font-size: 17px; }
+.application-form-copy p { max-width: none; }
+.application-file-label { min-width: 0; }
+.application-file-input { display: block; width: 100%; margin-top: 8px; color: var(--color-muted); font-size: 13px; font-weight: 400; }
+.application-file-input::file-selector-button { min-height: 40px; margin-right: 10px; padding: 0 13px; border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-text); background: #fff; cursor: pointer; font: inherit; font-weight: 650; }
+.application-file-input::file-selector-button:hover { border-color: #bfdbfe; background: var(--color-primary-soft); }
+.application-file-hint, .application-error { grid-column: 1 / -1; }
+.application-file-hint { margin: -5px 0 0; color: var(--color-muted); font-size: 12px; overflow-wrap: anywhere; }
+.application-error { margin: -4px 0 0; }
+.application-form .button { justify-self: end; }
+.application-submitted { display: flex; align-items: flex-start; gap: 13px; width: 100%; padding: 16px 18px; border: 1px solid #bbf7d0; border-radius: 12px; color: #166534; background: #f0fdf4; }
+.application-submitted > span { display: grid; width: 27px; height: 27px; flex: 0 0 auto; place-items: center; border-radius: 50%; color: #fff; background: var(--color-success); font-weight: 800; }
+.application-submitted strong { font-size: 14px; }
+.application-submitted p { margin: 4px 0 0; color: #15803d; }
 
 @media (max-width: 1100px) {
   .job-search-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -344,4 +360,6 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
   .posting-detail-meta strong { font-size: 11px; }
   .posting-description { padding: 24px 18px 30px; }
   .posting-detail-footer { align-items: stretch; flex-direction: column; padding: 18px; }
+  .application-form { grid-template-columns: 1fr; }
+  .application-form .button { justify-self: stretch; }
 }
