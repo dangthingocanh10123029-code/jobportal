@@ -2,6 +2,8 @@
 
 Worker không có `.env.local`, nên các mục dưới đây **chưa được kiểm tra**. Chạy sau khi tạo `.env.local` và `supabase db push`.
 
+- [ ] `npm run build` xanh (từ 01B, layout đọc session nên build cần biến môi trường Supabase)
+
 ## 01 — Accounts and roles
 - [ ] Chạy migration `20261016000000_profiles.sql`
 - [ ] Đăng ký 2 vai trò → trigger `handle_new_user` tạo profile đúng role/tên
