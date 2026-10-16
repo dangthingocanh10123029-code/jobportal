@@ -4,7 +4,7 @@ Project `boncnxhjkbqxlcebzcyc`, 7 migration đã push (2026-10-16). Kiểm tra b
 chạy với từng role thật (`anon`, `authenticated` + JWT giả) trong một transaction **ROLLBACK** — không để lại dữ liệu, không gửi email.
 Chạy lại: `psql "<session pooler URL>" -q -At -f .scratch/job-portal/rls_checks.sql`
 
-## Đã kiểm tra — 56/56 PASS
+## Đã kiểm tra — 55/55 PASS (SQL) + PGRST103 qua REST
 - [x] `npm run build` xanh khi có `.env.local`
 - [x] 01: trigger tạo profile đúng role; role sai bị CHECK chặn; Candidate chỉ đọc profile mình; không sửa được role; sửa được phone; anon đọc `employer_companies`, không đọc `profiles`
 - [x] 02: Employer B không thấy/sửa tin của A; Candidate không tạo tin; tin mới là DRAFT; không insert thẳng PUBLISHED; trigger chặn sửa CLOSED, DRAFT→CLOSED, đăng deadline quá khứ; CHECK lương
