@@ -16,7 +16,8 @@ Chạy lại: `psql "<session pooler URL>" -q -At -f .scratch/job-portal/rls_che
 - [x] 09A: PostgREST trả `PGRST103` (416) khi page vượt range → code fallback đúng nhánh
 
 ## Chưa kiểm tra — cần chạy app thật với tài khoản thật
-- [ ] Đăng ký/đăng nhập/đăng xuất end-to-end, refresh session cookie qua middleware, thông báo "kiểm tra email"
+- [x] Đăng ký → mã OTP qua email (SMTP Gmail) → xác nhận + đăng nhập → `/account` → cập nhật hồ sơ (2026-10-16 17:20)
+- [ ] Đăng xuất / đăng nhập lại, refresh session cookie qua middleware
 - [ ] Upload CV thật qua Storage API, file mồ côi bị dọn khi nộp lỗi (policy `resumes_delete_unused` — Supabase chặn DELETE storage bằng SQL nên chỉ thử được qua API)
 - [ ] `createSignedUrl` 60s cho Employer tải CV
 - [ ] Hai request rút/đổi trạng thái đồng thời (`FOR UPDATE`) chỉ tạo 1 Status Change
