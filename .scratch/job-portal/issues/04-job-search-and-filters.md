@@ -4,7 +4,7 @@
 
 **Blocked by:** 03
 
-**Status:** in-progress (A merged, B đang làm)
+**Status:** resolved
 
 - [ ] Migration bật extension `unaccent` + hàm wrapper immutable dùng cho tìm kiếm
 - [ ] Search Filter trong `JobPostingService`; InMemory adapter bỏ dấu tiếng Việt (gồm cả "đ") để test khớp hành vi database

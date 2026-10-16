@@ -4,7 +4,7 @@
 
 **Blocked by:** 01, 03
 
-**Status:** in-progress (A merged, B chờ 01B, 03B)
+**Status:** in-progress (A merged, B đang làm)
 
 - [ ] Module Application: `ApplicationService` + `IApplicationRepository`, InMemory adapter và Supabase adapter; bảng transition Application Status đặt trong domain theo spec
 - [ ] Test TDD: nộp thành công tạo trạng thái SUBMITTED và một Status Change đầu tiên; nộp trùng bị từ chối; tin không mở bị từ chối
