@@ -196,6 +196,25 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .home-hero-content p { max-width: 500px; margin: 18px 0 26px; color: var(--color-muted); font-size: 17px; line-height: 1.65; }
 .home-hero-content .button { gap: 10px; }
 .home-listings { padding-top: 62px; }
+.job-search-form {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.7fr) minmax(150px, 1fr) minmax(170px, 1fr) minmax(190px, 1fr) auto;
+  align-items: end;
+  gap: 14px;
+  margin: 0 0 44px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+}
+.job-search-form .field-label { min-width: 0; color: #334155; }
+.salary-search-input { display: flex; min-width: 0; align-items: center; gap: 8px; }
+.salary-search-input .text-input { min-width: 0; }
+.salary-search-input > span { flex: 0 0 auto; color: var(--color-muted); font-size: 11px; font-weight: 500; }
+.job-search-actions { display: flex; align-items: center; gap: 13px; }
+.job-search-actions .button { white-space: nowrap; }
+.clear-search-link { color: var(--color-muted); font-size: 12px; font-weight: 650; white-space: nowrap; }
+.clear-search-link:hover { color: var(--color-primary); }
 .home-listings-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 25px; }
 .home-listings-heading .page-heading { margin: 0; }
 .home-listings-heading h2 { margin: 0; font-size: clamp(25px, 3vw, 32px); letter-spacing: -0.035em; }
@@ -250,6 +269,10 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .posting-detail-footer p { max-width: 480px; margin: 0; color: var(--color-muted); font-size: 13px; line-height: 1.5; }
 .posting-detail-footer .button { flex: 0 0 auto; }
 
+@media (max-width: 1100px) {
+  .job-search-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .job-search-keyword { grid-column: 1 / -1; }
+}
 @media (max-width: 900px) {
   .main-nav { gap: 17px; margin-left: 28px; }
   .auth-page { grid-template-columns: minmax(0, 0.8fr) minmax(430px, 1fr); }
@@ -297,6 +320,10 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
   .home-hero-content h1 { font-size: 40px; }
   .home-hero-content p { font-size: 15px; }
   .home-listings { padding-top: 42px; }
+  .job-search-form { grid-template-columns: 1fr; gap: 16px; margin-bottom: 34px; padding: 17px; }
+  .job-search-keyword { grid-column: auto; }
+  .job-search-actions { align-items: center; }
+  .job-search-actions .button { flex: 1; }
   .home-listings-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
   .public-posting-card { align-items: flex-start; gap: 12px; padding: 16px 13px; }
   .company-placeholder { width: 42px; height: 42px; }
