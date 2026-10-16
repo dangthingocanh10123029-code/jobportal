@@ -92,7 +92,7 @@ The transition table lives in the domain and is mirrored by a database function 
 - Storage bucket `resumes` is private. Candidate uploads under a folder named by their user id. Employer downloads through a short-lived signed URL created server-side after checking the Application belongs to one of their postings.
 
 ### Search
-- Accent-insensitive `ILIKE` on unaccented title and description; exact location match; employment type match; minimum salary matches postings whose `salary_max` is null or ≥ requested amount; only open postings; newest first; page size 20.
+- Accent-insensitive `ILIKE` on unaccented title and description; accent-insensitive contains match on location (`ILIKE %…%`); employment type match; minimum salary matches postings whose `salary_max` is null or ≥ requested amount; only open postings; newest first; page size 20.
 
 ## Testing Decisions
 - Test external behaviour through the service interfaces only (`JobPostingService`, `ApplicationService`), never adapter internals.

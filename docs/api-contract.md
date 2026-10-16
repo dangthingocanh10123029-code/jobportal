@@ -46,7 +46,8 @@ Middleware chặn `/employer/*` và `/candidate/*` theo role (Claude logic, tick
 ```ts
 type Profile = { userId: string; role: Role; fullName: string | null; phone: string | null; companyName: string | null };
 
-signUpAction(input: { email: string; password: string; role: Role; fullName?: string; companyName?: string }): Promise<ActionResult<Profile>>
+signUpAction(input: { email: string; password: string; role: Role; fullName?: string; companyName?: string }): Promise<ActionResult<Profile & { needsEmailConfirmation: boolean }>>
+  // needsEmailConfirmation = true khi Supabase bật xác nhận email và chưa có session: UI báo "kiểm tra email"
   // EMPLOYER bắt buộc companyName, CANDIDATE bắt buộc fullName; password ≥ 8 ký tự
 signInAction(input: { email: string; password: string }): Promise<ActionResult<Profile>>
 signOutAction(): Promise<ActionResult<null>>
