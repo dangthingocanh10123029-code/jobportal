@@ -33,8 +33,15 @@ export const postingInputSchema = z.object({
 
 export const postingIdSchema = z.string().uuid('Mã tin không hợp lệ');
 
-// From ?page= in the URL: anything that is not a positive integer means page 1.
-export const pageSchema = z.coerce.number().int().min(1).catch(1);
+const MAX_PAGE = 1000;
+
+// From ?page= in the URL: anything that is not a positive integer means page 1; huge pages clamp to MAX_PAGE.
+export const pageSchema = z.coerce
+  .number()
+  .int()
+  .min(1)
+  .catch(1)
+  .transform((n) => Math.min(n, MAX_PAGE));
 
 // Search Filter straight from the URL: a missing, blank or malformed field means "no filter", never an error.
 const text = z

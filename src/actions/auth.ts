@@ -1,6 +1,7 @@
 'use server';
 
 import type { AuthError } from '@supabase/supabase-js';
+import { cache } from 'react';
 import { createSupabaseServerClient, fetchProfile, PROFILE_COLUMNS, toProfile } from '@/lib/supabase-server';
 import { firstError, signInSchema, signUpSchema, updateProfileSchema } from './auth-schema';
 import type { ActionResult, Profile, Role } from './types';
@@ -26,7 +27,7 @@ export async function signUpAction(input: {
   role: Role;
   fullName?: string;
   companyName?: string;
-}): Promise<ActionResult<Profile>> {
+}): Promise<ActionResult<Profile & { needsEmailConfirmation: boolean }>> {
   const parsed = signUpSchema.safeParse(input);
   if (!parsed.success) return fail(firstError(parsed.error));
   const { email, password, ...profile } = parsed.data;
@@ -51,6 +52,7 @@ export async function signUpAction(input: {
       fullName: profile.fullName ?? null,
       phone: null,
       companyName,
+      needsEmailConfirmation: data.session === null,
     },
   };
 }
@@ -108,8 +110,9 @@ export async function updateProfileAction(input: {
   return { success: true, data: toProfile(data) };
 }
 
-export async function getCurrentProfile(): Promise<Profile | null> {
+// cache(): the header (layout) and the page share one lookup per request.
+export const getCurrentProfile = cache(async (): Promise<Profile | null> => {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.auth.getUser();
   return data.user ? fetchProfile(supabase, data.user.id) : null;
-}
+});

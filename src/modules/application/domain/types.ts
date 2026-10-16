@@ -21,7 +21,6 @@ export interface IApplicationRepository {
    */
   submit(candidateId: CandidateId, jobPostingId: JobPostingId, resumePath: string): Promise<Application>;
   findByPosting(candidateId: CandidateId, jobPostingId: JobPostingId): Promise<Application | null>;
-  findById(id: ApplicationId): Promise<Application | null>;
   /** Oldest first. */
   listStatusChanges(id: ApplicationId): Promise<StatusChange[]>;
   /** Newest first, with the posting's title and company. */

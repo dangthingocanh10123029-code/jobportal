@@ -31,6 +31,9 @@ const VIEW = 'job_postings_with_company';
 const ROW_COLUMNS =
   'id,employer_id,company_name,title,description,location,employment_type,salary_min,salary_max,application_deadline,status,created_at,updated_at';
 
+// PostgREST: offset beyond the last row.
+const RANGE_NOT_SATISFIABLE = 'PGRST103';
+
 // The user's text is literal in LIKE patterns.
 // ponytail: PostgREST still turns '*' into '%', so '*' in a keyword acts as a wildcard; harmless for search.
 const escapeLike = (text: string) => text.replace(/[\\%_]/g, '\\$&');
@@ -109,17 +112,26 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
     { q, location, employmentType, minSalary }: SearchCriteria,
     { offset, limit }: { offset: number; limit: number },
   ) {
-    let query = this.supabase.from('open_job_postings').select(ROW_COLUMNS, { count: 'exact' });
-    if (q !== undefined) query = query.ilike('search_text', `%${escapeLike(foldAccents(q))}%`);
-    if (location !== undefined) query = query.ilike('search_location', escapeLike(foldAccents(location)));
-    if (employmentType !== undefined) query = query.eq('employment_type', employmentType);
-    // salary_max null = negotiable / no upper bound: always matches. minSalary is a validated integer.
-    if (minSalary !== undefined) query = query.or(`salary_max.is.null,salary_max.gte.${minSalary}`);
-    const { data, error, count } = await query
+    const matching = (options: { count: 'exact'; head?: boolean }) => {
+      let query = this.supabase.from('open_job_postings').select(ROW_COLUMNS, options);
+      if (q !== undefined) query = query.ilike('search_text', `%${escapeLike(foldAccents(q))}%`);
+      if (location !== undefined) query = query.ilike('search_location', `%${escapeLike(foldAccents(location))}%`);
+      if (employmentType !== undefined) query = query.eq('employment_type', employmentType);
+      // salary_max null = negotiable / no upper bound: always matches. minSalary is a validated integer.
+      if (minSalary !== undefined) query = query.or(`salary_max.is.null,salary_max.gte.${minSalary}`);
+      return query;
+    };
+    const { data, error, count } = await matching({ count: 'exact' })
       .order('created_at', { ascending: false })
       .order('id') // stable order across pages when created_at ties
       .range(offset, offset + limit - 1)
       .returns<Row[]>();
+    if (error?.code === RANGE_NOT_SATISFIABLE) {
+      // A page past the end: PostgREST answers 416 without a count, so count separately.
+      const head = await matching({ count: 'exact', head: true });
+      if (head.error) throw new Error(`Không đọc được danh sách tin: ${head.error.message}`);
+      return { rows: [], total: head.count ?? 0 };
+    }
     if (error) throw new Error(`Không đọc được danh sách tin: ${error.message}`);
     return { rows: data.map(toPosting), total: count ?? 0 };
   }

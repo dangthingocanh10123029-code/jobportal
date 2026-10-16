@@ -39,7 +39,7 @@ describe('submit', () => {
     const application = await service.submit(ANNA, postingId, resume(ANNA));
 
     expect(application).toMatchObject({ jobPostingId: postingId, candidateId: ANNA, status: 'SUBMITTED' });
-    expect(await service.getHistory(ANNA, application.id as ApplicationId)).toEqual([
+    expect((await service.getMineWithHistory(ANNA, application.id as ApplicationId))?.history).toEqual([
       { fromStatus: null, toStatus: 'SUBMITTED', changedByRole: 'CANDIDATE', changedAt: application.createdAt },
     ]);
   });
@@ -88,13 +88,13 @@ describe('submit', () => {
   });
 });
 
-describe('getMine / getHistory', () => {
+describe('getMine / getMineWithHistory', () => {
   it('chỉ chủ đơn thấy đơn và lịch sử của mình', async () => {
     const postingId = await posting('PUBLISHED');
     const application = await service.submit(ANNA, postingId, resume(ANNA));
     expect(await service.getMine(ANNA, postingId)).toEqual(application);
     expect(await service.getMine(BINH, postingId)).toBeNull();
-    expect(await service.getHistory(BINH, application.id as ApplicationId)).toBeNull();
+    expect(await service.getMineWithHistory(BINH, application.id as ApplicationId)).toBeNull();
   });
 });
 
@@ -141,7 +141,7 @@ describe('withdraw', () => {
       const id = await applicationIn(status);
       now = new Date('2026-10-18T00:00:00Z');
       expect(await service.withdraw(ANNA, id)).toMatchObject({ status: 'WITHDRAWN', updatedAt: now.toISOString() });
-      expect((await service.getHistory(ANNA, id))?.at(-1)).toEqual({
+      expect((await service.getMineWithHistory(ANNA, id))?.history.at(-1)).toEqual({
         fromStatus: status,
         toStatus: 'WITHDRAWN',
         changedByRole: 'CANDIDATE',
@@ -175,7 +175,7 @@ describe('withdraw', () => {
     const id = await applicationIn('SUBMITTED');
     const results = await Promise.allSettled([service.withdraw(ANNA, id), service.withdraw(ANNA, id)]);
     expect(results.map((r) => r.status).sort()).toEqual(['fulfilled', 'rejected']);
-    expect(await service.getHistory(ANNA, id)).toHaveLength(2);
+    expect((await service.getMineWithHistory(ANNA, id))?.history).toHaveLength(2);
   });
 });
 
@@ -237,17 +237,17 @@ describe('Employer xử lý đơn (ticket 07)', () => {
 
   it.each(STATUSES.flatMap((from) => STATUSES.map((to) => [from, to] as const)))('%s → %s', async (from, to) => {
     const id = await applicationIn(from);
-    const before = await service.getHistory(ANNA, id);
+    const before = (await service.getMineWithHistory(ANNA, id))?.history;
     now = new Date('2026-10-18T00:00:00Z');
     if (allowedNextStatuses(from, 'EMPLOYER').includes(to)) {
       expect(await service.changeStatus(EMPLOYER, id, to)).toMatchObject({ status: to, updatedAt: now.toISOString() });
-      expect(await service.getHistory(ANNA, id)).toEqual([
+      expect((await service.getMineWithHistory(ANNA, id))?.history).toEqual([
         ...before!,
         { fromStatus: from, toStatus: to, changedByRole: 'EMPLOYER', changedAt: now.toISOString() },
       ]);
     } else {
       await expect(service.changeStatus(EMPLOYER, id, to)).rejects.toMatchObject({ code: 'INVALID_TRANSITION' });
-      expect(await service.getHistory(ANNA, id)).toEqual(before);
+      expect((await service.getMineWithHistory(ANNA, id))?.history).toEqual(before);
     }
   });
 

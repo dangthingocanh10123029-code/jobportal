@@ -58,7 +58,7 @@ describe('schema — input hợp lệ', () => {
 });
 
 describe('pageSchema', () => {
-  it.each([[undefined, 1], ['3', 3], [2, 2], [0, 1], [-1, 1], [1.5, 1], ['abc', 1]])('%s → %s', (input, page) => {
+  it.each([[undefined, 1], ['3', 3], [2, 2], [0, 1], [-1, 1], [1.5, 1], ['abc', 1], ['1000', 1000], ['1001', 1000], ['1e9', 1000]])('%s → %s', (input, page) => {
     expect(pageSchema.parse(input)).toBe(page);
   });
 });
@@ -77,6 +77,7 @@ describe('searchFilterSchema', () => {
     expect(searchFilterSchema.parse(undefined)).toEqual({ page: 1 });
     expect(searchFilterSchema.parse({ minSalary: 'abc', q: ['a', 'b'] })).toEqual({ page: 1 });
     expect(searchFilterSchema.parse({ minSalary: '1e30' })).toEqual({ page: 1 }); // would overflow bigint
+    expect(searchFilterSchema.parse({ page: '99999' })).toEqual({ page: 1000 });
   });
 
   it('từ khóa quá 100 ký tự bị cắt', () => {

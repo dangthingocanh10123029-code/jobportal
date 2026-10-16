@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 import type { Actor, Profile, Role } from '@/actions/types';
 import { supabaseEnv } from './supabase';
 
@@ -54,10 +55,11 @@ export async function fetchProfile(supabase: SupabaseClient, userId: string): Pr
 }
 
 /** Actor from the server session (getUser verifies the JWT with Supabase Auth); null when signed out. */
-export async function getCurrentActor(supabase?: SupabaseClient): Promise<Actor | null> {
+// cache(): layout and page share one lookup per request (keyed by the `supabase` argument).
+export const getCurrentActor = cache(async (supabase?: SupabaseClient): Promise<Actor | null> => {
   const client = supabase ?? (await createSupabaseServerClient());
   const { data } = await client.auth.getUser();
   if (!data.user) return null;
   const profile = await fetchProfile(client, data.user.id);
   return profile ? { userId: profile.userId, role: profile.role } : null;
-}
+});
