@@ -56,3 +56,19 @@ export type PostingSummary = Pick<
 export type PostingDetail = JobPosting & { isOpen: boolean };
 
 export type OpenPostingsPage = { items: PostingSummary[]; total: number; page: number; pageSize: 20 };
+
+export type Application = {
+  id: string;
+  jobPostingId: string;
+  candidateId: string;
+  status: ApplicationStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type StatusChange = {
+  fromStatus: ApplicationStatus | null;
+  toStatus: ApplicationStatus;
+  changedByRole: Role;
+  changedAt: string;
+};
