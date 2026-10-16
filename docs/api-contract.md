@@ -1,6 +1,6 @@
 # API Contract — VibeCoding Job Portal v1
 
-Hợp đồng giữa **Codex (backend)** và **Antigravity (frontend)**. Frontend chỉ gọi những hàm có trong file này, backend phải cung cấp đúng chữ ký này. Muốn đổi contract → hỏi Claude Coordinator, Claude sửa file này trước rồi mới dispatch.
+Hợp đồng giữa **Claude — logic (`agent-claude-logic`)** và **Codex — giao diện (`agent-codex`)**. Frontend chỉ gọi những hàm có trong file này, backend phải cung cấp đúng chữ ký này. Muốn đổi contract → hỏi Claude Coordinator, Claude sửa file này trước rồi mới dispatch.
 
 ## Quy ước chung
 
@@ -13,7 +13,7 @@ Hợp đồng giữa **Codex (backend)** và **Antigravity (frontend)**. Fronten
 - Hàm **đọc** (dùng trong Server Component) trả dữ liệu trực tiếp, trả `null` khi không tìm thấy hoặc không có quyền, chỉ throw khi lỗi hệ thống.
 - Actor (user id + role) luôn lấy từ session phía server, **không bao giờ** nhận từ input.
 - Ngày giờ truyền dưới dạng chuỗi ISO 8601.
-- Kiểu dùng chung export từ `src/actions/types.ts` (Codex tạo ở ticket 01, các ticket sau bổ sung).
+- Kiểu dùng chung export từ `src/actions/types.ts` (Claude logic tạo ở ticket 01, các ticket sau bổ sung).
 
 ```ts
 type Role = 'CANDIDATE' | 'EMPLOYER';
@@ -26,7 +26,7 @@ type ApplicationStatus =
   | 'HIRED' | 'REJECTED' | 'WITHDRAWN';
 ```
 
-## Routes (Antigravity)
+## Routes (Codex — giao diện)
 
 | Route | Ai vào được | Ticket |
 |---|---|---|
@@ -39,7 +39,7 @@ type ApplicationStatus =
 | `/employer/postings/[id]/applications` | Employer chủ tin | 07 |
 | `/candidate/applications`, `/candidate/applications/[id]` | Candidate | 06 |
 
-Middleware chặn `/employer/*` và `/candidate/*` theo role (Codex, ticket 01).
+Middleware chặn `/employer/*` và `/candidate/*` theo role (Claude logic, ticket 01).
 
 ## 01 — Accounts (`@/actions/auth`)
 

@@ -17,5 +17,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 02.
 
-- **Phần A — Codex (backend):** module Job Posting (service, InMemory + Supabase adapter, test TDD), migration `job_postings` + RLS, `@/actions/postings` phần 02.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/employer/postings` (badge trạng thái gồm EXPIRED), form tạo/sửa tin, nút Đăng/Đóng tin.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** module Job Posting (service, InMemory + Supabase adapter, test TDD), migration `job_postings` + RLS, `@/actions/postings` phần 02.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** trang `/employer/postings` (badge trạng thái gồm EXPIRED), form tạo/sửa tin, nút Đăng/Đóng tin.

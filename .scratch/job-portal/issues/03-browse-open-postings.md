@@ -15,5 +15,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 03.
 
-- **Phần A — Codex (backend):** `listOpenPostings` (chỉ `page`), `getPostingDetail`, điều kiện "đang mở" dùng chung (ADR-0001), test.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang chủ `/` danh sách tin + phân trang, trang `/jobs/[id]`, thông báo khi tin Expired/CLOSED, 404 cho DRAFT.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** `listOpenPostings` (chỉ `page`), `getPostingDetail`, điều kiện "đang mở" dùng chung (ADR-0001), test.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** trang chủ `/` danh sách tin + phân trang, trang `/jobs/[id]`, thông báo khi tin Expired/CLOSED, 404 cho DRAFT.

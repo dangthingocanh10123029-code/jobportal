@@ -16,5 +16,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 04.
 
-- **Phần A — Codex (backend):** migration `unaccent` + hàm wrapper, mở rộng `listOpenPostings` với `q`, `location`, `employmentType`, `minSalary`, InMemory bỏ dấu tiếng Việt, test.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** ô tìm kiếm + bộ lọc trên `/`, đồng bộ với query string, giữ bộ lọc khi chuyển trang.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** migration `unaccent` + hàm wrapper, mở rộng `listOpenPostings` với `q`, `location`, `employmentType`, `minSalary`, InMemory bỏ dấu tiếng Việt, test.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** ô tìm kiếm + bộ lọc trên `/`, đồng bộ với query string, giữ bộ lọc khi chuyển trang.

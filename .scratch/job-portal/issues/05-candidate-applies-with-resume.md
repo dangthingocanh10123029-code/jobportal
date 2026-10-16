@@ -18,5 +18,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 05.
 
-- **Phần A — Codex (backend):** module Application (service, state machine, InMemory + Supabase adapter, test TDD), migration `applications` + `application_status_changes` + RLS, RPC submit atomic, bucket `resumes` + policy, `submitApplicationAction`, `getMyApplicationForPosting`, export `allowedNextStatuses`.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** form nộp đơn trên `/jobs/[id]` (chọn PDF, kiểm tra ≤ 5 MB phía client), trạng thái "Đã nộp", hiển thị lỗi từ action.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** module Application (service, state machine, InMemory + Supabase adapter, test TDD), migration `applications` + `application_status_changes` + RLS, RPC submit atomic, bucket `resumes` + policy, `submitApplicationAction`, `getMyApplicationForPosting`, export `allowedNextStatuses`.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** form nộp đơn trên `/jobs/[id]` (chọn PDF, kiểm tra ≤ 5 MB phía client), trạng thái "Đã nộp", hiển thị lỗi từ action.

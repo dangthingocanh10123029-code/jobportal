@@ -16,5 +16,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 06.
 
-- **Phần A — Codex (backend):** RPC đổi trạng thái atomic (`SELECT ... FOR UPDATE`, kiểm tra transition + actor), `listMyApplications`, `getMyApplication`, `withdrawApplicationAction`, test.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/candidate/applications`, `/candidate/applications/[id]` với lịch sử Status Change, nút rút đơn có xác nhận.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** RPC đổi trạng thái atomic (`SELECT ... FOR UPDATE`, kiểm tra transition + actor), `listMyApplications`, `getMyApplication`, `withdrawApplicationAction`, test.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** trang `/candidate/applications`, `/candidate/applications/[id]` với lịch sử Status Change, nút rút đơn có xác nhận.

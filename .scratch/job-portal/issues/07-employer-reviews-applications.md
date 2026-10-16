@@ -17,5 +17,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 07.
 
-- **Phần A — Codex (backend):** `listApplicationsForPosting`, `changeApplicationStatusAction` (dùng RPC của ticket 06), `getResumeUrlAction` (signed URL sau khi kiểm tra chủ tin), test transition theo Employer.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/employer/postings/[id]/applications`, nút chuyển trạng thái theo `allowedNextStatuses`, nút tải CV.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** `listApplicationsForPosting`, `changeApplicationStatusAction` (dùng RPC của ticket 06), `getResumeUrlAction` (signed URL sau khi kiểm tra chủ tin), test transition theo Employer.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** trang `/employer/postings/[id]/applications`, nút chuyển trạng thái theo `allowedNextStatuses`, nút tải CV.

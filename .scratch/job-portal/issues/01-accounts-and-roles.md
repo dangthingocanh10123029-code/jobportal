@@ -17,5 +17,5 @@
 
 Contract: `docs/api-contract.md`, mục ticket 01.
 
-- **Phần A — Codex (backend):** migration `profiles` + RLS, helper Supabase server client + `getCurrentActor`, middleware chặn route theo role, `src/actions/types.ts`, `@/actions/auth` theo contract, test Zod.
-- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/login`, `/signup` (chọn vai trò), `/account`, layout chung + thanh điều hướng theo role, nút đăng xuất.
+- **Phần A — Claude (logic, worktree `agent-claude-logic`):** migration `profiles` + RLS, helper Supabase server client + `getCurrentActor`, middleware chặn route theo role, `src/actions/types.ts`, `@/actions/auth` theo contract, test Zod.
+- **Phần B — Codex (giao diện, worktree `agent-codex`, sau khi Phần A merge):** trang `/login`, `/signup` (chọn vai trò), `/account`, layout chung + thanh điều hướng theo role, nút đăng xuất.
