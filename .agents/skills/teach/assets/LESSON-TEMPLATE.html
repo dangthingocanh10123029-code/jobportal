@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  TEMPLATE BÀI HỌC /teach — KHÔNG sửa cấu trúc/khối <head>. Chỉ thay nội dung.
+  Cách dùng: copy file này thành lessons/00NN-<slug>.html rồi điền nội dung.
+  Quy ước: comment tiếng Việt trong MỌI khối code; mỗi <pre> bọc trong .code-block
+           để lesson-enhance.js tự gắn nút Copy. Quiz dùng .opt[data-correct][data-explain].
+  Các marker {{...}} là chỗ cần thay. Xoá các khối ví dụ không dùng.
+  ============================================================================
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài {{NN}} · {{Tiêu đề bài}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="wrap">
+
+  <span class="lesson-tag">{{Module X}} · Bài {{NN}}</span>
+  <h1>{{Tiêu đề bài — DẠY MỘT THỨ duy nhất}}</h1>
+  <p class="subtitle">{{Một câu nói rõ "win" của bài này}}</p>
+  <p class="meta-line">⏱ ~{{N}} phút · 🎯 Mục tiêu: {{kết quả quan sát được sau bài}}.</p>
+
+  <!-- BẮC CẦU từ cái người học đã biết (rule A4). Đổi class: bridge|why|warn|danger|tip -->
+  <div class="callout bridge">
+    <div class="ct">🌉 Bắc cầu từ cái bạn đã biết</div>
+    <p>{{Liên hệ khái niệm mới với thứ người học đã nắm.}}</p>
+  </div>
+
+  <h2>1. {{Tiêu đề phần}}</h2>
+  <p>{{Giải thích — luôn kèm VÌ SAO + đánh đổi, không chỉ "làm thế nào".}}</p>
+
+  <!-- KHỐI CODE: luôn bọc .code-block; nút Copy do JS tự thêm. Tô màu bằng span: kw fn str num cmt tbl -->
+  <div class="code-block">
+    <span class="code-label">{{ngôn ngữ/ngữ cảnh — vd: SQL}}</span>
+<pre><code><span class="cmt">-- {{Comment tiếng Việt giải thích từng dòng quan trọng}}</span>
+<span class="kw">SELECT</span> {{...}}</code></pre>
+  </div>
+
+  <div class="callout why">
+    <div class="ct">💡 {{Điểm cốt lõi}}</div>
+    <p>{{Chốt ý quan trọng nhất.}}</p>
+  </div>
+
+  <!-- Trích NGUỒN CHÍNH CHỦ cho khẳng định (rule A6) -->
+  <p>Theo <a href="{{URL docs official}}" target="_blank">tài liệu chính thức</a>, {{khẳng định có dẫn nguồn}}.</p>
+
+  <!-- Bảng minh hoạ dữ liệu (tuỳ chọn). Dùng .nullcell cho ô NULL/đặc biệt. -->
+  <table class="data">
+    <thead><tr><th>{{Cột}}</th><th>{{Cột}}</th></tr></thead>
+    <tbody>
+      <tr><td>{{...}}</td><td>{{...}}</td></tr>
+    </tbody>
+  </table>
+
+  <!-- QUIZ tương tác — feedback loop tức thì (rule A7). Lặp lại nhiều .quiz nếu cần. -->
+  <div class="quiz">
+    <h3>🧠 Kiểm tra nhanh (feedback ngay)</h3>
+    <div class="q">Câu 1. {{Câu hỏi tình huống}}</div>
+    <button class="opt" data-correct="false" data-explain="{{Vì sao sai + sửa hướng nghĩ}}">A. {{...}}</button>
+    <button class="opt" data-correct="true"  data-explain="{{Vì sao đúng — chốt lại insight}}">B. {{...}}</button>
+    <button class="opt" data-correct="false" data-explain="{{Vì sao sai}}">C. {{...}}</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="callout tip">
+    <div class="ct">✅ Bạn vừa đạt được</div>
+    <ul class="checklist">
+      <li>{{Điều 1 nắm được}}</li>
+      <li>{{Điều 2 nắm được}}</li>
+    </ul>
+  </div>
+
+  <!-- KẾT BÀI bằng câu hỏi tư duy bắc cầu sang bài kế (rule A8) -->
+  <h2>{{N}}. Câu hỏi tư duy (bắc cầu sang bài sau)</h2>
+  <p>{{Câu hỏi mở dẫn tới chủ đề bài tiếp theo.}}</p>
+
+  <!-- XEM TRƯỚC bài sau (teach-preferences B2) -->
+  <div class="next-box">
+    <div class="nl">→ Bài tiếp theo</div>
+    <div class="nt">Bài {{NN+1}} · {{Tiêu đề bài sau}}</div>
+    <p class="nd">{{Teaser 1 câu.}}</p>
+  </div>
+
+  <!-- THANH ĐIỀU HƯỚNG [← trước · 🏠 mục lục · sau →]. Bài đầu/cuối: thêm class "disabled". -->
+  <div class="navbar">
+    <a href="{{00NN-1-slug.html}}">← Trước</a>
+    <a href="index.html">🏠 Mục lục</a>
+    <a href="{{00NN+1-slug.html}}">Sau →</a>
+  </div>
+
+  <p class="try-it">💬 <strong>Tôi là người dạy của bạn.</strong> {{Mời người học hỏi lại điều chưa rõ.}}</p>
+
+</div>
+<script src="lesson-enhance.js"></script>
+</body>
+</html>

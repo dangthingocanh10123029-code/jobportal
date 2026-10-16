@@ -1,0 +1,7 @@
+- **Ngôn ngữ & Phong cách**:
+  - Thuật ngữ tiếng Anh rõ ý thì dùng thẳng tiếng Anh chuyên ngành (`Deep Modules`, `Seams`, `Adapters`, `State Machine`, `Race Condition`, `Invariant`, `Row Level Security`, `Full-text Search`...).
+  - Phần giải thích dùng tiếng Việt mộc mạc, chuẩn xác, điềm tĩnh.
+  - Tránh song ngữ mở ngoặc kiểu `ứng tuyển (application)`; dùng một trong hai.
+  - Không dùng từ cường điệu hoặc ẩn dụ khó hiểu.
+- **Giao diện**: ưu tiên nền sáng (Light Mode), tương phản cao, dễ đọc.
+- **Thuật ngữ nghiệp vụ**: luôn bám `CONTEXT.md`.

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  TEMPLATE MỤC LỤC /teach (lessons/index.html). KHÔNG sửa <head> & khối <style>.
+  Liệt kê MỌI bài, nhóm theo module, có thanh tiến độ + bài "sắp tới".
+  Bài đã có file: dùng <a href>. Bài chưa soạn: dùng <span class="soon">.
+  Badge: done (đã học) · now (đang ở/ sẵn sàng) · soon (sắp tới).
+  Cập nhật file này MỖI khi thêm bài mới.
+  ============================================================================
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lộ trình {{Chủ đề}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+<style>
+  .hero { text-align: center; margin-bottom: 14px; }
+  .hero h1 { font-size: 2.4rem; }
+  .progress-wrap { margin: 26px 0 40px; }
+  .progress-bar { height: 10px; background: var(--bg-card); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 999px; }
+  .progress-label { text-align: center; color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+  .module { margin: 30px 0; }
+  .module-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .module-num { font-family: var(--mono); color: var(--accent); font-weight: 600; font-size: 14px; }
+  .module-head h2 { border: none; margin: 14px 0 2px; padding: 0; font-size: 1.35rem; }
+  .module-why { color: var(--text-dim); font-size: 14px; margin: 0 0 12px; }
+  .lessons-list { list-style: none; padding: 0; margin: 0; }
+  .lessons-list li { margin: 6px 0; }
+  .lessons-list a, .lessons-list span.soon {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--bg-soft); font-size: 15px;
+  }
+  .lessons-list a { color: var(--text); }
+  .lessons-list a:hover { border-color: var(--accent); background: var(--bg-card); }
+  .lessons-list span.soon { color: var(--text-dim); border-style: dashed; }
+  .badge { font-family: var(--mono); font-size: 12px; padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
+  .badge.done { background: rgba(74,222,128,.15); color: var(--green); }
+  .badge.now  { background: rgba(56,189,248,.15); color: var(--accent); }
+  .badge.soon { background: #232838; color: var(--text-dim); }
+  .lcount { margin-left: auto; font-size: 12px; color: var(--text-dim); font-family: var(--mono); }
+  .intro-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent-2); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <span class="lesson-tag">{{🏷️ tag ngắn — vd: 🐘 PostgreSQL · Senior path}}</span>
+    <h1>{{Lộ trình ...}}</h1>
+    <p class="subtitle">{{Một câu bám MISSION.}}</p>
+  </div>
+
+  <div class="intro-card">
+    <strong>Cách học:</strong> {{mô tả ngắn cách tiếp cận + dataset/dự án xuyên suốt nếu có.}}
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" style="width: {{%}}%"></div></div>
+    <div class="progress-label">{{x}} / ~{{tổng}} bài · {{trạng thái}}</div>
+  </div>
+
+  <!-- ===== MỘT MODULE — nhân bản cho mỗi module ===== -->
+  <div class="module">
+    <div class="module-head"><span class="module-num">Module {{X}}</span></div>
+    <h2>{{Tên module}}</h2>
+    <p class="module-why">{{Vì sao module này có mặt — bám MISSION.}}</p>
+    <ul class="lessons-list">
+      <!-- Bài đã có file -->
+      <li><a href="{{00NN-slug.html}}"><span class="badge now">Bài {{NN}}</span> {{Tiêu đề}} <span class="lcount">sẵn sàng</span></a></li>
+      <!-- Bài chưa soạn -->
+      <li><span class="soon"><span class="badge soon">Bài {{NN}}</span> {{Tiêu đề}} <span class="lcount">sắp tới</span></span></li>
+    </ul>
+  </div>
+
+  <p class="try-it" style="text-align:center; margin-top:40px;">
+    📌 Lộ trình <strong>co giãn</strong>: nắm nhanh thì gộp bài, vấp thì tách thêm bài luyện.<br>
+    Muốn thêm/bớt/đổi thứ tự — cứ nói với tôi (người dạy) bất cứ lúc nào.
+  </p>
+</div>
+</body>
+</html>
