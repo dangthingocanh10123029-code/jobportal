@@ -10,3 +10,4 @@ npm test                      # Vitest
 npm run typecheck
 ```
 # jobportal
+# jobportal
