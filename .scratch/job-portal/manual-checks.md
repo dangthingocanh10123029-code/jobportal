@@ -37,3 +37,9 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] Bucket `resumes` private, chỉ PDF ≤ 5 MB; 3 policy storage (insert/select thư mục của mình, delete file chưa gắn đơn)
 - [ ] Upload thật; nộp lỗi thì file bị dọn
 - [ ] Bấm nộp hai lần chỉ tạo một Application
+
+## 06 — Candidate tracks and withdraws
+- [ ] Chạy migration `20261016000500_application_status_changes.sql`
+- [ ] RPC `change_application_status`: `FOR UPDATE` dưới tải đồng thời thật (2 lần rút cùng lúc → 1 Status Change)
+- [ ] RLS trên view `candidate_application_summaries`: không thấy đơn của Candidate khác
+- [ ] Trang đơn của tôi + rút đơn end-to-end

@@ -4,7 +4,7 @@
 
 **Blocked by:** 05
 
-**Status:** ready-for-agent
+**Status:** in-progress (A merged, B chờ 05B)
 
 - [ ] `ApplicationService`: liệt kê đơn của Candidate, lấy lịch sử, rút đơn; Candidate chỉ được chuyển sang WITHDRAWN
 - [ ] Test: rút đơn ở từng trạng thái chưa kết thúc thành công, ở trạng thái kết thúc bị từ chối; không xem được đơn của Candidate khác
