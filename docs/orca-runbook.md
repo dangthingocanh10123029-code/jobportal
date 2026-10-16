@@ -33,7 +33,7 @@ Spec: .scratch/job-portal/spec.md. Tickets: .scratch/job-portal/issues/. Contrac
 4. Mỗi task dùng branch task/<NN>-<a|b>-<slug>, xong phải npm test + npm run typecheck xanh.
 5. Theo dõi worker_done / question / escalation. Khi worker_done: review diff theo spec + contract, merge vào main, cập nhật Status của ticket, mở khóa frontier tiếp theo.
 6. Worker hỏi đổi contract → sửa docs/api-contract.md trước rồi mới trả lời. Câu hỏi nghiệp vụ ngoài spec → hỏi tôi.
-7. Claude không tự implement src/** trừ sửa tích hợp nhỏ.
+7. Claude Coordinator (agent-claude) không tự implement src/** trừ sửa tích hợp nhỏ; code logic để Claude ở agent-claude-logic làm.
 ```
 
 ## 2. Thứ tự dự kiến
