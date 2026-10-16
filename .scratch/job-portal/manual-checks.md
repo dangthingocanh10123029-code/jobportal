@@ -9,3 +9,10 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] Không sửa được `role` (column grant)
 - [ ] View `employer_companies` đọc được bằng anon
 - [ ] Middleware refresh session cookie; đăng nhập/đăng xuất end-to-end
+
+## 02 — Employer manages job postings
+- [ ] Chạy migration `20261016000100_job_postings.sql`
+- [ ] RLS: Employer B không thấy DRAFT của Employer A; anon chỉ thấy PUBLISHED
+- [ ] Trigger `job_postings_guard` chặn transition sai, sửa tin CLOSED, đăng với deadline quá khứ
+- [ ] View `job_postings_with_company` (security_invoker) trả companyName cho anon
+- [ ] `SupabaseJobPostingRepository` + Server Actions chạy end-to-end

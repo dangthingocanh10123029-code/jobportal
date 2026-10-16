@@ -64,7 +64,7 @@ type PostingInput = {
   employmentType: EmploymentType;
   salaryMin: number | null; // VND/tháng, null = thỏa thuận
   salaryMax: number | null; // salaryMin <= salaryMax khi cả hai có giá trị
-  applicationDeadline: string;
+  applicationDeadline: string;   // ISO 8601 có múi giờ (new Date(local).toISOString()); chuỗi datetime-local không offset bị từ chối
 };
 type JobPosting = PostingInput & {
   id: string; employerId: string; companyName: string;
