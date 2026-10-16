@@ -24,7 +24,7 @@ let service: JobPostingService;
 
 beforeEach(() => {
   now = NOW;
-  service = new JobPostingService(new InMemoryJobPostingRepository({ [A]: 'ACME', [B]: 'Globex' }), () => now);
+  service = new JobPostingService(new InMemoryJobPostingRepository({ [A]: 'ACME', [B]: 'Globex' }, () => now), () => now);
 });
 
 describe('createDraft', () => {
@@ -164,5 +164,78 @@ describe('listMine', () => {
       [fresh.id, 'DRAFT'],
       [old.id, 'EXPIRED'],
     ]);
+  });
+});
+
+async function published(overrides: Partial<PostingInput> = {}) {
+  const draft = await service.createDraft(A, input(overrides));
+  return service.publish(A, draft.id);
+}
+
+describe('listOpen', () => {
+  it('chỉ có tin PUBLISHED chưa hết hạn, mới nhất trước, kèm tên công ty', async () => {
+    await service.createDraft(A, input({ title: 'Tin nháp' }));
+    const closed = await published({ title: 'Tin đã đóng' });
+    await service.close(A, closed.id);
+    await published({ title: 'Tin sắp hết hạn', applicationDeadline: '2026-10-17T00:00:00Z' });
+    const older = await published({ title: 'Tin cũ hơn' });
+    const newer = await published({ title: 'Tin mới hơn' });
+    now = new Date('2026-10-18T00:00:00Z');
+
+    const page = await service.listOpen(1);
+    expect(page).toMatchObject({ total: 2, page: 1, pageSize: 20 });
+    expect(page.items.map((p) => p.id)).toEqual([newer.id, older.id]);
+    expect(page.items[0]).toEqual({
+      id: newer.id,
+      title: 'Tin mới hơn',
+      companyName: 'ACME',
+      location: 'Hà Nội',
+      employmentType: 'FULL_TIME',
+      salaryMin: 15_000_000,
+      salaryMax: 25_000_000,
+      applicationDeadline: '2026-11-01T00:00:00.000Z',
+      createdAt: newer.createdAt,
+    });
+  });
+
+  it('tin hết hạn đúng thời điểm deadline vẫn còn mở, qua deadline thì ẩn', async () => {
+    await published({ applicationDeadline: '2026-10-17T00:00:00.000Z' });
+    now = new Date('2026-10-17T00:00:00.000Z');
+    expect((await service.listOpen(1)).total).toBe(1);
+    now = new Date('2026-10-17T00:00:00.001Z');
+    expect((await service.listOpen(1)).total).toBe(0);
+  });
+
+  it('phân trang 20 tin mỗi trang', async () => {
+    const ids: string[] = [];
+    for (let i = 0; i < 45; i++) ids.unshift((await published({ title: `Tin số ${i}` })).id);
+
+    const pages = await Promise.all([1, 2, 3, 4].map((n) => service.listOpen(n)));
+    expect(pages.map((p) => p.items.length)).toEqual([20, 20, 5, 0]);
+    expect(pages.flatMap((p) => p.items.map((i) => i.id))).toEqual(ids);
+    expect(pages.every((p) => p.total === 45)).toBe(true);
+    expect(pages[2].page).toBe(3);
+  });
+});
+
+describe('getPublic', () => {
+  it('tin đang mở: đầy đủ mô tả, isOpen = true', async () => {
+    const posting = await published();
+    expect(await service.getPublic(posting.id)).toEqual({ ...posting, isOpen: true });
+  });
+
+  it('tin CLOSED và EXPIRED vẫn xem được nhưng isOpen = false', async () => {
+    const closed = await published();
+    await service.close(A, closed.id);
+    const expired = await published({ applicationDeadline: '2026-10-17T00:00:00Z' });
+    now = new Date('2026-10-18T00:00:00Z');
+    expect(await service.getPublic(closed.id)).toMatchObject({ displayStatus: 'CLOSED', isOpen: false });
+    expect(await service.getPublic(expired.id)).toMatchObject({ displayStatus: 'EXPIRED', isOpen: false });
+  });
+
+  it('tin DRAFT và id không tồn tại → null', async () => {
+    const draft = await service.createDraft(A, input());
+    expect(await service.getPublic(draft.id)).toBeNull();
+    expect(await service.getPublic('missing' as JobPostingId)).toBeNull();
   });
 });

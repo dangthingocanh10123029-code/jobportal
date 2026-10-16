@@ -23,6 +23,8 @@ export interface IJobPostingRepository {
   update(id: JobPostingId, changes: Partial<PostingInput> & { status?: PostingStatus }): Promise<StoredJobPosting>;
   /** Newest first. */
   listByEmployer(employerId: EmployerId): Promise<StoredJobPosting[]>;
+  /** Open postings (see isOpen), newest first, sliced to the range; total counts all open postings. */
+  listOpen(range: { offset: number; limit: number }): Promise<{ rows: StoredJobPosting[]; total: number }>;
 }
 
 export type Clock = () => Date;

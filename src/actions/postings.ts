@@ -4,8 +4,8 @@ import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-serv
 import { JobPostingError, JobPostingService, type EmployerId, type JobPostingId } from '@/modules/job-posting';
 import { SupabaseJobPostingRepository } from '@/modules/job-posting/adapters/supabase';
 import { firstError } from './auth-schema';
-import { postingIdSchema, postingInputSchema } from './postings-schema';
-import type { ActionResult, JobPosting, PostingInput } from './types';
+import { pageSchema, postingIdSchema, postingInputSchema } from './postings-schema';
+import type { ActionResult, JobPosting, OpenPostingsPage, PostingDetail, PostingInput, SearchFilter } from './types';
 
 const fail = (error: string) => ({ success: false, error }) as const;
 
@@ -69,4 +69,17 @@ export async function getMyPosting(id: string): Promise<JobPosting | null> {
   if (!parsed.success) return null;
   const ctx = await employerContext();
   return ctx ? ctx.service.getMine(ctx.employerId, parsed.data as JobPostingId) : null;
+}
+
+/** Anyone, signed in or not. Ticket 03 uses only `page`; invalid page falls back to 1. */
+export async function listOpenPostings(filter: SearchFilter): Promise<OpenPostingsPage> {
+  const page = pageSchema.parse(filter?.page);
+  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).listOpen(page);
+}
+
+/** Anyone. DRAFT and unknown ids → null (page shows 404). */
+export async function getPostingDetail(id: string): Promise<PostingDetail | null> {
+  const parsed = postingIdSchema.safeParse(id);
+  if (!parsed.success) return null;
+  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).getPublic(parsed.data as JobPostingId);
 }

@@ -38,3 +38,21 @@ export type JobPosting = PostingInput & {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SearchFilter = {
+  q?: string;
+  location?: string;
+  employmentType?: EmploymentType;
+  minSalary?: number;
+  page?: number;
+};
+
+export type PostingSummary = Pick<
+  JobPosting,
+  'id' | 'title' | 'companyName' | 'location' | 'employmentType' | 'salaryMin' | 'salaryMax' | 'applicationDeadline' | 'createdAt'
+>;
+
+/** isOpen = PUBLISHED and not past the deadline (ADR-0001). */
+export type PostingDetail = JobPosting & { isOpen: boolean };
+
+export type OpenPostingsPage = { items: PostingSummary[]; total: number; page: number; pageSize: 20 };
