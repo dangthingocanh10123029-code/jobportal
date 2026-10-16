@@ -285,6 +285,69 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .application-submitted strong { font-size: 14px; }
 .application-submitted p { margin: 4px 0 0; color: #15803d; }
 
+.candidate-applications-page { padding-top: 54px; }
+.candidate-applications-heading { margin-bottom: 27px; }
+.candidate-application-list { display: flex; flex-direction: column; gap: 13px; }
+.candidate-application-card { padding: 21px 23px; border: 1px solid var(--color-border); border-radius: 15px; background: #fff; transition: border-color 150ms ease, box-shadow 150ms ease; }
+.candidate-application-card:hover { border-color: #bfdbfe; box-shadow: 0 10px 28px rgb(15 23 42 / 5%); }
+.candidate-application-main { min-width: 0; }
+.candidate-application-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.candidate-application-heading h2 { margin: 0; font-size: 17px; letter-spacing: -0.02em; line-height: 1.4; }
+.candidate-application-heading h2 a:hover { color: var(--color-primary); }
+.candidate-application-heading p { margin: 5px 0 0; color: var(--color-muted); font-size: 13px; }
+.application-status { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 999px; font-size: 11px; font-weight: 750; white-space: nowrap; }
+.status-submitted { color: #1d4ed8; background: var(--color-primary-soft); }
+.status-reviewing { color: #a16207; background: #fef3c7; }
+.status-interviewing, .status-offered { color: #6d28d9; background: #ede9fe; }
+.status-hired { color: #15803d; background: #dcfce7; }
+.status-rejected { color: #b91c1c; background: #fee2e2; }
+.status-withdrawn { color: #475569; background: #f1f5f9; }
+.candidate-application-meta { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 18px; color: var(--color-muted); font-size: 12px; }
+.candidate-application-meta a { color: var(--color-primary); font-weight: 700; }
+.candidate-application-meta a:hover { color: #1d4ed8; }
+.candidate-applications-empty { display: flex; min-height: 340px; flex-direction: column; align-items: center; justify-content: center; padding: 38px 22px; text-align: center; box-shadow: none; }
+.candidate-applications-empty img { max-width: 100%; height: auto; }
+.candidate-applications-empty h2 { margin: 7px 0 0; font-size: 19px; }
+.candidate-applications-empty p { max-width: 420px; margin: 9px 0 22px; color: var(--color-muted); font-size: 14px; line-height: 1.6; }
+.candidate-application-detail-page { padding-top: 43px; }
+.application-detail-card { overflow: hidden; }
+.application-detail-header { padding: 28px 30px 25px; }
+.application-detail-header .eyebrow { margin-bottom: 8px; }
+.application-detail-header h1 { font-size: clamp(25px, 3vw, 34px); }
+.application-detail-header > p { margin: 8px 0 0; color: var(--color-muted); font-size: 14px; }
+.application-detail-current-status { display: flex; align-items: center; flex-wrap: wrap; gap: 13px; margin-top: 19px; }
+.application-detail-current-status > span:last-child { color: var(--color-muted); font-size: 11px; overflow-wrap: anywhere; }
+.application-history-section { padding: 24px 30px 30px; border-top: 1px solid var(--color-border); }
+.application-history-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 23px; }
+.application-history-heading h2 { margin: 0; font-size: 18px; }
+.application-history-heading p { margin: 5px 0 0; color: var(--color-muted); font-size: 12px; }
+.application-history-count { display: grid; width: 31px; height: 31px; place-items: center; border-radius: 50%; color: var(--color-primary); background: var(--color-primary-soft); font-size: 12px; font-weight: 750; }
+.application-history-list { margin: 0; padding: 0; list-style: none; }
+.application-history-item { position: relative; display: flex; min-height: 68px; gap: 13px; }
+.application-history-item::before { position: absolute; top: 17px; bottom: -1px; left: 7px; width: 1px; background: var(--color-border); content: ''; }
+.application-history-item.is-last { min-height: auto; }
+.application-history-item.is-last::before { display: none; }
+.application-history-marker { position: relative; z-index: 1; width: 15px; height: 15px; flex: 0 0 auto; margin-top: 2px; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px var(--color-border); }
+.application-history-marker.status-submitted { background: var(--color-primary); }
+.application-history-marker.status-reviewing { background: #eab308; }
+.application-history-marker.status-interviewing, .application-history-marker.status-offered { background: #8b5cf6; }
+.application-history-marker.status-hired { background: var(--color-success); }
+.application-history-marker.status-rejected { background: var(--color-danger); }
+.application-history-marker.status-withdrawn { background: #64748b; }
+.application-history-copy { display: flex; flex-direction: column; gap: 5px; padding-bottom: 21px; }
+.application-history-copy strong { font-size: 13px; line-height: 1.45; }
+.application-history-copy span { color: var(--color-muted); font-size: 11px; }
+.application-history-empty { margin: 0; padding: 15px; border-radius: 10px; color: var(--color-muted); background: var(--color-surface); font-size: 13px; }
+.application-detail-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 30px; border-top: 1px solid var(--color-border); background: var(--color-surface); }
+.application-detail-footer strong { font-size: 13px; }
+.application-detail-footer p { margin: 5px 0 0; color: var(--color-muted); font-size: 11px; line-height: 1.5; }
+.button-danger { color: #fff; background: var(--color-danger); }
+.button-danger:hover:not(:disabled) { background: #b91c1c; }
+.withdraw-application-control { display: flex; flex: 0 0 auto; flex-direction: column; align-items: flex-end; gap: 7px; }
+.withdraw-confirmation { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.withdraw-confirmation > span { margin-right: 4px; color: var(--color-muted); font-size: 11px; }
+.withdraw-application-error { max-width: 330px; margin: 0; text-align: right; font-size: 11px; }
+
 @media (max-width: 1100px) {
   .job-search-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .job-search-keyword { grid-column: 1 / -1; }
@@ -297,6 +360,11 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
   .posting-controls-wrap { width: 100%; align-items: flex-start; }
   .posting-action-error { text-align: left; }
   .posting-detail-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .application-detail-header, .application-history-section { padding-right: 23px; padding-left: 23px; }
+  .application-detail-footer { align-items: flex-start; flex-direction: column; padding-right: 23px; padding-left: 23px; }
+  .withdraw-application-control { align-items: flex-start; }
+  .withdraw-confirmation { justify-content: flex-start; }
+  .withdraw-application-error { text-align: left; }
 }
 @media (max-width: 700px) {
   .site-header { height: 68px; }
@@ -362,4 +430,16 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
   .posting-detail-footer { align-items: stretch; flex-direction: column; padding: 18px; }
   .application-form { grid-template-columns: 1fr; }
   .application-form .button { justify-self: stretch; }
+  .candidate-applications-page { padding-top: 39px; }
+  .candidate-application-card { padding: 18px; }
+  .candidate-application-heading { align-items: flex-start; flex-direction: column; gap: 11px; }
+  .candidate-application-heading h2 { font-size: 15px; }
+  .candidate-application-meta { align-items: flex-start; flex-direction: column; gap: 9px; }
+  .candidate-applications-empty { min-height: 300px; }
+  .application-detail-header { padding: 22px 18px; }
+  .application-detail-header h1 { font-size: 25px; }
+  .application-history-section { padding: 22px 18px 26px; }
+  .application-detail-footer { padding: 18px; }
+  .withdraw-confirmation { align-items: flex-start; }
+  .withdraw-confirmation > span { width: 100%; margin: 0 0 3px; }
 }
