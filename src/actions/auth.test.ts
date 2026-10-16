@@ -1,7 +1,7 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { describe, expect, it, vi } from 'vitest';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { signInAction, signUpAction, updateProfileAction } from './auth';
+import { resendSignupOtpAction, signInAction, signUpAction, updateProfileAction, verifySignupOtpAction } from './auth';
 import { signUpSchema, updateProfileSchema } from './auth-schema';
 
 // Invalid input is rejected before any Supabase call, so no env/session is needed here.
@@ -36,6 +36,21 @@ describe('updateProfileAction — input sai', () => {
     ['tên công ty quá dài', { companyName: 'x'.repeat(151) }],
   ])('%s', async (_, input) => {
     expect((await updateProfileAction(input)).success).toBe(false);
+  });
+});
+
+describe('OTP — input sai', () => {
+  it.each([
+    ['email sai', { email: 'x', token: '123456' }, 'Email không hợp lệ'],
+    ['mã quá ngắn', { email: 'a@example.com', token: '12345' }, 'Mã xác nhận gồm 6–10 chữ số'],
+    ['mã quá dài', { email: 'a@example.com', token: '12345678901' }, 'Mã xác nhận gồm 6–10 chữ số'],
+    ['mã có chữ', { email: 'a@example.com', token: '12a456' }, 'Mã xác nhận gồm 6–10 chữ số'],
+  ])('verify: %s', async (_, input, error) => {
+    expect(await verifySignupOtpAction(input)).toEqual({ success: false, error });
+  });
+
+  it('resend: email sai', async () => {
+    expect(await resendSignupOtpAction({ email: 'x' })).toEqual({ success: false, error: 'Email không hợp lệ' });
   });
 });
 
@@ -97,5 +112,41 @@ describe('signUpAction — lỗi GoTrue', () => {
     expect(await signUpAction(input)).toEqual({ success: false, error: 'Có lỗi xảy ra, vui lòng thử lại' });
     expect(log).toHaveBeenCalledWith('[auth]', 'weird_code', 500, 'boom');
     log.mockRestore();
+  });
+});
+
+describe('OTP — gọi Supabase', () => {
+  it('verify: dùng type email, chuẩn hoá input, trả Profile', async () => {
+    const verifyOtp = vi.fn(async () => ({ data: { user: { id: 'u1' } }, error: null }));
+    const row = { id: 'u1', role: 'CANDIDATE', full_name: 'An', phone: null, company_name: null };
+    const query = { select: () => query, eq: () => query, maybeSingle: async () => ({ data: row, error: null }) };
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(fromPartial({ auth: { verifyOtp }, from: () => query }));
+
+    expect(await verifySignupOtpAction({ email: ' A@Example.com ', token: ' 123456 ' })).toEqual({
+      success: true,
+      data: { userId: 'u1', role: 'CANDIDATE', fullName: 'An', phone: null, companyName: null },
+    });
+    expect(verifyOtp).toHaveBeenCalledWith({ email: 'a@example.com', token: '123456', type: 'email' });
+  });
+
+  it('verify: otp_expired → tiếng Việt', async () => {
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(
+      fromPartial({ auth: { verifyOtp: async () => ({ data: { user: null }, error: { code: 'otp_expired', status: 403 } }) } }),
+    );
+    expect(await verifySignupOtpAction({ email: 'a@example.com', token: '123456' })).toEqual({
+      success: false,
+      error: 'Mã xác nhận không đúng hoặc đã hết hạn',
+    });
+  });
+
+  it.each([
+    ['ok', null, { success: true, data: null }],
+    ['over_email_send_rate_limit', { code: 'over_email_send_rate_limit' }, { success: false, error: 'Đã gửi quá nhiều email xác nhận, vui lòng thử lại sau ít phút' }],
+    ['over_request_rate_limit', { code: 'over_request_rate_limit' }, { success: false, error: 'Bạn thao tác quá nhanh, vui lòng thử lại sau' }],
+  ])('resend: %s', async (_, error, expected) => {
+    const resend = vi.fn(async () => ({ data: {}, error }));
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(fromPartial({ auth: { resend } }));
+    expect(await resendSignupOtpAction({ email: 'a@example.com' })).toEqual(expected);
+    expect(resend).toHaveBeenCalledWith({ type: 'signup', email: 'a@example.com' });
   });
 });

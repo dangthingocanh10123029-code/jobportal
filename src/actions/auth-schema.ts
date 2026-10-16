@@ -31,6 +31,13 @@ export const signInSchema = z.object({
   password: z.string({ required_error: 'Vui lòng nhập mật khẩu' }).min(1, 'Vui lòng nhập mật khẩu'),
 });
 
+export const verifySignupOtpSchema = z.object({
+  email: credentials.email,
+  token: z.string({ required_error: 'Vui lòng nhập mã xác nhận' }).trim().regex(/^\d{6,10}$/, 'Mã xác nhận gồm 6–10 chữ số'),
+});
+
+export const resendSignupOtpSchema = z.object({ email: credentials.email });
+
 export const updateProfileSchema = z.object({
   fullName: fullName.optional(),
   // Empty string clears the phone number.

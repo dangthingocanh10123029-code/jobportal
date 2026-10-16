@@ -3,7 +3,14 @@
 import type { AuthError } from '@supabase/supabase-js';
 import { cache } from 'react';
 import { createSupabaseServerClient, fetchProfile, PROFILE_COLUMNS, toProfile } from '@/lib/supabase-server';
-import { firstError, signInSchema, signUpSchema, updateProfileSchema } from './auth-schema';
+import {
+  firstError,
+  resendSignupOtpSchema,
+  signInSchema,
+  signUpSchema,
+  updateProfileSchema,
+  verifySignupOtpSchema,
+} from './auth-schema';
 import type { ActionResult, Profile, Role } from './types';
 
 const fail = (error: string) => ({ success: false, error }) as const;
@@ -19,6 +26,7 @@ const AUTH_ERRORS: Record<string, string> = {
   over_email_send_rate_limit: 'Đã gửi quá nhiều email xác nhận, vui lòng thử lại sau ít phút',
   email_address_invalid: 'Email không hợp lệ',
   signup_disabled: 'Hệ thống đang tạm khóa đăng ký',
+  otp_expired: 'Mã xác nhận không đúng hoặc đã hết hạn',
   unexpected_failure: 'Không tạo được tài khoản, vui lòng thử lại',
 };
 
@@ -77,6 +85,30 @@ export async function signInAction(input: { email: string; password: string }): 
   const profile = await fetchProfile(supabase, data.user.id);
   if (!profile) return fail('Không tìm thấy hồ sơ tài khoản');
   return { success: true, data: profile };
+}
+
+export async function verifySignupOtpAction(input: { email: string; token: string }): Promise<ActionResult<Profile>> {
+  const parsed = verifySignupOtpSchema.safeParse(input);
+  if (!parsed.success) return fail(firstError(parsed.error));
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.verifyOtp({ ...parsed.data, type: 'email' });
+  if (error) return fail(authError(error));
+  if (!data.user) return fail('Có lỗi xảy ra, vui lòng thử lại');
+
+  const profile = await fetchProfile(supabase, data.user.id);
+  if (!profile) return fail('Không tìm thấy hồ sơ tài khoản');
+  return { success: true, data: profile };
+}
+
+export async function resendSignupOtpAction(input: { email: string }): Promise<ActionResult<null>> {
+  const parsed = resendSignupOtpSchema.safeParse(input);
+  if (!parsed.success) return fail(firstError(parsed.error));
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.resend({ type: 'signup', email: parsed.data.email });
+  if (error) return fail(authError(error));
+  return { success: true, data: null };
 }
 
 export async function signOutAction(): Promise<ActionResult<null>> {
