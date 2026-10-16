@@ -20,7 +20,8 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  const actor = await getCurrentActor(supabase);
+  // Auth or profile lookup failing must not take the site down: treat the visitor as a guest.
+  const actor = await getCurrentActor(supabase).catch(() => null);
 
   const target = routeGuard(request.nextUrl.pathname, actor?.role ?? null);
   if (!target) return response;

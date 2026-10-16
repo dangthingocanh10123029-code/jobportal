@@ -65,12 +65,6 @@ export class SupabaseApplicationRepository implements IApplicationRepository {
     return data ? toApplication(data) : null;
   }
 
-  async findById(id: ApplicationId) {
-    const { data, error } = await this.supabase.from('applications').select(COLUMNS).eq('id', id).maybeSingle<Row>();
-    if (error) throw new Error(`Không đọc được hồ sơ: ${error.message}`);
-    return data ? toApplication(data) : null;
-  }
-
   async listStatusChanges(id: ApplicationId) {
     const { data, error } = await this.supabase
       .from('application_status_changes')

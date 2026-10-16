@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { fromPartial } from '@total-typescript/shoehorn';
+import { describe, expect, it, vi } from 'vitest';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { signInAction, signUpAction, updateProfileAction } from './auth';
 import { signUpSchema, updateProfileSchema } from './auth-schema';
 
@@ -47,5 +49,26 @@ describe('schema — input hợp lệ', () => {
   it('SĐT rỗng nghĩa là xoá số', () => {
     expect(updateProfileSchema.parse({ phone: '' })).toEqual({ phone: null });
     expect(updateProfileSchema.parse({ phone: '0912 345 678' })).toEqual({ phone: '0912 345 678' });
+  });
+});
+
+vi.mock('@/lib/supabase-server', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/lib/supabase-server')>()),
+  createSupabaseServerClient: vi.fn(),
+}));
+
+describe('signUpAction — needsEmailConfirmation', () => {
+  it.each([
+    ['chưa có session (bật xác nhận email) → true', null, true],
+    ['có session → false', { access_token: 't' }, false],
+  ])('%s', async (_, session, needsEmailConfirmation) => {
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(
+      fromPartial({ auth: { signUp: async () => ({ data: { user: { id: 'u1' }, session }, error: null }) } }),
+    );
+    const result = await signUpAction({ email: 'a@example.com', password: '12345678', role: 'CANDIDATE', fullName: 'An' });
+    expect(result).toEqual({
+      success: true,
+      data: { userId: 'u1', role: 'CANDIDATE', fullName: 'An', phone: null, companyName: null, needsEmailConfirmation },
+    });
   });
 });

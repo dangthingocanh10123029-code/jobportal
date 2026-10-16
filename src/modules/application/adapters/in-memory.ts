@@ -44,11 +44,6 @@ export class InMemoryApplicationRepository implements IApplicationRepository {
     return row ? toApplication(row) : null;
   }
 
-  async findById(id: ApplicationId) {
-    const row = this.rows.get(id);
-    return row ? toApplication(row) : null;
-  }
-
   async listStatusChanges(id: ApplicationId) {
     return (this.changes.get(id) ?? []).map((c) => ({ ...c }));
   }

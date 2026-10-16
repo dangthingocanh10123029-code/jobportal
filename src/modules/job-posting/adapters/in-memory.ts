@@ -51,7 +51,7 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
     const open = [...this.rows.values()]
       .filter((r) => isOpen(r.status, r.applicationDeadline, this.now()))
       .filter((r) => q === undefined || foldAccents(`${r.title} ${r.description}`).includes(foldAccents(q)))
-      .filter((r) => location === undefined || foldAccents(r.location) === foldAccents(location))
+      .filter((r) => location === undefined || foldAccents(r.location).includes(foldAccents(location)))
       .filter((r) => employmentType === undefined || r.employmentType === employmentType)
       .filter((r) => minSalary === undefined || meetsMinSalary(r.salaryMax, minSalary))
       .reverse();

@@ -1,5 +1,6 @@
 'use server';
 
+import { cache } from 'react';
 import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
 import { JobPostingError, JobPostingService, type EmployerId, type JobPostingId } from '@/modules/job-posting';
 import { SupabaseJobPostingRepository } from '@/modules/job-posting/adapters/supabase';
@@ -78,8 +79,9 @@ export async function listOpenPostings(filter: SearchFilter): Promise<OpenPostin
 }
 
 /** Anyone. DRAFT and unknown ids → null (page shows 404). */
-export async function getPostingDetail(id: string): Promise<PostingDetail | null> {
+// cache(): generateMetadata and the page share one lookup per request.
+export const getPostingDetail = cache(async (id: string): Promise<PostingDetail | null> => {
   const parsed = postingIdSchema.safeParse(id);
   if (!parsed.success) return null;
   return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).getPublic(parsed.data as JobPostingId);
-}
+});

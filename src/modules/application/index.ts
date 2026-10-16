@@ -28,12 +28,6 @@ export class ApplicationService {
     return this.repo.findByPosting(candidateId, jobPostingId);
   }
 
-  /** Status Change history of the Candidate's own Application, oldest first; null if not theirs. */
-  async getHistory(candidateId: CandidateId, id: ApplicationId): Promise<StatusChange[] | null> {
-    const application = await this.repo.findById(id);
-    return application?.candidateId === candidateId ? this.repo.listStatusChanges(id) : null;
-  }
-
   /** The Candidate's Applications, newest first. */
   async listMine(candidateId: CandidateId): Promise<CandidateApplicationSummary[]> {
     return this.repo.listByCandidate(candidateId);

@@ -244,11 +244,12 @@ describe('listOpen với Search Filter', () => {
     expect(await titles({ q: '_' })).toEqual([]);
   });
 
-  it('địa điểm khớp nguyên giá trị, không cần dấu và hoa thường', async () => {
-    await published({ title: 'Ở Hà Nội', location: 'Hà Nội' });
+  it('địa điểm khớp dạng chứa, không cần dấu và hoa thường', async () => {
+    await published({ title: 'Ở Hà Nội', location: 'Quận Ba Đình, Hà Nội' });
     await published({ title: 'Ở Hà Nam', location: 'Hà Nam' });
     expect(await titles({ location: 'ha noi' })).toEqual(['Ở Hà Nội']);
-    expect(await titles({ location: 'Hà' })).toEqual([]);
+    expect(await titles({ location: 'Hà' })).toEqual(['Ở Hà Nam', 'Ở Hà Nội']);
+    expect(await titles({ location: '%' })).toEqual([]);
   });
 
   it('lương tối thiểu: khớp tin có salaryMax ≥ mức yêu cầu hoặc salaryMax null (thỏa thuận)', async () => {
