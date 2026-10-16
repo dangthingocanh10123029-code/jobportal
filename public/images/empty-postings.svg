@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
+  <!-- Pedestal -->
+  <ellipse cx="120" cy="152" rx="75" ry="14" fill="#DBEAFE"/>
+
+  <!-- Clipboard Board -->
+  <rect x="75" y="32" width="90" height="114" rx="12" fill="#2563EB"/>
+  
+  <!-- Clip -->
+  <rect x="100" y="24" width="40" height="16" rx="6" fill="#DBEAFE"/>
+  <circle cx="120" cy="32" r="4" fill="#2563EB"/>
+
+  <!-- Blank Paper Sheet -->
+  <rect x="85" y="44" width="70" height="92" rx="6" fill="#FFFFFF"/>
+
+  <!-- Dotted placeholder box for new posting -->
+  <rect x="93" y="52" width="54" height="76" rx="6" fill="none" stroke="#DBEAFE" stroke-width="2.5" stroke-dasharray="5 3"/>
+
+  <!-- Center Plus Action to create job posting -->
+  <circle cx="120" cy="90" r="16" fill="#DBEAFE"/>
+  <path d="M 120 81 V 99 M 111 90 H 129" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Pen tilted on right -->
+  <g transform="translate(170, 75) rotate(22)">
+    <rect width="8" height="52" rx="4" fill="#2563EB"/>
+    <polygon points="0,52 8,52 4,60" fill="#F59E0B"/>
+  </g>
+
+  <!-- Sparkles -->
+  <polygon points="60,65 62,70 67,72 62,74 60,79 58,74 53,72 58,70" fill="#F59E0B"/>
+  <circle cx="185" cy="50" r="3.5" fill="#F59E0B"/>
+</svg>

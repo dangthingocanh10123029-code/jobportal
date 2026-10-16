@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" fill="none">
+  <!-- Soft ground hills -->
+  <ellipse cx="160" cy="208" rx="110" ry="22" fill="#DBEAFE"/>
+
+  <!-- Vertical Signpost -->
+  <rect x="156" y="70" width="8" height="135" rx="4" fill="#2563EB"/>
+  <circle cx="160" cy="68" r="7" fill="#F59E0B"/>
+
+  <!-- Sign Arrow pointing Left -->
+  <g transform="translate(80, 85)">
+    <path d="M 76 0 H 20 L 0 16 L 20 32 H 76 Z" fill="#2563EB"/>
+    <rect x="22" y="13" width="42" height="6" rx="3" fill="#DBEAFE"/>
+  </g>
+
+  <!-- Sign Arrow pointing Right -->
+  <g transform="translate(164, 125)">
+    <path d="M 0 0 H 56 L 76 16 L 56 32 H 0 Z" fill="#DBEAFE"/>
+    <rect x="12" y="13" width="42" height="6" rx="3" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Compass / Lost destination indicator -->
+  <g transform="translate(205, 175)">
+    <circle cx="16" cy="16" r="16" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+    <polygon points="16,4 20,16 16,13 12,16" fill="#F59E0B"/>
+    <polygon points="16,28 20,16 16,19 12,16" fill="#2563EB"/>
+    <circle cx="16" cy="16" r="2.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Floating Sparkles & Question Sparks -->
+  <polygon points="85,55 88,62 95,65 88,68 85,75 82,68 75,65 82,62" fill="#F59E0B"/>
+  <polygon points="235,90 237,95 242,97 237,99 235,104 233,99 228,97 233,95" fill="#F59E0B"/>
+  <circle cx="120" cy="60" r="3.5" fill="#F59E0B"/>
+  <circle cx="198" cy="60" r="4" fill="#F59E0B"/>
+</svg>
