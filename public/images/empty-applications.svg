@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
+  <!-- Pedestal -->
+  <ellipse cx="120" cy="152" rx="75" ry="14" fill="#DBEAFE"/>
+
+  <!-- Application Tray Back -->
+  <path d="M 60 120 L 75 82 H 165 L 180 120 Z" fill="#DBEAFE"/>
+
+  <!-- Floating Resume Paper emerging -->
+  <g transform="translate(90, 36) rotate(-6)">
+    <rect width="60" height="80" rx="6" fill="#FFFFFF" stroke="#DBEAFE" stroke-width="2.5"/>
+    <rect x="8" y="14" width="22" height="5" rx="2.5" fill="#2563EB"/>
+    <rect x="8" y="26" width="44" height="4" rx="2" fill="#DBEAFE"/>
+    <rect x="8" y="35" width="36" height="4" rx="2" fill="#DBEAFE"/>
+    <rect x="8" y="44" width="40" height="4" rx="2" fill="#DBEAFE"/>
+    <circle cx="44" cy="62" r="6" fill="#F59E0B"/>
+  </g>
+
+  <!-- Application Tray Front Rim with Cutout -->
+  <path d="M 54 120 L 70 144 H 170 L 186 120 H 144 C 138 132 132 135 120 135 C 108 135 102 132 96 120 Z" fill="#2563EB"/>
+
+  <!-- Floating Golden Paper Plane / Sparkles -->
+  <polygon points="175,45 178,51 184,53 178,55 175,61 172,55 166,53 172,51" fill="#F59E0B"/>
+  <circle cx="68" cy="65" r="3.5" fill="#F59E0B"/>
+  <circle cx="186" cy="80" r="2.5" fill="#F59E0B"/>
+</svg>

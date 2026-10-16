@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
+  <!-- Pedestal -->
+  <ellipse cx="120" cy="150" rx="75" ry="14" fill="#DBEAFE"/>
+
+  <!-- Document Sheet with folded corner -->
+  <g transform="translate(75, 38)">
+    <rect width="70" height="96" rx="8" fill="#FFFFFF" stroke="#DBEAFE" stroke-width="3"/>
+    <path d="M50 0 L70 20 L50 20 Z" fill="#DBEAFE"/>
+    
+    <!-- Blank placeholder dashed / empty lines -->
+    <rect x="12" y="28" width="46" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="12" y="40" width="34" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="12" y="52" width="40" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="12" y="64" width="28" height="5" rx="2.5" fill="#DBEAFE"/>
+  </g>
+
+  <!-- Large Magnifier searching in vain -->
+  <g transform="translate(100, 65)">
+    <circle cx="35" cy="35" r="32" fill="#DBEAFE" stroke="#2563EB" stroke-width="6"/>
+    <!-- Glass reflection -->
+    <path d="M 20 20 C 28 12 42 12 50 20" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <!-- Handle -->
+    <path d="M 58 58 L 86 86" stroke="#2563EB" stroke-width="9" stroke-linecap="round"/>
+    
+    <!-- Golden discovery star in focus -->
+    <polygon points="35,26 37,32 43,35 37,38 35,44 33,38 27,35 33,32" fill="#F59E0B"/>
+  </g>
+
+  <!-- Floating Sparkles -->
+  <polygon points="55,50 56.5,54 60.5,55.5 56.5,57 55,61 53.5,57 49.5,55.5 53.5,54" fill="#F59E0B"/>
+  <circle cx="185" cy="60" r="3.5" fill="#F59E0B"/>
+  <circle cx="60" cy="120" r="3" fill="#F59E0B"/>
+</svg>
