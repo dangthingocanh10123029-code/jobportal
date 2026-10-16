@@ -1,14 +1,19 @@
 import type { ReactNode } from 'react';
+import { SiteHeader } from '@/components/navigation/site-header';
+import './globals.css';
 
 export const metadata = {
-  title: 'VibeCoding Job Portal',
-  description: 'Hệ thống tìm việc online',
+  title: 'Job Portal — Tìm việc nhanh, ứng tuyển dễ',
+  description: 'Tìm kiếm cơ hội nghề nghiệp và quản lý hồ sơ ứng tuyển của bạn.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="vi">
-      <body>{children}</body>
+      <body>
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }
