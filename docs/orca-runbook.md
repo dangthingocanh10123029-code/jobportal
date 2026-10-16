@@ -7,13 +7,14 @@ Planning (wayfinder → grill-me → spec → tickets) đã xong. Bắt đầu t
 ```bash
 git push origin main            # worktree tạo từ origin/main
 orca status --json
-orca worktree list --json       # cần thấy: main, agent-claude, agent-claude-logic, agent-codex
+orca worktree list --json       # cần thấy: main, agent-claude, agent-claude-logic, agent-codex, agent-antigravity
 ```
 
 Tạo worktree (nếu chưa có): Create From `origin/main`:
 - `agent-claude` — Claude Code (Coordinator)
 - `agent-claude-logic` — Claude Code (logic/backend)
 - `agent-codex` — Codex (giao diện)
+- `agent-antigravity` — Antigravity (hình ảnh)
 
 Mỗi worktree cần `.env.local` (copy từ `.env.example`, điền Supabase URL + anon key) rồi `npm install`.
 
@@ -27,7 +28,8 @@ Spec: .scratch/job-portal/spec.md. Tickets: .scratch/job-portal/issues/. Contrac
 1. Tạo Orca run với objective "Build VibeCoding Job Portal v1".
 2. Mỗi ticket tách 2 Orca task theo mục "Phân công (Orca)":
    - Phần A (logic) → worktree agent-claude-logic, agent Claude Code, dùng /tdd cho logic domain (state machine, search, posting lifecycle), /implement cho migration và actions.
-   - Phần B (giao diện) → worktree agent-codex, agent Codex, dùng /implement, chỉ gọi hàm có trong docs/api-contract.md.
+   - Phần B (giao diện) → worktree agent-codex, agent Codex, dùng /implement, chỉ gọi hàm có trong docs/api-contract.md, dùng ảnh theo đúng đường dẫn trong mục Hình ảnh.
+   - Ticket 08 (hình ảnh) → worktree agent-antigravity, agent Antigravity, dispatch ngay từ đầu, không tách A/B.
 3. Thứ tự: Phần A chỉ dispatch khi Phần A của các ticket trong "Blocked by" đã merge. Phần B chỉ dispatch khi Phần A cùng ticket và Phần B của các ticket trong "Blocked by" đã merge. Ticket chỉ resolved khi cả A và B đã merge.
    Được chạy song song: Claude logic làm Phần A ticket kế tiếp trong khi Codex làm Phần B ticket trước; ticket 04 và 05 song song.
 4. Mỗi task dùng branch task/<NN>-<a|b>-<slug>, xong phải npm test + npm run typecheck xanh.
@@ -41,6 +43,7 @@ Spec: .scratch/job-portal/spec.md. Tickets: .scratch/job-portal/issues/. Contrac
 ```text
 Claude logic: 01A ─ 02A ─ 03A ─ 04A ─ 05A ─ 06A ─ 07A
 Codex:              01B ─ 02B ─ 03B ─ 04B ─ 05B ─ 06B ─ 07B
+Antigravity:  08 (chạy ngay, song song với tất cả)
 ```
 
 Phần B của mỗi ticket chạy song song với Phần A của ticket kế tiếp.

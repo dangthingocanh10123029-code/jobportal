@@ -129,3 +129,40 @@ getResumeUrlAction(input: { applicationId: string }): Promise<ActionResult<{ url
 allowedNextStatuses(status: ApplicationStatus, role: Role): ApplicationStatus[]
   // hàm thuần (không 'use server'), export từ '@/modules/application' để UI chỉ hiện nút hợp lệ
 ```
+
+## Hình ảnh (Antigravity → Codex)
+
+Antigravity giao đúng tên file và đường dẫn dưới đây (ticket 08). Codex tham chiếu theo đường dẫn này ngay từ đầu, kể cả khi file chưa merge (ảnh tạm thời không hiện là chấp nhận được, không tự tạo ảnh thay thế).
+
+| File | Dùng ở | Kích thước / định dạng |
+|---|---|---|
+| `public/images/logo.svg` | Thanh điều hướng | SVG, logo ngang (biểu tượng + chữ "Job Portal"), cao hiển thị 32px |
+| `public/images/logo-mark.svg` | Chỗ hẹp, mobile | SVG vuông, chỉ biểu tượng |
+| `src/app/icon.png` | Favicon (Next.js tự nhận) | PNG 512×512 |
+| `src/app/opengraph-image.png` | Ảnh xem trước khi chia sẻ link | PNG 1200×630, có logo + câu "Tìm việc nhanh, ứng tuyển dễ" |
+| `public/images/hero.webp` | Trang chủ `/`, phía trên ô tìm kiếm | WebP 1600×600, ≤ 200 KB |
+| `public/images/auth.webp` | Cột bên `/login`, `/signup` | WebP 800×1000, ≤ 150 KB |
+| `public/images/company-placeholder.svg` | Thay logo công ty (v1 chưa upload logo công ty) | SVG vuông |
+| `public/images/empty-search.svg` | Không có kết quả tìm kiếm | SVG, minh họa 240×180 |
+| `public/images/empty-postings.svg` | Employer chưa có tin nào | SVG, 240×180 |
+| `public/images/empty-applications.svg` | Candidate chưa nộp đơn / tin chưa có đơn | SVG, 240×180 |
+| `public/images/not-found.svg` | Trang 404 | SVG, 320×240 |
+
+Alt text tiếng Việt do Codex viết khi dùng ảnh; ảnh trang trí dùng `alt=""`.
+
+### Bảng màu chung
+
+Codex khai báo thành CSS variables, Antigravity vẽ ảnh theo đúng bảng này. Nền sáng (Light Mode, xem `NOTES.md`).
+
+| Token | Màu | Dùng cho |
+|---|---|---|
+| `--color-primary` | `#2563EB` | Nút chính, link, logo |
+| `--color-primary-soft` | `#DBEAFE` | Nền nhấn nhẹ |
+| `--color-accent` | `#F59E0B` | Điểm nhấn minh họa, badge nổi bật |
+| `--color-text` | `#0F172A` | Chữ chính |
+| `--color-muted` | `#64748B` | Chữ phụ |
+| `--color-bg` | `#FFFFFF` | Nền trang |
+| `--color-surface` | `#F8FAFC` | Nền card |
+| `--color-success` / `--color-danger` | `#16A34A` / `#DC2626` | Trạng thái HIRED / REJECTED, lỗi |
+
+Phong cách minh họa: phẳng (flat), nét tròn, tối đa 4 màu từ bảng trên, không chứa chữ (trừ logo và ảnh Open Graph).

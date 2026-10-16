@@ -20,9 +20,10 @@ Single-context layout (`CONTEXT.md` + `docs/adr/`). See `docs/agents/domain.md`.
 |---|---|---|
 | Claude — `agent-claude` | Coordinator, kiến trúc, review, merge (không tự code `src/**`) | `.scratch/**`, `docs/**`, `*.md` gốc, `AGENTS.md` |
 | Claude — `agent-claude-logic` | Logic + backend + test | `supabase/**`, `src/modules/**`, `src/actions/**`, `src/lib/**`, `src/middleware.ts`, test của các thư mục này |
-| Codex — `agent-codex` | Giao diện (UX/UI + frontend) | `src/app/**`, `src/components/**`, file CSS |
+| Codex — `agent-codex` | Giao diện (UX/UI + frontend) | `src/app/**`, `src/components/**`, file CSS (trừ file ảnh của Antigravity) |
+| Antigravity — `agent-antigravity` | Hình ảnh | `public/images/**`, `src/app/icon.png`, `src/app/opengraph-image.png` |
 
-- Contract giữa backend và frontend: `docs/api-contract.md`. Không tự đổi chữ ký; cần đổi thì gửi `question` cho Coordinator.
+- Contract giữa backend và frontend, danh sách hình ảnh và bảng màu: `docs/api-contract.md`. Không tự đổi chữ ký; cần đổi thì gửi `question` cho Coordinator.
 - Mỗi ticket trong `.scratch/job-portal/issues/` có **Phần A (Claude — logic)** và **Phần B (Codex — giao diện)**. Phần A chờ Phần A của các ticket chặn nó; Phần B chờ Phần A cùng ticket và Phần B của các ticket chặn nó. Chi tiết: `docs/orca-runbook.md`.
 - Sửa file ngoài ownership → không sửa, báo Coordinator để route đúng agent.
 - `package.json` / `package-lock.json`: chỉ Coordinator thêm dependency.
