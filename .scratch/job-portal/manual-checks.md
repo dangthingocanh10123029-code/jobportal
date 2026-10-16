@@ -45,3 +45,9 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] RPC `change_application_status`: `FOR UPDATE` dưới tải đồng thời thật (2 lần rút cùng lúc → 1 Status Change)
 - [ ] RLS trên view `candidate_application_summaries`: không thấy đơn của Candidate khác
 - [ ] Trang đơn của tôi + rút đơn end-to-end
+
+## 07 — Employer reviews applications
+- [ ] Chạy migration `20261016000600_employer_reviews_applications.sql`
+- [ ] View `employer_application_summaries` (quyền owner, lọc theo `auth.uid()`): Employer chỉ thấy đơn trên tin của mình; Supabase advisor sẽ cảnh báo security-definer view — đúng thiết kế
+- [ ] Policy storage `resumes_select_employer` + `createSignedUrl` hoạt động cho Employer, Employer khác bị từ chối
+- [ ] Candidate thấy Status Change mới trong trang "Đơn của tôi"
