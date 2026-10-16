@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getCurrentProfile } from '@/actions/auth';
+import { getMyApplicationForPosting } from '@/actions/applications';
 import { getPostingDetail } from '@/actions/postings';
+import { ApplicationForm } from '@/components/applications/application-form';
 import type { EmploymentType, PostingDetail } from '@/actions/types';
 
 const employmentLabels: Record<EmploymentType, string> = {
@@ -36,6 +39,10 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const posting = await getPostingDetail(id);
   if (!posting) notFound();
+  const profile = posting.isOpen ? await getCurrentProfile() : null;
+  const application = posting.isOpen && profile?.role === 'CANDIDATE'
+    ? await getMyApplicationForPosting(id)
+    : null;
 
   return (
     <main className="page-shell posting-detail-page">
@@ -73,10 +80,22 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           <p>{posting.description}</p>
         </section>
 
-        {posting.isOpen ? (
+        {posting.isOpen && profile?.role === 'CANDIDATE' ? (
           <footer className="posting-detail-footer">
-            <p>Quan tâm đến cơ hội này? Đăng nhập hoặc tạo tài khoản ứng viên để ứng tuyển.</p>
-            <Link className="button button-primary" href="/login">Đăng nhập để ứng tuyển</Link>
+            {application ? (
+              <div aria-live="polite" className="application-submitted">
+                <span aria-hidden="true">✓</span>
+                <div>
+                  <strong>Đã nộp hồ sơ</strong>
+                  <p>Hồ sơ ứng tuyển của bạn đã được gửi đến nhà tuyển dụng.</p>
+                </div>
+              </div>
+            ) : <ApplicationForm postingId={posting.id} />}
+          </footer>
+        ) : posting.isOpen && !profile ? (
+          <footer className="posting-detail-footer">
+            <p>Quan tâm đến cơ hội này? Đăng nhập bằng tài khoản ứng viên để nộp hồ sơ.</p>
+            <Link className="button button-primary" href={`/login?next=${encodeURIComponent(`/jobs/${posting.id}`)}`}>Đăng nhập để ứng tuyển</Link>
           </footer>
         ) : null}
       </article>
