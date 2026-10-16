@@ -4,7 +4,7 @@
 
 **Blocked by:** 02
 
-**Status:** in-progress (A merged, B chờ 02B)
+**Status:** in-progress (A merged, B đang làm)
 
 - [ ] Bổ sung vào `JobPostingService` hàm liệt kê tin đang mở và lấy chi tiết; điều kiện "đang mở" gom một chỗ (view hoặc hàm SQL dùng chung, ADR-0001)
 - [ ] Test: tin DRAFT, CLOSED, Expired không có trong danh sách; phân trang đúng

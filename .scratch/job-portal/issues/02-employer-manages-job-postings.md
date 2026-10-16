@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** in-progress (A merged, B đang làm)
+**Status:** resolved
 
 - [ ] Module Job Posting: `JobPostingService` + `IJobPostingRepository`, InMemory adapter và Supabase adapter (theo `CODING_STANDARDS.md`)
 - [ ] Clock được inject vào service; test TDD: transition hợp lệ/không hợp lệ, không sửa được tin CLOSED, đăng với deadline quá khứ bị từ chối, `salary_min <= salary_max`
