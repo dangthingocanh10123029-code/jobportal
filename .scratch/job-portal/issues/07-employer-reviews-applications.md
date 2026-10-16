@@ -4,7 +4,7 @@
 
 **Blocked by:** 05, 06
 
-**Status:** in-progress (A merged, B đang làm)
+**Status:** resolved
 
 - [ ] `ApplicationService`: liệt kê đơn theo tin, đổi trạng thái theo actor Employer (mọi transition trừ WITHDRAWN), dùng lại RPC đổi trạng thái của ticket 06
 - [ ] Test: mọi transition hợp lệ/không hợp lệ cho Employer; Employer khác chủ tin bị từ chối
