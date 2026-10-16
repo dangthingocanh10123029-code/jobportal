@@ -13,3 +13,10 @@
 - [ ] Bucket Storage `resumes` private, policy: Candidate chỉ upload vào thư mục mang user id của mình; chỉ nhận PDF ≤ 5 MB (kiểm tra cả client lẫn server)
 - [ ] Kiểm tra tay: hai lần bấm nộp liên tiếp chỉ tạo một Application
 - [ ] `npm test` và `npm run typecheck` xanh
+
+## Phân công (Orca)
+
+Contract: `docs/api-contract.md`, mục ticket 05.
+
+- **Phần A — Codex (backend):** module Application (service, state machine, InMemory + Supabase adapter, test TDD), migration `applications` + `application_status_changes` + RLS, RPC submit atomic, bucket `resumes` + policy, `submitApplicationAction`, `getMyApplicationForPosting`, export `allowedNextStatuses`.
+- **Phần B — Antigravity (frontend, sau khi Phần A merge):** form nộp đơn trên `/jobs/[id]` (chọn PDF, kiểm tra ≤ 5 MB phía client), trạng thái "Đã nộp", hiển thị lỗi từ action.

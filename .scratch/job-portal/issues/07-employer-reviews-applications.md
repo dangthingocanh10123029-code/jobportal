@@ -12,3 +12,10 @@
 - [ ] Trang danh sách đơn theo tin, nút chuyển trạng thái chỉ hiện các bước hợp lệ
 - [ ] Kiểm tra tay: Candidate thấy Status Change mới trong trang "Đơn của tôi"
 - [ ] `npm test` và `npm run typecheck` xanh
+
+## Phân công (Orca)
+
+Contract: `docs/api-contract.md`, mục ticket 07.
+
+- **Phần A — Codex (backend):** `listApplicationsForPosting`, `changeApplicationStatusAction` (dùng RPC của ticket 06), `getResumeUrlAction` (signed URL sau khi kiểm tra chủ tin), test transition theo Employer.
+- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/employer/postings/[id]/applications`, nút chuyển trạng thái theo `allowedNextStatuses`, nút tải CV.

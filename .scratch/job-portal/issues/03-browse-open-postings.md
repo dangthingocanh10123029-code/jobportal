@@ -10,3 +10,10 @@
 - [ ] Test: tin DRAFT, CLOSED, Expired không có trong danh sách; phân trang đúng
 - [ ] Trang chủ hiển thị danh sách tin đang mở, trang chi tiết tin
 - [ ] `npm test` và `npm run typecheck` xanh
+
+## Phân công (Orca)
+
+Contract: `docs/api-contract.md`, mục ticket 03.
+
+- **Phần A — Codex (backend):** `listOpenPostings` (chỉ `page`), `getPostingDetail`, điều kiện "đang mở" dùng chung (ADR-0001), test.
+- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang chủ `/` danh sách tin + phân trang, trang `/jobs/[id]`, thông báo khi tin Expired/CLOSED, 404 cho DRAFT.

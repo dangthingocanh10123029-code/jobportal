@@ -11,3 +11,10 @@
 - [ ] Test: từ khóa không dấu, kết hợp nhiều bộ lọc, lương tối thiểu khớp tin "thỏa thuận" (salary_max null)
 - [ ] Ô tìm kiếm + bộ lọc trên trang danh sách, đọc/ghi query string; Zod validate query string
 - [ ] `npm test` và `npm run typecheck` xanh
+
+## Phân công (Orca)
+
+Contract: `docs/api-contract.md`, mục ticket 04.
+
+- **Phần A — Codex (backend):** migration `unaccent` + hàm wrapper, mở rộng `listOpenPostings` với `q`, `location`, `employmentType`, `minSalary`, InMemory bỏ dấu tiếng Việt, test.
+- **Phần B — Antigravity (frontend, sau khi Phần A merge):** ô tìm kiếm + bộ lọc trên `/`, đồng bộ với query string, giữ bộ lọc khi chuyển trang.

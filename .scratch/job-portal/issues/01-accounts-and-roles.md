@@ -12,3 +12,10 @@
 - [ ] Server Actions có Zod validation cho đăng ký và cập nhật hồ sơ; có test cho trường hợp input sai
 - [ ] Kiểm tra tay trên Supabase thật: đăng ký 2 vai trò, không đọc được profile của người khác
 - [ ] `npm test` và `npm run typecheck` xanh
+
+## Phân công (Orca)
+
+Contract: `docs/api-contract.md`, mục ticket 01.
+
+- **Phần A — Codex (backend):** migration `profiles` + RLS, helper Supabase server client + `getCurrentActor`, middleware chặn route theo role, `src/actions/types.ts`, `@/actions/auth` theo contract, test Zod.
+- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/login`, `/signup` (chọn vai trò), `/account`, layout chung + thanh điều hướng theo role, nút đăng xuất.

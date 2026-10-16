@@ -113,3 +113,4 @@ The transition table lives in the domain and is mirrored by a database function 
 ## Further Notes
 - Decisions are recorded in `.scratch/job-portal/map.md`, `docs/adr/0001-*`, `docs/adr/0002-*`.
 - Vocabulary follows `CONTEXT.md`.
+- Backend/frontend contract and route map: `docs/api-contract.md`. Agent ownership: `AGENTS.md`.

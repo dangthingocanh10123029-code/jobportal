@@ -11,3 +11,10 @@
 - [ ] RPC đổi trạng thái atomic dùng chung cho ticket 07: `SELECT ... FOR UPDATE` trên Application, kiểm tra transition + actor, ghi Status Change trong cùng transaction
 - [ ] Trang danh sách đơn và chi tiết lịch sử, nút rút đơn có xác nhận
 - [ ] `npm test` và `npm run typecheck` xanh
+
+## Phân công (Orca)
+
+Contract: `docs/api-contract.md`, mục ticket 06.
+
+- **Phần A — Codex (backend):** RPC đổi trạng thái atomic (`SELECT ... FOR UPDATE`, kiểm tra transition + actor), `listMyApplications`, `getMyApplication`, `withdrawApplicationAction`, test.
+- **Phần B — Antigravity (frontend, sau khi Phần A merge):** trang `/candidate/applications`, `/candidate/applications/[id]` với lịch sử Status Change, nút rút đơn có xác nhận.
