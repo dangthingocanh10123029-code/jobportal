@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signInAction, signUpAction } from '@/actions/auth';
 import type { Role } from '@/actions/types';
 
@@ -10,6 +10,8 @@ type AuthMode = 'login' | 'signup';
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next');
   const isSignup = mode === 'signup';
   const [role, setRole] = useState<Role>('CANDIDATE');
   const [pending, setPending] = useState(false);
@@ -40,7 +42,12 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       return;
     }
 
-    router.push('/account');
+    const destination = !isSignup && next?.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\')
+      ? next
+      : isSignup
+        ? '/account'
+        : '/';
+    router.push(destination);
     router.refresh();
   }
 
@@ -88,7 +95,9 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       </button>
       <p className="form-switch">
         {isSignup ? 'Đã có tài khoản?' : 'Chưa có tài khoản?'}{' '}
-        <Link href={isSignup ? '/login' : '/signup'}>{isSignup ? 'Đăng nhập' : 'Tạo tài khoản'}</Link>
+        <Link href={`${isSignup ? '/login' : '/signup'}${next !== null ? `?next=${encodeURIComponent(next)}` : ''}`}>
+          {isSignup ? 'Đăng nhập' : 'Tạo tài khoản'}
+        </Link>
       </p>
     </form>
   );

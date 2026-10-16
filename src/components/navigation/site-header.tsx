@@ -9,7 +9,7 @@ export async function SiteHeader() {
     <header className="site-header">
       <div className="site-header-inner">
         <Link aria-label="Job Portal, trang chủ" className="brand" href="/">
-          <img alt="Job Portal" className="brand-logo" height="32" src="/images/logo.svg" width="158" />
+          <img alt="Job Portal" className="brand-logo" height="32" src="/images/logo.svg" width="176" />
         </Link>
         <nav aria-label="Điều hướng chính" className="main-nav">
           <Link href="/">Tìm việc</Link>

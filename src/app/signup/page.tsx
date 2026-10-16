@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { AuthForm } from '@/components/auth/auth-form';
 
 export default function SignupPage() {
@@ -9,7 +10,9 @@ export default function SignupPage() {
           <span className="eyebrow">Bắt đầu miễn phí</span>
           <h1>Tạo tài khoản</h1>
           <p className="page-intro">Một hồ sơ tốt mở ra cơ hội nghề nghiệp mới.</p>
-          <AuthForm mode="signup" />
+          <Suspense fallback={null}>
+            <AuthForm mode="signup" />
+          </Suspense>
         </div>
       </section>
     </main>
