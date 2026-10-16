@@ -72,3 +72,30 @@ describe('signUpAction — needsEmailConfirmation', () => {
     });
   });
 });
+
+describe('signUpAction — lỗi GoTrue', () => {
+  const signUpWith = (error: object) =>
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(
+      fromPartial({ auth: { signUp: async () => ({ data: { user: null, session: null }, error }) } }),
+    );
+  const input = { email: 'a@example.com', password: '12345678', role: 'CANDIDATE', fullName: 'An' } as const;
+
+  it.each([
+    ['email_address_not_authorized', 'Hệ thống chưa gửi được email xác nhận tới địa chỉ này, vui lòng liên hệ quản trị'],
+    ['over_email_send_rate_limit', 'Đã gửi quá nhiều email xác nhận, vui lòng thử lại sau ít phút'],
+    ['email_address_invalid', 'Email không hợp lệ'],
+    ['signup_disabled', 'Hệ thống đang tạm khóa đăng ký'],
+    ['unexpected_failure', 'Không tạo được tài khoản, vui lòng thử lại'],
+  ])('%s', async (code, error) => {
+    signUpWith({ code, status: 400, message: code });
+    expect(await signUpAction(input)).toEqual({ success: false, error });
+  });
+
+  it('mã lạ → thông báo chung và log nguyên nhân', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+    signUpWith({ code: 'weird_code', status: 500, message: 'boom' });
+    expect(await signUpAction(input)).toEqual({ success: false, error: 'Có lỗi xảy ra, vui lòng thử lại' });
+    expect(log).toHaveBeenCalledWith('[auth]', 'weird_code', 500, 'boom');
+    log.mockRestore();
+  });
+});

@@ -15,10 +15,19 @@ const AUTH_ERRORS: Record<string, string> = {
   email_not_confirmed: 'Email chưa được xác nhận, vui lòng kiểm tra hộp thư',
   weak_password: 'Mật khẩu quá yếu',
   over_request_rate_limit: 'Bạn thao tác quá nhanh, vui lòng thử lại sau',
+  email_address_not_authorized: 'Hệ thống chưa gửi được email xác nhận tới địa chỉ này, vui lòng liên hệ quản trị',
+  over_email_send_rate_limit: 'Đã gửi quá nhiều email xác nhận, vui lòng thử lại sau ít phút',
+  email_address_invalid: 'Email không hợp lệ',
+  signup_disabled: 'Hệ thống đang tạm khóa đăng ký',
+  unexpected_failure: 'Không tạo được tài khoản, vui lòng thử lại',
 };
 
 function authError(error: AuthError): string {
-  return (error.code && AUTH_ERRORS[error.code]) || 'Có lỗi xảy ra, vui lòng thử lại';
+  const mapped = error.code && AUTH_ERRORS[error.code];
+  if (mapped) return mapped;
+  // Unmapped GoTrue code: log it so the real cause shows up in server logs.
+  console.error('[auth]', error.code, error.status, error.message);
+  return 'Có lỗi xảy ra, vui lòng thử lại';
 }
 
 export async function signUpAction(input: {
