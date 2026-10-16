@@ -86,6 +86,14 @@ describe('signUpAction — needsEmailConfirmation', () => {
       data: { userId: 'u1', role: 'CANDIDATE', fullName: 'An', phone: null, companyName: null, needsEmailConfirmation },
     });
   });
+
+  it('email đã tồn tại (identities rỗng) → báo đăng nhập', async () => {
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(
+      fromPartial({ auth: { signUp: async () => ({ data: { user: { id: 'u1', identities: [] }, session: null }, error: null }) } }),
+    );
+    const result = await signUpAction({ email: 'a@example.com', password: '12345678', role: 'CANDIDATE', fullName: 'An' });
+    expect(result).toEqual({ success: false, error: 'Email này đã được đăng ký, vui lòng đăng nhập' });
+  });
 });
 
 describe('signUpAction — lỗi GoTrue', () => {
