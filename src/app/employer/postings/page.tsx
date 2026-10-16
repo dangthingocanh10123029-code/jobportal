@@ -40,7 +40,12 @@ function PostingCard({ posting }: { posting: JobPosting }) {
           <span>Hạn nộp {new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(posting.applicationDeadline))}</span>
         </div>
       </div>
-      <PostingControls posting={posting} />
+      <div className="posting-card-actions">
+        <Link className="button button-quiet button-small" href={`/employer/postings/${posting.id}/applications`}>
+          Xem hồ sơ
+        </Link>
+        <PostingControls posting={posting} />
+      </div>
     </article>
   );
 }
