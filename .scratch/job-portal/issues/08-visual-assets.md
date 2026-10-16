@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Đủ 11 file theo bảng trong `docs/api-contract.md`, đúng tên và đường dẫn
 - [ ] Dùng đúng bảng màu chung, phong cách thống nhất giữa các minh họa
