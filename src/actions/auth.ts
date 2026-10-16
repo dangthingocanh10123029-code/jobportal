@@ -59,6 +59,8 @@ export async function signUpAction(input: {
   });
   if (error) return fail(authError(error));
   if (!data.user) return fail('Có lỗi xảy ra, vui lòng thử lại');
+  // GoTrue hides existing emails (confirm email on): 200 with a fake user that has no identities and sends no mail.
+  if (data.user.identities?.length === 0) return fail('Email này đã được đăng ký, vui lòng đăng nhập');
 
   // With email confirmation on there is no session yet, so RLS hides the row: answer from the input.
   return {
