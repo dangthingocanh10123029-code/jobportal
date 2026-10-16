@@ -1,9 +1,11 @@
-import type { JobPostingId } from '@/modules/job-posting';
+import type { ApplicationStatus } from '@/actions/types';
+import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 import type {
   Application,
   ApplicationId,
   CandidateApplicationSummary,
   CandidateId,
+  EmployerApplicationSummary,
   IApplicationRepository,
   StatusChange,
 } from './domain/types';
@@ -50,5 +52,20 @@ export class ApplicationService {
   /** Candidate moves their own Application to WITHDRAWN, the only transition a Candidate may make. */
   async withdraw(candidateId: CandidateId, id: ApplicationId): Promise<Application> {
     return this.repo.changeStatus(id, 'WITHDRAWN', { userId: candidateId, role: 'CANDIDATE' });
+  }
+
+  /** Applications on the Employer's posting, newest first; null if the posting is not theirs. */
+  async listForPosting(employerId: EmployerId, jobPostingId: JobPostingId): Promise<EmployerApplicationSummary[] | null> {
+    return this.repo.listByPosting(employerId, jobPostingId);
+  }
+
+  /** Employer moves an Application on their posting one step forward or to REJECTED (never WITHDRAWN). */
+  async changeStatus(employerId: EmployerId, id: ApplicationId, toStatus: ApplicationStatus): Promise<Application> {
+    return this.repo.changeStatus(id, toStatus, { userId: employerId, role: 'EMPLOYER' });
+  }
+
+  /** Resume storage path for the Employer owning the Application's posting; null for anyone else. */
+  async getResumePath(employerId: EmployerId, id: ApplicationId): Promise<string | null> {
+    return this.repo.findResumePath(employerId, id);
   }
 }

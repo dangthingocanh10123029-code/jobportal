@@ -1,7 +1,14 @@
-import type { Actor, Application, ApplicationStatus, CandidateApplicationSummary, StatusChange } from '@/actions/types';
-import type { JobPostingId } from '@/modules/job-posting';
+import type {
+  Actor,
+  Application,
+  ApplicationStatus,
+  CandidateApplicationSummary,
+  EmployerApplicationSummary,
+  StatusChange,
+} from '@/actions/types';
+import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 
-export type { Application, CandidateApplicationSummary, StatusChange };
+export type { Application, CandidateApplicationSummary, EmployerApplicationSummary, StatusChange };
 
 export type ApplicationId = string & { readonly __brand: 'ApplicationId' };
 export type CandidateId = string & { readonly __brand: 'CandidateId' };
@@ -19,6 +26,10 @@ export interface IApplicationRepository {
   listStatusChanges(id: ApplicationId): Promise<StatusChange[]>;
   /** Newest first, with the posting's title and company. */
   listByCandidate(candidateId: CandidateId): Promise<CandidateApplicationSummary[]>;
+  /** Newest first, with the Candidate's name and phone; null unless `employerId` owns the posting. */
+  listByPosting(employerId: EmployerId, jobPostingId: JobPostingId): Promise<EmployerApplicationSummary[] | null>;
+  /** Storage path of the Resume; null unless the Application is on a posting `employerId` owns. */
+  findResumePath(employerId: EmployerId, id: ApplicationId): Promise<string | null>;
   /**
    * Atomically, with the Application locked: APPLICATION_NOT_FOUND unless `actor` is its Candidate or the
    * Employer owning its posting; INVALID_TRANSITION unless allowedNextStatuses(status, role) has `toStatus`;

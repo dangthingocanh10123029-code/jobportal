@@ -1,4 +1,4 @@
-import type { Clock, IJobPostingRepository, JobPostingId } from '@/modules/job-posting';
+import type { Clock, EmployerId, IJobPostingRepository, JobPostingId } from '@/modules/job-posting';
 import { isOpen } from '@/modules/job-posting/domain/status';
 import type { Actor, ApplicationStatus } from '@/actions/types';
 import { ApplicationError } from '../domain/errors';
@@ -14,6 +14,7 @@ export class InMemoryApplicationRepository implements IApplicationRepository {
   constructor(
     private readonly postings: IJobPostingRepository,
     private readonly now: Clock = () => new Date(),
+    private readonly candidates: Record<string, { fullName: string; phone: string | null }> = {},
   ) {}
 
   async submit(candidateId: CandidateId, jobPostingId: JobPostingId, resumePath: string) {
@@ -60,6 +61,25 @@ export class InMemoryApplicationRepository implements IApplicationRepository {
         return { ...toApplication(row), postingTitle: posting?.title ?? '', companyName: posting?.companyName ?? '' };
       }),
     );
+  }
+
+  async listByPosting(employerId: EmployerId, jobPostingId: JobPostingId) {
+    const posting = await this.postings.findById(jobPostingId);
+    if (posting?.employerId !== employerId) return null;
+    return [...this.rows.values()]
+      .filter((r) => r.jobPostingId === jobPostingId)
+      .reverse()
+      .map((row) => ({
+        ...toApplication(row),
+        candidateName: this.candidates[row.candidateId]?.fullName ?? '',
+        candidatePhone: this.candidates[row.candidateId]?.phone ?? null,
+      }));
+  }
+
+  async findResumePath(employerId: EmployerId, id: ApplicationId) {
+    const row = this.rows.get(id);
+    const posting = row && (await this.postings.findById(row.jobPostingId as JobPostingId));
+    return row && posting?.employerId === employerId ? row.resumePath : null;
   }
 
   async changeStatus(id: ApplicationId, toStatus: ApplicationStatus, actor: Actor) {

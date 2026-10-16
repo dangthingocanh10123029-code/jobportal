@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { getMyApplication, getMyApplicationForPosting, submitApplicationAction, withdrawApplicationAction } from './applications';
+import {
+  changeApplicationStatusAction,
+  getMyApplication,
+  getMyApplicationForPosting,
+  getResumeUrlAction,
+  listApplicationsForPosting,
+  submitApplicationAction,
+  withdrawApplicationAction,
+} from './applications';
 import { MAX_RESUME_BYTES } from './applications-schema';
 
 const POSTING_ID = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b';
@@ -55,3 +63,24 @@ describe('ticket 06 — input sai', () => {
     expect(await withdrawApplicationAction(input as never)).toEqual({ success: false, error: 'Mã hồ sơ không hợp lệ' });
   });
 });
+
+describe('ticket 07 — input sai', () => {
+  const APPLICATION_ID = '7a2b3c4d-5e6f-4a1b-8c2d-3e4f5a6b7c8d';
+
+  it('listApplicationsForPosting: mã tin sai → null', async () => {
+    expect(await listApplicationsForPosting('1')).toBeNull();
+  });
+
+  it.each([
+    ['mã hồ sơ không phải uuid', { applicationId: '1', toStatus: 'REVIEWING' }, 'Mã hồ sơ không hợp lệ'],
+    ['trạng thái lạ', { applicationId: APPLICATION_ID, toStatus: 'DONE' }, 'Trạng thái không hợp lệ'],
+    ['thiếu trạng thái', { applicationId: APPLICATION_ID }, 'Trạng thái không hợp lệ'],
+  ])('changeApplicationStatusAction: %s', async (_, input, error) => {
+    expect(await changeApplicationStatusAction(input as never)).toEqual({ success: false, error });
+  });
+
+  it('getResumeUrlAction: mã hồ sơ sai', async () => {
+    expect(await getResumeUrlAction({ applicationId: '1' })).toEqual({ success: false, error: 'Mã hồ sơ không hợp lệ' });
+  });
+});
+

@@ -18,7 +18,10 @@ let service: ApplicationService;
 beforeEach(() => {
   now = NOW;
   postings = new InMemoryJobPostingRepository({ [EMPLOYER]: 'ACME' }, () => now);
-  repo = new InMemoryApplicationRepository(postings, () => now);
+  repo = new InMemoryApplicationRepository(postings, () => now, {
+    [ANNA]: { fullName: 'Anna Nguyễn', phone: '0901234567' },
+    [BINH]: { fullName: 'Bình Trần', phone: null },
+  });
   service = new ApplicationService(repo);
 });
 
@@ -192,6 +195,73 @@ describe('changeStatus (RPC dùng chung với ticket 07)', () => {
     await expect(repo.changeStatus(id as ApplicationId, 'REVIEWING', { userId: 'employer-b', role: 'EMPLOYER' })).rejects.toMatchObject({
       code: 'APPLICATION_NOT_FOUND',
     });
+  });
+});
+
+describe('Employer xử lý đơn (ticket 07)', () => {
+  const OTHER = 'employer-b' as EmployerId;
+
+  it('liệt kê đơn của tin, mới nhất trước, kèm tên và số điện thoại Candidate', async () => {
+    const postingId = await posting('PUBLISHED');
+    const anna = await service.submit(ANNA, postingId, resume(ANNA));
+    now = new Date('2026-10-17T00:00:00Z');
+    const binh = await service.submit(BINH, postingId, resume(BINH));
+    await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+
+    expect(await service.listForPosting(EMPLOYER, postingId)).toEqual([
+      { ...binh, candidateName: 'Bình Trần', candidatePhone: null },
+      { ...anna, candidateName: 'Anna Nguyễn', candidatePhone: '0901234567' },
+    ]);
+  });
+
+  it('tin chưa có đơn → mảng rỗng; không phải chủ tin hoặc tin không tồn tại → null', async () => {
+    const postingId = await posting('PUBLISHED');
+    expect(await service.listForPosting(EMPLOYER, postingId)).toEqual([]);
+    await service.submit(ANNA, postingId, resume(ANNA));
+    expect(await service.listForPosting(OTHER, postingId)).toBeNull();
+    expect(await service.listForPosting(EMPLOYER, 'posting-404' as JobPostingId)).toBeNull();
+  });
+
+  // Every (from, to) pair: legal for Employer exactly when allowedNextStatuses says so.
+  const STATUSES = ['SUBMITTED', 'REVIEWING', 'INTERVIEWING', 'OFFERED', 'HIRED', 'REJECTED', 'WITHDRAWN'] as const;
+  const PATH = { SUBMITTED: [], REVIEWING: ['REVIEWING'], INTERVIEWING: ['REVIEWING', 'INTERVIEWING'],
+    OFFERED: ['REVIEWING', 'INTERVIEWING', 'OFFERED'], HIRED: ['REVIEWING', 'INTERVIEWING', 'OFFERED', 'HIRED'],
+    REJECTED: ['REJECTED'], WITHDRAWN: [] } as const;
+
+  async function applicationIn(status: (typeof STATUSES)[number]) {
+    const { id } = await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
+    for (const to of PATH[status]) await service.changeStatus(EMPLOYER, id as ApplicationId, to);
+    if (status === 'WITHDRAWN') await service.withdraw(ANNA, id as ApplicationId);
+    return id as ApplicationId;
+  }
+
+  it.each(STATUSES.flatMap((from) => STATUSES.map((to) => [from, to] as const)))('%s → %s', async (from, to) => {
+    const id = await applicationIn(from);
+    const before = await service.getHistory(ANNA, id);
+    now = new Date('2026-10-18T00:00:00Z');
+    if (allowedNextStatuses(from, 'EMPLOYER').includes(to)) {
+      expect(await service.changeStatus(EMPLOYER, id, to)).toMatchObject({ status: to, updatedAt: now.toISOString() });
+      expect(await service.getHistory(ANNA, id)).toEqual([
+        ...before!,
+        { fromStatus: from, toStatus: to, changedByRole: 'EMPLOYER', changedAt: now.toISOString() },
+      ]);
+    } else {
+      await expect(service.changeStatus(EMPLOYER, id, to)).rejects.toMatchObject({ code: 'INVALID_TRANSITION' });
+      expect(await service.getHistory(ANNA, id)).toEqual(before);
+    }
+  });
+
+  it('Employer khác chủ tin không đổi được trạng thái, không lấy được Resume', async () => {
+    const id = await applicationIn('SUBMITTED');
+    await expect(service.changeStatus(OTHER, id, 'REVIEWING')).rejects.toMatchObject({ code: 'APPLICATION_NOT_FOUND' });
+    expect(await service.getResumePath(OTHER, id)).toBeNull();
+    expect((await service.getMineWithHistory(ANNA, id))?.status).toBe('SUBMITTED');
+  });
+
+  it('chủ tin lấy được đường dẫn Resume; đơn không tồn tại → null', async () => {
+    const id = await applicationIn('SUBMITTED');
+    expect(await service.getResumePath(EMPLOYER, id)).toBe(resume(ANNA));
+    expect(await service.getResumePath(EMPLOYER, 'application-404' as ApplicationId)).toBeNull();
   });
 });
 

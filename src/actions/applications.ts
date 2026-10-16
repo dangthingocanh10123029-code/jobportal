@@ -3,11 +3,24 @@
 import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
 import { ApplicationError, ApplicationService, type ApplicationId, type CandidateId } from '@/modules/application';
 import { SupabaseApplicationRepository } from '@/modules/application/adapters/supabase';
-import type { JobPostingId } from '@/modules/job-posting';
-import { applicationIdSchema, submitApplicationSchema, withdrawApplicationSchema } from './applications-schema';
+import type { EmployerId, JobPostingId } from '@/modules/job-posting';
+import {
+  applicationIdSchema,
+  changeApplicationStatusSchema,
+  resumeUrlSchema,
+  submitApplicationSchema,
+  withdrawApplicationSchema,
+} from './applications-schema';
 import { firstError } from './auth-schema';
 import { postingIdSchema } from './postings-schema';
-import type { ActionResult, Application, CandidateApplicationSummary, StatusChange } from './types';
+import type {
+  ActionResult,
+  Application,
+  ApplicationStatus,
+  CandidateApplicationSummary,
+  EmployerApplicationSummary,
+  StatusChange,
+} from './types';
 
 const fail = (error: string) => ({ success: false, error }) as const;
 
@@ -20,6 +33,18 @@ async function candidateContext() {
     supabase,
     service: new ApplicationService(new SupabaseApplicationRepository(supabase)),
     candidateId: actor.userId as CandidateId,
+  };
+}
+
+/** Service for the signed-in Employer, or null for anyone else. */
+async function employerContext() {
+  const supabase = await createSupabaseServerClient();
+  const actor = await getCurrentActor(supabase);
+  if (actor?.role !== 'EMPLOYER') return null;
+  return {
+    supabase,
+    service: new ApplicationService(new SupabaseApplicationRepository(supabase)),
+    employerId: actor.userId as EmployerId,
   };
 }
 
@@ -95,4 +120,56 @@ export async function withdrawApplicationAction(input: { applicationId: string }
     console.error(error);
     return fail('Có lỗi xảy ra, vui lòng thử lại');
   }
+}
+
+const RESUME_URL_TTL_SECONDS = 60;
+
+/** Applications on the signed-in Employer's posting, newest first; null when the posting is not theirs. */
+export async function listApplicationsForPosting(postingId: string): Promise<EmployerApplicationSummary[] | null> {
+  const parsed = postingIdSchema.safeParse(postingId);
+  if (!parsed.success) return null;
+  const ctx = await employerContext();
+  return ctx ? ctx.service.listForPosting(ctx.employerId, parsed.data as JobPostingId) : null;
+}
+
+/** Employer moves an Application on their posting to a status allowedNextStatuses(status, 'EMPLOYER') lists. */
+export async function changeApplicationStatusAction(input: {
+  applicationId: string;
+  toStatus: ApplicationStatus;
+}): Promise<ActionResult<Application>> {
+  const parsed = changeApplicationStatusSchema.safeParse(input);
+  if (!parsed.success) return fail(firstError(parsed.error));
+
+  const ctx = await employerContext();
+  if (!ctx) return fail('Chỉ nhà tuyển dụng đã đăng nhập mới đổi được trạng thái hồ sơ');
+
+  try {
+    const { applicationId, toStatus } = parsed.data;
+    return { success: true, data: await ctx.service.changeStatus(ctx.employerId, applicationId as ApplicationId, toStatus) };
+  } catch (error) {
+    if (error instanceof ApplicationError) return fail(error.message);
+    console.error(error);
+    return fail('Có lỗi xảy ra, vui lòng thử lại');
+  }
+}
+
+/** Short-lived signed URL of the Resume, only after checking the Application is on the Employer's posting. */
+export async function getResumeUrlAction(input: {
+  applicationId: string;
+}): Promise<ActionResult<{ url: string; expiresInSeconds: number }>> {
+  const parsed = resumeUrlSchema.safeParse(input);
+  if (!parsed.success) return fail(firstError(parsed.error));
+
+  const ctx = await employerContext();
+  if (!ctx) return fail('Chỉ nhà tuyển dụng đã đăng nhập mới tải được CV');
+
+  const path = await ctx.service.getResumePath(ctx.employerId, parsed.data.applicationId as ApplicationId);
+  if (!path) return fail(new ApplicationError('APPLICATION_NOT_FOUND').message);
+
+  const { data, error } = await ctx.supabase.storage.from('resumes').createSignedUrl(path, RESUME_URL_TTL_SECONDS);
+  if (error) {
+    console.error(error);
+    return fail('Không tạo được link tải CV, vui lòng thử lại');
+  }
+  return { success: true, data: { url: data.signedUrl, expiresInSeconds: RESUME_URL_TTL_SECONDS } };
 }

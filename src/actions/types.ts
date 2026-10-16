@@ -68,6 +68,8 @@ export type Application = {
 
 export type CandidateApplicationSummary = Application & { postingTitle: string; companyName: string };
 
+export type EmployerApplicationSummary = Application & { candidateName: string; candidatePhone: string | null };
+
 export type StatusChange = {
   fromStatus: ApplicationStatus | null;
   toStatus: ApplicationStatus;
