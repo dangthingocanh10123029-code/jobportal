@@ -16,3 +16,9 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] Trigger `job_postings_guard` chặn transition sai, sửa tin CLOSED, đăng với deadline quá khứ
 - [ ] View `job_postings_with_company` (security_invoker) trả companyName cho anon
 - [ ] `SupabaseJobPostingRepository` + Server Actions chạy end-to-end
+
+## 03 — Browse open postings
+- [ ] Chạy migration `20261016000200_open_job_postings.sql`
+- [ ] RLS: anon đọc được CLOSED, không đọc được DRAFT; owner vẫn thấy DRAFT của mình
+- [ ] View `open_job_postings` lọc đúng theo `now()`
+- [ ] Phân trang: count exact + range qua PostgREST
