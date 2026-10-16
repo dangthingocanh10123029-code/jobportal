@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** in-progress (A merged 45cc407, B đang làm)
+**Status:** resolved
 
 - [ ] Migration bảng `profiles` (role CANDIDATE|EMPLOYER) + RLS theo spec
 - [ ] Supabase Auth dùng session cookie phía server cho App Router; helper lấy actor (user id + role) từ session để các ticket sau dùng
