@@ -1,12 +1,13 @@
 import type { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
 import type { Actor, ApplicationStatus, Role } from '@/actions/types';
-import type { JobPostingId } from '@/modules/job-posting';
+import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 import { ApplicationError, isApplicationErrorCode } from '../domain/errors';
 import type {
   Application,
   ApplicationId,
   CandidateApplicationSummary,
   CandidateId,
+  EmployerApplicationSummary,
   IApplicationRepository,
   StatusChange,
 } from '../domain/types';
@@ -105,6 +106,44 @@ export class SupabaseApplicationRepository implements IApplicationRepository {
         companyName: row.company_name,
       }),
     );
+  }
+
+  async listByPosting(employerId: EmployerId, jobPostingId: JobPostingId) {
+    // Published postings are readable by everyone, so ownership needs the explicit employer_id filter.
+    const owned = await this.supabase
+      .from('job_postings')
+      .select('id')
+      .eq('id', jobPostingId)
+      .eq('employer_id', employerId)
+      .maybeSingle();
+    if (owned.error) throw new Error(`Không đọc được tin: ${owned.error.message}`);
+    if (!owned.data) return null;
+
+    const { data, error } = await this.supabase
+      .from('employer_application_summaries')
+      .select(`${COLUMNS},candidate_name,candidate_phone`)
+      .eq('job_posting_id', jobPostingId)
+      .order('created_at', { ascending: false })
+      .returns<(Row & { candidate_name: string; candidate_phone: string | null })[]>();
+    if (error) throw new Error(`Không đọc được danh sách hồ sơ: ${error.message}`);
+    return data.map(
+      (row): EmployerApplicationSummary => ({
+        ...toApplication(row),
+        candidateName: row.candidate_name,
+        candidatePhone: row.candidate_phone,
+      }),
+    );
+  }
+
+  async findResumePath(employerId: EmployerId, id: ApplicationId) {
+    const { data, error } = await this.supabase
+      .from('employer_application_summaries')
+      .select('resume_path')
+      .eq('id', id)
+      .eq('employer_id', employerId)
+      .maybeSingle<{ resume_path: string }>();
+    if (error) throw new Error(`Không đọc được hồ sơ: ${error.message}`);
+    return data?.resume_path ?? null;
   }
 
   /** `actor` is not sent: change_application_status takes the actor and role from the session (auth.uid()). */

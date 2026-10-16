@@ -11,6 +11,15 @@ export const applicationIdSchema = z
 
 export const withdrawApplicationSchema = z.object({ applicationId: applicationIdSchema });
 
+export const changeApplicationStatusSchema = z.object({
+  applicationId: applicationIdSchema,
+  toStatus: z.enum(['SUBMITTED', 'REVIEWING', 'INTERVIEWING', 'OFFERED', 'HIRED', 'REJECTED', 'WITHDRAWN'], {
+    errorMap: () => ({ message: 'Trạng thái không hợp lệ' }),
+  }),
+});
+
+export const resumeUrlSchema = z.object({ applicationId: applicationIdSchema });
+
 const PDF_MAGIC = '%PDF-';
 
 export const submitApplicationSchema = z.object({
