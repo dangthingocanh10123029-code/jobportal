@@ -22,3 +22,10 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] RLS: anon đọc được CLOSED, không đọc được DRAFT; owner vẫn thấy DRAFT của mình
 - [ ] View `open_job_postings` lọc đúng theo `now()`
 - [ ] Phân trang: count exact + range qua PostgREST
+
+## 04 — Job search and filters
+- [ ] Chạy migration `20261016000300_job_search.sql` (extension unaccent, `f_unaccent`, create or replace view)
+- [ ] `unaccent` bỏ dấu mọi ký tự tiếng Việt và đ/Đ giống `foldAccents()` bên JS
+- [ ] ILIKE với ký tự escape `\` đi qua PostgREST đúng
+- [ ] Bộ lọc `.or(salary_max.is.null, salary_max.gte.X)` đúng
+- [ ] anon đọc được cột mới của view
