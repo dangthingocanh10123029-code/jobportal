@@ -1,59 +1,23 @@
-# Kiểm tra tay trên Supabase thật (chưa kiểm tra)
+# Kiểm tra tay trên Supabase thật
 
-Worker không có `.env.local`, nên các mục dưới đây **chưa được kiểm tra**. Chạy sau khi tạo `.env.local` và `supabase db push`.
+Project `boncnxhjkbqxlcebzcyc`, 7 migration đã push (2026-10-16). Kiểm tra bằng `.scratch/job-portal/rls_checks.sql`:
+chạy với từng role thật (`anon`, `authenticated` + JWT giả) trong một transaction **ROLLBACK** — không để lại dữ liệu, không gửi email.
+Chạy lại: `psql "<session pooler URL>" -q -At -f .scratch/job-portal/rls_checks.sql`
 
-- [x] `npm run build` xanh — đã chạy 2026-10-16 với biến môi trường giả, build thành công (từ 01B, layout đọc session nên build cần biến môi trường Supabase)
+## Đã kiểm tra — 56/56 PASS
+- [x] `npm run build` xanh khi có `.env.local`
+- [x] 01: trigger tạo profile đúng role; role sai bị CHECK chặn; Candidate chỉ đọc profile mình; không sửa được role; sửa được phone; anon đọc `employer_companies`, không đọc `profiles`
+- [x] 02: Employer B không thấy/sửa tin của A; Candidate không tạo tin; tin mới là DRAFT; không insert thẳng PUBLISHED; trigger chặn sửa CLOSED, DRAFT→CLOSED, đăng deadline quá khứ; CHECK lương
+- [x] 03: anon không thấy DRAFT, thấy CLOSED; `open_job_postings` chỉ có PUBLISHED chưa hết hạn; owner thấy DRAFT của mình
+- [x] 04: `f_unaccent` bỏ dấu + đ/Đ; tìm không dấu; location contains; `%` được escape
+- [x] 05: Storage chặn upload vào thư mục người khác; RPC chặn CV lạ, tin CLOSED/hết hạn/DRAFT, nộp trùng, Employer, anon; nộp thành công → SUBMITTED + 1 Status Change; không insert `applications` trực tiếp; history append-only
+- [x] 06: Candidate khác không thấy/rút đơn; view tóm tắt đúng; Candidate không chuyển REVIEWING; rút ở REVIEWING được; rút lại bị chặn
+- [x] 07: Employer B không thấy đơn/CV/đổi trạng thái; Employer A thấy tên + SĐT, đọc được CV; transition hợp lệ được, WITHDRAWN/nhảy cóc bị chặn; Candidate thấy Status Change mới
+- [x] 09A: PostgREST trả `PGRST103` (416) khi page vượt range → code fallback đúng nhánh
 
-## 01 — Accounts and roles
-- [ ] Chạy migration `20261016000000_profiles.sql`
-- [ ] Đăng ký 2 vai trò → trigger `handle_new_user` tạo profile đúng role/tên
-- [ ] RLS: không đọc được profile của người khác
-- [ ] Không sửa được `role` (column grant)
-- [ ] View `employer_companies` đọc được bằng anon
-- [ ] Middleware refresh session cookie; đăng nhập/đăng xuất end-to-end
-
-## 02 — Employer manages job postings
-- [ ] Chạy migration `20261016000100_job_postings.sql`
-- [ ] RLS: Employer B không thấy DRAFT của Employer A; anon chỉ thấy PUBLISHED
-- [ ] Trigger `job_postings_guard` chặn transition sai, sửa tin CLOSED, đăng với deadline quá khứ
-- [ ] View `job_postings_with_company` (security_invoker) trả companyName cho anon
-- [ ] `SupabaseJobPostingRepository` + Server Actions chạy end-to-end
-
-## 03 — Browse open postings
-- [ ] Chạy migration `20261016000200_open_job_postings.sql`
-- [ ] RLS: anon đọc được CLOSED, không đọc được DRAFT; owner vẫn thấy DRAFT của mình
-- [ ] View `open_job_postings` lọc đúng theo `now()`
-- [ ] Phân trang: count exact + range qua PostgREST
-
-## 04 — Job search and filters
-- [ ] Chạy migration `20261016000300_job_search.sql` (extension unaccent, `f_unaccent`, create or replace view)
-- [ ] `unaccent` bỏ dấu mọi ký tự tiếng Việt và đ/Đ giống `foldAccents()` bên JS
-- [ ] ILIKE với ký tự escape `\` đi qua PostgREST đúng
-- [ ] Bộ lọc `.or(salary_max.is.null, salary_max.gte.X)` đúng
-- [ ] anon đọc được cột mới của view
-
-## 05 — Candidate applies with resume
-- [ ] Chạy migration `20261016000400_applications.sql`
-- [ ] RLS `applications` / `application_status_changes`: Candidate chỉ thấy đơn của mình, Employer chỉ thấy đơn trên tin của mình
-- [ ] RPC `submit_application`: mã lỗi POSTING_NOT_OPEN / ALREADY_APPLIED / INVALID_RESUME hiện đúng thông báo
-- [ ] Bucket `resumes` private, chỉ PDF ≤ 5 MB; 3 policy storage (insert/select thư mục của mình, delete file chưa gắn đơn)
-- [ ] Upload thật; nộp lỗi thì file bị dọn
-- [ ] Bấm nộp hai lần chỉ tạo một Application
-
-## 06 — Candidate tracks and withdraws
-- [ ] Chạy migration `20261016000500_application_status_changes.sql`
-- [ ] RPC `change_application_status`: `FOR UPDATE` dưới tải đồng thời thật (2 lần rút cùng lúc → 1 Status Change)
-- [ ] RLS trên view `candidate_application_summaries`: không thấy đơn của Candidate khác
-- [ ] Trang đơn của tôi + rút đơn end-to-end
-
-## 07 — Employer reviews applications
-- [ ] Chạy migration `20261016000600_employer_reviews_applications.sql`
-- [ ] View `employer_application_summaries` (quyền owner, lọc theo `auth.uid()`): Employer chỉ thấy đơn trên tin của mình; Supabase advisor sẽ cảnh báo security-definer view — đúng thiết kế
-- [ ] Policy storage `resumes_select_employer` + `createSignedUrl` hoạt động cho Employer, Employer khác bị từ chối
-- [ ] Candidate thấy Status Change mới trong trang "Đơn của tôi"
-
-## 09 — Review fixes
-- [ ] `/?page=999` khi chỉ có vài tin: trang chủ hiện danh sách rỗng, không lỗi 500 (Supabase thật có trả mã `PGRST103` như adapter giả định không)
-- [ ] Đăng ký khi Supabase bật xác nhận email: hiện "Kiểm tra email để xác nhận tài khoản", ở lại trang
-- [x] `getCurrentProfile` / `getPostingDetail` bọc `cache()` trong file `'use server'` chạy được lúc runtime — đã chạy `next start` 2026-10-16: `/login`, `/signup` 200; `/jobs/abc` 404; route `/employer/*`, `/candidate/*` chuyển về `/login?next=…` khi Supabase không kết nối được (middleware coi là khách)
-
+## Chưa kiểm tra — cần chạy app thật với tài khoản thật
+- [ ] Đăng ký/đăng nhập/đăng xuất end-to-end, refresh session cookie qua middleware, thông báo "kiểm tra email"
+- [ ] Upload CV thật qua Storage API, file mồ côi bị dọn khi nộp lỗi (policy `resumes_delete_unused` — Supabase chặn DELETE storage bằng SQL nên chỉ thử được qua API)
+- [ ] `createSignedUrl` 60s cho Employer tải CV
+- [ ] Hai request rút/đổi trạng thái đồng thời (`FOR UPDATE`) chỉ tạo 1 Status Change
+- [ ] Supabase advisor cảnh báo security-definer view `employer_application_summaries` / `employer_companies` — đúng thiết kế
