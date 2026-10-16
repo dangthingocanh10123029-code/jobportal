@@ -4,28 +4,7 @@ import { getCurrentProfile } from '@/actions/auth';
 import { getMyApplicationForPosting } from '@/actions/applications';
 import { getPostingDetail } from '@/actions/postings';
 import { ApplicationForm } from '@/components/applications/application-form';
-import type { EmploymentType, PostingDetail } from '@/actions/types';
-
-const employmentLabels: Record<EmploymentType, string> = {
-  FULL_TIME: 'Toàn thời gian',
-  PART_TIME: 'Bán thời gian',
-  INTERNSHIP: 'Thực tập',
-  CONTRACT: 'Hợp đồng',
-};
-
-function formatSalary(posting: PostingDetail) {
-  if (posting.salaryMin === null && posting.salaryMax === null) return 'Thỏa thuận';
-  const amount = (value: number) => `${new Intl.NumberFormat('vi-VN').format(value)} ₫`;
-  if (posting.salaryMin !== null && posting.salaryMax !== null) {
-    return `${amount(posting.salaryMin)} – ${amount(posting.salaryMax)} / tháng`;
-  }
-  if (posting.salaryMin !== null) return `Từ ${amount(posting.salaryMin)} / tháng`;
-  return `Đến ${amount(posting.salaryMax!)} / tháng`;
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(value));
-}
+import { employmentLabels, formatDate, formatSalary } from '@/components/format';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -71,8 +50,8 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
         <div className="posting-detail-meta">
           <div><span aria-hidden="true">⌖</span><span><small>Địa điểm</small><strong>{posting.location}</strong></span></div>
           <div><span aria-hidden="true">◷</span><span><small>Hình thức</small><strong>{employmentLabels[posting.employmentType]}</strong></span></div>
-          <div><span aria-hidden="true">₫</span><span><small>Mức lương</small><strong>{formatSalary(posting)}</strong></span></div>
-          <div><span aria-hidden="true">▣</span><span><small>Hạn nộp</small><strong>{formatDate(posting.applicationDeadline)}</strong></span></div>
+          <div><span aria-hidden="true">₫</span><span><small>Mức lương</small><strong>{formatSalary(posting.salaryMin, posting.salaryMax)}</strong></span></div>
+          <div><span aria-hidden="true">▣</span><span><small>Hạn nộp</small><strong>{formatDate(posting.applicationDeadline, 'long')}</strong></span></div>
         </div>
 
         <section aria-labelledby="description-title" className="posting-description">

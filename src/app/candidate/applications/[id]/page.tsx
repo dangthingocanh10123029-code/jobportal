@@ -1,29 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getMyApplication } from '@/actions/applications';
-import type { ApplicationStatus, StatusChange } from '@/actions/types';
+import type { StatusChange } from '@/actions/types';
 import { allowedNextStatuses } from '@/modules/application';
 import { WithdrawApplicationButton } from '@/components/applications/withdraw-application-button';
-
-const statusLabels: Record<ApplicationStatus, string> = {
-  SUBMITTED: 'Đã nộp',
-  REVIEWING: 'Đang xem xét',
-  INTERVIEWING: 'Phỏng vấn',
-  OFFERED: 'Đã gửi đề nghị',
-  HIRED: 'Đã tuyển dụng',
-  REJECTED: 'Không phù hợp',
-  WITHDRAWN: 'Đã rút hồ sơ',
-};
-
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(value));
-}
+import { applicationStatusLabels, formatDateTime } from '@/components/format';
 
 function HistoryItem({ change, isLast }: { change: StatusChange; isLast: boolean }) {
   return (
@@ -32,8 +13,8 @@ function HistoryItem({ change, isLast }: { change: StatusChange; isLast: boolean
       <div className="application-history-copy">
         <strong>
           {change.fromStatus
-            ? `${statusLabels[change.fromStatus]} → ${statusLabels[change.toStatus]}`
-            : `Hồ sơ ${statusLabels[change.toStatus].toLowerCase()}`}
+            ? `${applicationStatusLabels[change.fromStatus]} → ${applicationStatusLabels[change.toStatus]}`
+            : `Hồ sơ ${applicationStatusLabels[change.toStatus].toLowerCase()}`}
         </strong>
         <span>{change.changedByRole === 'CANDIDATE' ? 'Ứng viên' : 'Nhà tuyển dụng'} · {formatDateTime(change.changedAt)}</span>
       </div>
@@ -60,7 +41,7 @@ export default async function CandidateApplicationDetailPage({ params }: { param
           <div className="application-detail-current-status">
             <span className={`application-status status-${application.status.toLowerCase()}`}>
               <span aria-hidden="true" className="status-dot" />
-              {statusLabels[application.status]}
+              {applicationStatusLabels[application.status]}
             </span>
             <span>Mã hồ sơ: {application.id}</span>
           </div>

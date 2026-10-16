@@ -7,16 +7,7 @@ import {
 } from '@/actions/applications';
 import type { ApplicationStatus, EmployerApplicationSummary } from '@/actions/types';
 import { allowedNextStatuses } from '@/modules/application';
-
-const statusLabels: Record<ApplicationStatus, string> = {
-  SUBMITTED: 'Đã nộp',
-  REVIEWING: 'Đang xem xét',
-  INTERVIEWING: 'Phỏng vấn',
-  OFFERED: 'Đã gửi đề nghị',
-  HIRED: 'Đã tuyển dụng',
-  REJECTED: 'Không phù hợp',
-  WITHDRAWN: 'Đã rút hồ sơ',
-};
+import { applicationStatusLabels, formatDate } from '@/components/format';
 
 const transitionLabels: Partial<Record<ApplicationStatus, string>> = {
   REVIEWING: 'Bắt đầu xem xét',
@@ -25,14 +16,6 @@ const transitionLabels: Partial<Record<ApplicationStatus, string>> = {
   HIRED: 'Đánh dấu đã tuyển',
   REJECTED: 'Từ chối hồ sơ',
 };
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  }).format(new Date(value));
-}
 
 function EmployerApplicationCard({ application }: { application: EmployerApplicationSummary }) {
   const [status, setStatus] = useState(application.status);
@@ -46,10 +29,15 @@ function EmployerApplicationCard({ application }: { application: EmployerApplica
 
     setError(null);
     setPendingStatus(toStatus);
-    const result = await changeApplicationStatusAction({ applicationId: application.id, toStatus });
-    if (result.success) setStatus(result.data.status);
-    else setError(result.error);
-    setPendingStatus(null);
+    try {
+      const result = await changeApplicationStatusAction({ applicationId: application.id, toStatus });
+      if (result.success) setStatus(result.data.status);
+      else setError(result.error);
+    } catch {
+      setError('Có lỗi xảy ra, vui lòng thử lại');
+    } finally {
+      setPendingStatus(null);
+    }
   }
 
   async function downloadResume() {
@@ -57,18 +45,24 @@ function EmployerApplicationCard({ application }: { application: EmployerApplica
     setDownloading(true);
     // Open synchronously from the click so the browser does not block the signed URL tab.
     const tab = window.open('', '_blank');
-    const result = await getResumeUrlAction({ applicationId: application.id });
-    if (result.success) {
-      if (tab) {
-        tab.location.href = result.data.url;
+    try {
+      const result = await getResumeUrlAction({ applicationId: application.id });
+      if (result.success) {
+        if (tab) {
+          tab.location.href = result.data.url;
+        } else {
+          window.location.href = result.data.url;
+        }
       } else {
-        window.location.href = result.data.url;
+        tab?.close();
+        setError(result.error);
       }
-    } else {
+    } catch {
       tab?.close();
-      setError(result.error);
+      setError('Có lỗi xảy ra, vui lòng thử lại');
+    } finally {
+      setDownloading(false);
     }
-    setDownloading(false);
   }
 
   return (
@@ -81,7 +75,7 @@ function EmployerApplicationCard({ application }: { application: EmployerApplica
           </div>
           <span className={`application-status status-${status.toLowerCase()}`}>
             <span aria-hidden="true" className="status-dot" />
-            {statusLabels[status]}
+            {applicationStatusLabels[status]}
           </span>
         </div>
         <div className="candidate-application-meta employer-application-meta">

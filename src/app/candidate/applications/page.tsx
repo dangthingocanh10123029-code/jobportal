@@ -1,24 +1,6 @@
 import Link from 'next/link';
 import { listMyApplications } from '@/actions/applications';
-import type { ApplicationStatus } from '@/actions/types';
-
-const statusLabels: Record<ApplicationStatus, string> = {
-  SUBMITTED: 'Đã nộp',
-  REVIEWING: 'Đang xem xét',
-  INTERVIEWING: 'Phỏng vấn',
-  OFFERED: 'Đã gửi đề nghị',
-  HIRED: 'Đã tuyển dụng',
-  REJECTED: 'Không phù hợp',
-  WITHDRAWN: 'Đã rút hồ sơ',
-};
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  }).format(new Date(value));
-}
+import { applicationStatusLabels, formatDate } from '@/components/format';
 
 export default async function CandidateApplicationsPage() {
   const applications = await listMyApplications();
@@ -43,7 +25,7 @@ export default async function CandidateApplicationsPage() {
                   </div>
                   <span className={`application-status status-${application.status.toLowerCase()}`}>
                     <span aria-hidden="true" className="status-dot" />
-                    {statusLabels[application.status]}
+                    {applicationStatusLabels[application.status]}
                   </span>
                 </div>
                 <div className="candidate-application-meta">

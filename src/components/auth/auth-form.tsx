@@ -16,12 +16,14 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const [role, setRole] = useState<Role>('CANDIDATE');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     setPending(true);
     setError('');
+    setMessage('');
 
     const result = isSignup
       ? await signUpAction({
@@ -39,6 +41,11 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
     setPending(false);
     if (!result.success) {
       setError(result.error);
+      return;
+    }
+
+    if (isSignup && 'needsEmailConfirmation' in result.data && result.data.needsEmailConfirmation) {
+      setMessage('Kiểm tra email để xác nhận tài khoản');
       return;
     }
 
@@ -90,6 +97,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         <input autoComplete={isSignup ? 'new-password' : 'current-password'} className="text-input" minLength={isSignup ? 8 : undefined} name="password" placeholder={isSignup ? 'Ít nhất 8 ký tự' : 'Nhập mật khẩu'} required type="password" />
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
+      {message ? <p className="form-success" role="status">{message}</p> : null}
       <button className="button button-primary button-wide" disabled={pending} type="submit">
         {pending ? 'Đang xử lý…' : isSignup ? 'Tạo tài khoản' : 'Đăng nhập'}
       </button>

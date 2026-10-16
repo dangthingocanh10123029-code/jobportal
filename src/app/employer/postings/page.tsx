@@ -1,24 +1,8 @@
 import Link from 'next/link';
 import { listMyPostings } from '@/actions/postings';
-import type { DisplayPostingStatus, JobPosting } from '@/actions/types';
+import type { JobPosting } from '@/actions/types';
 import { PostingControls } from '@/components/postings/posting-controls';
-
-const statusLabels: Record<DisplayPostingStatus, string> = {
-  DRAFT: 'Bản nháp',
-  PUBLISHED: 'Đang đăng',
-  CLOSED: 'Đã đóng',
-  EXPIRED: 'Hết hạn',
-};
-
-function formatSalary(posting: JobPosting) {
-  if (posting.salaryMin === null && posting.salaryMax === null) return 'Thỏa thuận';
-  const format = (amount: number) => `${new Intl.NumberFormat('vi-VN').format(amount)} ₫`;
-  if (posting.salaryMin !== null && posting.salaryMax !== null) {
-    return `${format(posting.salaryMin)} – ${format(posting.salaryMax)} / tháng`;
-  }
-  if (posting.salaryMin !== null) return `Từ ${format(posting.salaryMin)} / tháng`;
-  return `Đến ${format(posting.salaryMax!)} / tháng`;
-}
+import { formatDate, formatSalary, postingStatusLabels } from '@/components/format';
 
 function PostingCard({ posting }: { posting: JobPosting }) {
   return (
@@ -31,13 +15,13 @@ function PostingCard({ posting }: { posting: JobPosting }) {
           </div>
           <span className={`posting-status status-${posting.displayStatus.toLowerCase()}`}>
             <span aria-hidden="true" className="status-dot" />
-            {statusLabels[posting.displayStatus]}
+            {postingStatusLabels[posting.displayStatus]}
           </span>
         </div>
         <div className="posting-meta">
           <span><span aria-hidden="true">⌖</span> {posting.location}</span>
-          <span><span aria-hidden="true">◷</span> {formatSalary(posting)}</span>
-          <span>Hạn nộp {new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(posting.applicationDeadline))}</span>
+          <span><span aria-hidden="true">◷</span> {formatSalary(posting.salaryMin, posting.salaryMax)}</span>
+          <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
         </div>
       </div>
       <div className="posting-card-actions">
