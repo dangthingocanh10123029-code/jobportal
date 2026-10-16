@@ -2,7 +2,7 @@
 
 Worker không có `.env.local`, nên các mục dưới đây **chưa được kiểm tra**. Chạy sau khi tạo `.env.local` và `supabase db push`.
 
-- [ ] `npm run build` xanh (từ 01B, layout đọc session nên build cần biến môi trường Supabase)
+- [x] `npm run build` xanh — đã chạy 2026-10-16 với biến môi trường giả, build thành công (từ 01B, layout đọc session nên build cần biến môi trường Supabase)
 
 ## 01 — Accounts and roles
 - [ ] Chạy migration `20261016000000_profiles.sql`
@@ -51,3 +51,9 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] View `employer_application_summaries` (quyền owner, lọc theo `auth.uid()`): Employer chỉ thấy đơn trên tin của mình; Supabase advisor sẽ cảnh báo security-definer view — đúng thiết kế
 - [ ] Policy storage `resumes_select_employer` + `createSignedUrl` hoạt động cho Employer, Employer khác bị từ chối
 - [ ] Candidate thấy Status Change mới trong trang "Đơn của tôi"
+
+## 09 — Review fixes
+- [ ] `/?page=999` khi chỉ có vài tin: trang chủ hiện danh sách rỗng, không lỗi 500 (Supabase thật có trả mã `PGRST103` như adapter giả định không)
+- [ ] Đăng ký khi Supabase bật xác nhận email: hiện "Kiểm tra email để xác nhận tài khoản", ở lại trang
+- [x] `getCurrentProfile` / `getPostingDetail` bọc `cache()` trong file `'use server'` chạy được lúc runtime — đã chạy `next start` 2026-10-16: `/login`, `/signup` 200; `/jobs/abc` 404; route `/employer/*`, `/candidate/*` chuyển về `/login?next=…` khi Supabase không kết nối được (middleware coi là khách)
+
