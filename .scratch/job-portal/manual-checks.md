@@ -29,3 +29,11 @@ Worker không có `.env.local`, nên các mục dưới đây **chưa được k
 - [ ] ILIKE với ký tự escape `\` đi qua PostgREST đúng
 - [ ] Bộ lọc `.or(salary_max.is.null, salary_max.gte.X)` đúng
 - [ ] anon đọc được cột mới của view
+
+## 05 — Candidate applies with resume
+- [ ] Chạy migration `20261016000400_applications.sql`
+- [ ] RLS `applications` / `application_status_changes`: Candidate chỉ thấy đơn của mình, Employer chỉ thấy đơn trên tin của mình
+- [ ] RPC `submit_application`: mã lỗi POSTING_NOT_OPEN / ALREADY_APPLIED / INVALID_RESUME hiện đúng thông báo
+- [ ] Bucket `resumes` private, chỉ PDF ≤ 5 MB; 3 policy storage (insert/select thư mục của mình, delete file chưa gắn đơn)
+- [ ] Upload thật; nộp lỗi thì file bị dọn
+- [ ] Bấm nộp hai lần chỉ tạo một Application
