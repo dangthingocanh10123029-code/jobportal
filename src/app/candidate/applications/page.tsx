@@ -17,7 +17,7 @@ export default async function CandidateApplicationsPage() {
               <div className="candidate-application-main">
                 <div className="candidate-application-heading">
                   <div>
-                    <h2><Link href={`/candidate/applications/${application.id}`}>{application.postingTitle}</Link></h2>
+                    <h2><Link href={`/candidate/applications/${application.id}`} prefetch={false}>{application.postingTitle}</Link></h2>
                     <p>{application.companyName}</p>
                   </div>
                   <span className={`application-status status-${application.status.toLowerCase()}`}>
@@ -27,7 +27,7 @@ export default async function CandidateApplicationsPage() {
                 </div>
                 <div className="candidate-application-meta">
                   <span>Đã nộp ngày {formatDate(application.createdAt)}</span>
-                  <Link aria-label={`Xem lịch sử hồ sơ: ${application.postingTitle}`} href={`/candidate/applications/${application.id}`}>
+                  <Link aria-label={`Xem lịch sử hồ sơ: ${application.postingTitle}`} href={`/candidate/applications/${application.id}`} prefetch={false}>
                     Xem lịch sử <span aria-hidden="true">→</span>
                   </Link>
                 </div>

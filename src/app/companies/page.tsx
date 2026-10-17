@@ -32,7 +32,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
       {result.items.length ? (
         <div aria-label="Danh sách công ty" className="company-grid">
           {result.items.map((company) => (
-            <Link className="surface-card company-list-card" href={`/companies/${company.id}`} key={company.id}>
+            <Link className="surface-card company-list-card" href={`/companies/${company.id}`} key={company.id} prefetch={false}>
               <img alt="" className="company-list-logo" height="64" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="64" />
               <span className="company-list-card-content">
                 <strong>{company.name}{company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</strong>

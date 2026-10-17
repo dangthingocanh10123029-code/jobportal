@@ -24,10 +24,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
       </form>
       {!data ? <AdminEmpty description="Phiên quản trị hết hạn hoặc bạn không có quyền xem danh sách này." title="Không thể tải người dùng" /> : data.items.length ? <>
         <AdminTable label="Danh sách tài khoản"><thead><tr><th>Tài khoản</th><th>Vai trò</th><th>Ngày tạo</th><th>Đăng nhập gần nhất</th><th>Trạng thái</th><th /></tr></thead><tbody>{data.items.map((user) => <tr key={user.userId}>
-          <td><Link className="admin-primary-cell" href={`/admin/users/${user.userId}`}>{user.displayName || 'Chưa cập nhật'}<small>{user.email}</small></Link></td>
+          <td><Link className="admin-primary-cell" href={`/admin/users/${user.userId}`} prefetch={false}>{user.displayName || 'Chưa cập nhật'}<small>{user.email}</small></Link></td>
           <td>{roleLabels[user.role]}</td><td>{formatAdminDate(user.createdAt)}</td><td>{formatAdminDate(user.lastSignInAt)}</td>
           <td>{user.lockedAt ? <AdminBadge tone="danger">Đang khóa</AdminBadge> : <AdminBadge tone="success">Hoạt động</AdminBadge>}</td>
-          <td><Link aria-label={`Xem ${user.email}`} className="admin-row-link" href={`/admin/users/${user.userId}`}>Chi tiết →</Link></td>
+          <td><Link aria-label={`Xem ${user.email}`} className="admin-row-link" href={`/admin/users/${user.userId}`} prefetch={false}>Chi tiết →</Link></td>
         </tr>)}</tbody></AdminTable>
         <AdminPager basePath="/admin/users" filters={filters} page={data.page} pageSize={data.pageSize} total={data.total} />
       </> : <AdminEmpty description="Thử thay đổi từ khóa hoặc bộ lọc." title="Không có người dùng phù hợp" />}
