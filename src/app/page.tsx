@@ -15,8 +15,8 @@ function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSumma
       <div className="public-posting-content">
         <div className="public-posting-heading">
           <div>
-            <h3><Link href={`/jobs/${posting.id}`}>{posting.title}</Link></h3>
-            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
+            <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link></h3>
+            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`} prefetch={false}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
           </div>
           <span className="employment-badge">{employmentLabels[posting.employmentType]}</span>
         </div>
@@ -30,7 +30,7 @@ function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSumma
         </div>
         {posting.skills.length ? <div aria-label="Kỹ năng" className="posting-skill-list">{posting.skills.slice(0, 3).map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
       </div>
-      <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`}><span aria-hidden="true">→</span></Link></div>
+      <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`} prefetch={false}><span aria-hidden="true">→</span></Link></div>
     </article>
   );
 }

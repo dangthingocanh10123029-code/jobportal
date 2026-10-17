@@ -122,10 +122,10 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
             {relatedPostings.map((related) => (
               <article className="surface-card related-posting-card" key={related.id}>
                 <div>
-                  <h3><Link href={`/jobs/${related.id}`}>{related.title}</Link>{related.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</h3>
-                  <p><Link href={`/companies/${related.employerId}`}>{related.companyName}</Link> · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
+                  <h3><Link href={`/jobs/${related.id}`} prefetch={false}>{related.title}</Link>{related.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</h3>
+                  <p><Link href={`/companies/${related.employerId}`} prefetch={false}>{related.companyName}</Link> · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
                 </div>
-                <div className="posting-card-actions">{profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(related.id)} postingId={related.id} /> : null}<Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`}><span aria-hidden="true">→</span></Link></div>
+                <div className="posting-card-actions">{profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(related.id)} postingId={related.id} /> : null}<Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`} prefetch={false}><span aria-hidden="true">→</span></Link></div>
               </article>
             ))}
           </div>

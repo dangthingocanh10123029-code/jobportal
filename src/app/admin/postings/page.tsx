@@ -27,7 +27,7 @@ export default async function AdminPostingsPage({ searchParams }: { searchParams
           <td><span className="admin-primary-cell">{posting.title}<small>{posting.companyName} · {posting.location}</small></span></td>
           <td><AdminBadge tone={posting.displayStatus === 'PUBLISHED' ? 'success' : 'neutral'}>{postingLabels[posting.displayStatus]}</AdminBadge></td><td>{posting.applications}</td><td>{formatAdminDate(posting.createdAt)}</td>
           <td>{posting.hiddenAt ? <AdminBadge tone="danger">Đang ẩn</AdminBadge> : <AdminBadge tone="success">Công khai</AdminBadge>}</td>
-          <td><details className="admin-action-disclosure"><summary>{posting.hiddenAt ? 'Xử lý' : 'Kiểm duyệt'}</summary><div><p><Link href={`/jobs/${posting.id}`} target="_blank">Mở trang tin ↗</Link></p>{posting.hiddenReason ? <p className="admin-hidden-reason"><strong>Lý do:</strong> {posting.hiddenReason}</p> : null}<PostingModerationControl hidden={Boolean(posting.hiddenAt)} postingId={posting.id} /></div></details></td>
+          <td><details className="admin-action-disclosure"><summary>{posting.hiddenAt ? 'Xử lý' : 'Kiểm duyệt'}</summary><div><p><Link href={`/jobs/${posting.id}`} prefetch={false} target="_blank">Mở trang tin ↗</Link></p>{posting.hiddenReason ? <p className="admin-hidden-reason"><strong>Lý do:</strong> {posting.hiddenReason}</p> : null}<PostingModerationControl hidden={Boolean(posting.hiddenAt)} postingId={posting.id} /></div></details></td>
         </tr>)}</tbody></AdminTable>
         <AdminPager basePath="/admin/postings" filters={{ q: params.q, status, hidden: params.hidden }} page={data.page} pageSize={data.pageSize} total={data.total} />
       </> : <AdminEmpty description="Thử thay đổi từ khóa hoặc bộ lọc." title="Không có tin phù hợp" />}

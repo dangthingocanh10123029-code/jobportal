@@ -56,7 +56,7 @@ export default async function EmployerDashboardPage() {
               <tbody>
                 {dashboard.postings.map((posting) => (
                   <tr key={posting.id}>
-                    <td data-label="Tin tuyển dụng"><Link className="dashboard-posting-title" href={`/employer/postings/${posting.id}/applications`}>{posting.title}</Link></td>
+                    <td data-label="Tin tuyển dụng"><Link className="dashboard-posting-title" href={`/employer/postings/${posting.id}/applications`} prefetch={false}>{posting.title}</Link></td>
                     <td data-label="Trạng thái"><span className={`posting-status status-${posting.displayStatus.toLowerCase()}`}>{postingStatusLabels[posting.displayStatus]}</span></td>
                     <td data-label="Lượt xem">{posting.views.toLocaleString('vi-VN')}</td>
                     <td data-label="Đơn">{posting.applications.toLocaleString('vi-VN')}</td>

@@ -27,7 +27,7 @@ function PostingCard({ posting }: { posting: JobPosting }) {
         {posting.hiddenAt ? <div className="hidden-posting-notice"><strong>Tin đã bị ẩn bởi quản trị viên</strong><p>{posting.hiddenReason}</p></div> : null}
       </div>
       <div className="posting-card-actions">
-        <Link className="button button-quiet button-small" href={`/employer/postings/${posting.id}/applications`}>
+        <Link className="button button-quiet button-small" href={`/employer/postings/${posting.id}/applications`} prefetch={false}>
           Xem hồ sơ
         </Link>
         <PostingControls posting={posting} />
