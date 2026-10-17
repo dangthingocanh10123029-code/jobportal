@@ -8,6 +8,7 @@ from app.config import get_settings
 from app.db import close_pool
 from app.errors import install_error_handlers
 from app.modules.health.router import router as health_router
+from app.modules.postings.router import router as postings_router
 
 
 @asynccontextmanager
@@ -26,3 +27,4 @@ app.add_middleware(
 )
 install_error_handlers(app)
 app.include_router(health_router)
+app.include_router(postings_router)

@@ -1,15 +1,20 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { apiFetch } from '@/lib/api';
 import {
   closePostingAction,
   createPostingDraftAction,
   getMyPosting,
   getPostingDetail,
   getRelatedPostings,
+  listOpenPostings,
   publishPostingAction,
   updatePostingAction,
 } from './postings';
 import { pageSchema, postingInputSchema, searchFilterSchema } from './postings-schema';
 import type { PostingInput } from './types';
+
+vi.mock('@/lib/api', () => ({ apiFetch: vi.fn() }));
+beforeEach(() => vi.mocked(apiFetch).mockReset());
 
 const valid: PostingInput = {
   title: 'Lập trình viên TypeScript',
@@ -28,7 +33,7 @@ const valid: PostingInput = {
   benefits: 'Lương tháng 13, bảo hiểm.',
 };
 
-// Invalid input is rejected before any Supabase call, so no env/session is needed here.
+// Invalid input is rejected before any API call.
 describe('createPostingDraftAction — input sai', () => {
   it.each([
     ['tiêu đề < 5 ký tự', { title: ' abc ' }, 'Tiêu đề tối thiểu 5 ký tự'],
@@ -66,6 +71,39 @@ describe('id sai', () => {
     expect(await getMyPosting('1')).toBeNull();
     expect(await getPostingDetail('1')).toBeNull();
     expect(await getRelatedPostings('1')).toEqual([]);
+    expect(apiFetch).not.toHaveBeenCalled();
+  });
+});
+
+describe('gọi FastAPI', () => {
+  const ID = '6f1c1c3e-2b1a-4c1e-9a43-0d7a1f1b2c3d';
+
+  it('tạo nháp: POST body đã chuẩn hoá; lỗi API → ActionResult thất bại', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: false, status: 403, error: 'Chỉ nhà tuyển dụng được thực hiện thao tác này' });
+    expect(await createPostingDraftAction(valid)).toEqual({ success: false, error: 'Chỉ nhà tuyển dụng được thực hiện thao tác này' });
+    expect(apiFetch).toHaveBeenCalledWith('/me/postings', {
+      method: 'POST',
+      body: { ...valid, applicationDeadline: '2026-11-01T10:00:00.000Z' },
+    });
+  });
+
+  it('đăng tin: POST /me/postings/{id}/publish, trả data', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: true, data: { id: ID } });
+    expect(await publishPostingAction({ id: ID })).toEqual({ success: true, data: { id: ID } });
+    expect(apiFetch).toHaveBeenCalledWith(`/me/postings/${ID}/publish`, { method: 'POST' });
+  });
+
+  it('tìm kiếm: đổi tên tham số theo contract, bỏ trường rác', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: true, data: { items: [], total: 0, page: 2, pageSize: 20 } });
+    await listOpenPostings({ q: ' ke toan ', employmentType: 'PART_TIME', maxExperience: 0, level: 'CEO' as never, page: 2 });
+    expect(apiFetch).toHaveBeenCalledWith('/postings?q=ke+toan&type=PART_TIME&exp=0&page=2');
+  });
+
+  it('chi tiết: 404 → null, lỗi khác → ném', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: false, status: 404, error: 'Không tìm thấy tin tuyển dụng' });
+    expect(await getPostingDetail(ID)).toBeNull();
+    vi.mocked(apiFetch).mockResolvedValue({ ok: false, status: 500, error: 'Lỗi máy chủ (500)' });
+    await expect(getPostingDetail('7f1c1c3e-2b1a-4c1e-9a43-0d7a1f1b2c3d')).rejects.toThrow('Lỗi máy chủ (500)');
   });
 });
 
