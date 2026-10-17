@@ -112,6 +112,6 @@ class PostgresAdminRepository:
         self._rpc("public.admin_set_company_verified(%s, %s)", (company_id, verified))
 
     def list_audit(self, filters, offset, limit):
-        return self._page("admin_audit_entries", AUDIT_COLS, AUDIT_FILTERS, filters, "created_at desc, id", offset, limit)
+        return self._page("admin_audit_entries", AUDIT_COLS, AUDIT_FILTERS, filters, "created_at desc, seq desc", offset, limit)
 
 

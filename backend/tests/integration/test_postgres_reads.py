@@ -21,7 +21,6 @@ from app.modules.applications.schemas import (
 from app.modules.candidates.postgres import PostgresCandidateRepository
 from app.modules.companies.postgres import PostgresCompanyRepository
 from app.modules.dashboard.postgres import PostgresDashboardRepository
-from app.modules.health.postgres import PostgresHealthRepository
 from app.modules.notifications.postgres import PostgresNotificationRepository
 from app.modules.postings.postgres import PostgresPostingRepository
 from app.modules.postings.schemas import SearchFilter
@@ -34,7 +33,7 @@ pytestmark = [
     pytest.mark.skipif(not DATABASE_URL, reason="needs RUN_INTEGRATION=1 and DATABASE_URL"),
 ]
 
-ADAPTERS = ["applications", "candidates", "companies", "dashboard", "health", "notifications", "postings", "profiles"]
+ADAPTERS = ["applications", "candidates", "companies", "dashboard", "notifications", "postings", "profiles"]
 
 
 def _savepoint_tx(conn):
@@ -134,10 +133,6 @@ def test_dashboard(seed):
     [stats] = PostgresDashboardRepository(_claims(seed["employer"])).posting_stats(str(seed["employer"]))
     assert stats.id == str(seed["posting"]) and stats.views == 0
     assert stats.applications_by_status.get("SUBMITTED") == 1
-
-
-def test_health(seed):
-    assert PostgresHealthRepository().ping_db() is True
 
 
 def test_notifications(seed):

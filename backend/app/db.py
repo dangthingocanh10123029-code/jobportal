@@ -1,20 +1,44 @@
 import json
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from functools import lru_cache
 from typing import Any
 
+import psycopg
 from psycopg import Connection
 from psycopg_pool import ConnectionPool
 
 from app.config import get_settings
 
+# autocommit: user_tx sends BEGIN/COMMIT itself so they share round trips with the queries.
+# Keepalives stop the pooler path from dropping idle connections silently; tcp_user_timeout (Linux) bounds a send
+# into a dead socket. The pooler ignores startup `options`, so statement_timeout is set per transaction in user_tx.
+CONNECT_KWARGS = {
+    "autocommit": True,
+    "connect_timeout": 5,
+    "keepalives": 1,
+    "keepalives_idle": 30,
+    "keepalives_interval": 10,
+    "keepalives_count": 3,
+    "tcp_user_timeout": 10_000,
+}
+STATEMENT_TIMEOUT = "10s"
+
 
 @lru_cache
 def get_pool() -> ConnectionPool:
-    # autocommit: user_tx sends BEGIN/COMMIT itself so they share round trips with the queries.
+    # check: a connection that died while idle is discarded and replaced before any query is sent on it.
     return ConnectionPool(
-        get_settings().database_url, kwargs={"autocommit": True}, min_size=1, max_size=10, timeout=10, open=True
+        get_settings().database_url,
+        kwargs=CONNECT_KWARGS,
+        min_size=1,
+        max_size=10,
+        timeout=10,
+        check=ConnectionPool.check_connection,
+        max_idle=120,
+        max_lifetime=1800,
+        reconnect_timeout=60,
+        open=True,
     )
 
 
@@ -38,11 +62,16 @@ def user_tx(claims: dict[str, Any] | None, pool: ConnectionPool | None = None) -
             with conn.pipeline():
                 conn.execute("begin")
                 conn.execute(
-                    "select set_config('role', %s, true), set_config('request.jwt.claims', %s, true)",
-                    (role, json.dumps(claims or {"role": "anon"})),
+                    "select set_config('role', %s, true), set_config('request.jwt.claims', %s, true), "
+                    "set_config('statement_timeout', %s, true)",
+                    (role, json.dumps(claims or {"role": "anon"}), STATEMENT_TIMEOUT),
                 )
                 yield conn
                 conn.execute("commit")
         except BaseException:
-            conn.rollback()  # also ends a transaction whose error surfaced only at the final sync
+            # Also ends a transaction whose error surfaced only at the final sync. A lost connection is left
+            # broken for the pool to discard, and a failing rollback must not hide the original error.
+            if not conn.broken:
+                with suppress(psycopg.Error):
+                    conn.rollback()
             raise
