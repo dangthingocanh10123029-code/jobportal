@@ -16,6 +16,13 @@ const input = (overrides: Partial<PostingInput> = {}): PostingInput =>
     salaryMin: 15_000_000,
     salaryMax: 25_000_000,
     applicationDeadline: '2026-11-01T00:00:00.000Z',
+    industry: 'IT_SOFTWARE',
+    level: 'JUNIOR',
+    experienceYears: 1,
+    headcount: 2,
+    skills: ['TypeScript', 'React'],
+    requirements: 'Biết TypeScript cơ bản.',
+    benefits: 'Lương tháng 13, bảo hiểm đầy đủ.',
     ...overrides,
   });
 
@@ -34,6 +41,7 @@ describe('createDraft', () => {
       ...input(),
       employerId: A,
       companyName: 'ACME',
+      companyLogoUrl: null,
       status: 'DRAFT',
       displayStatus: 'DRAFT',
     });
@@ -195,6 +203,11 @@ describe('listOpen', () => {
       salaryMax: 25_000_000,
       applicationDeadline: '2026-11-01T00:00:00.000Z',
       createdAt: newer.createdAt,
+      industry: 'IT_SOFTWARE',
+      level: 'JUNIOR',
+      experienceYears: 1,
+      skills: ['TypeScript', 'React'],
+      companyLogoUrl: null,
     });
   });
 
@@ -271,6 +284,49 @@ describe('listOpen với Search Filter', () => {
     expect(page.total).toBe(1);
   });
 
+  it('ngành nghề và cấp bậc khớp chính xác', async () => {
+    await published({ title: 'Dev junior', industry: 'IT_SOFTWARE', level: 'JUNIOR' });
+    await published({ title: 'Dev senior', industry: 'IT_SOFTWARE', level: 'SENIOR' });
+    await published({ title: 'Sales junior', industry: 'SALES', level: 'JUNIOR' });
+    expect(await titles({ industry: 'IT_SOFTWARE' })).toEqual(['Dev senior', 'Dev junior']);
+    expect(await titles({ level: 'JUNIOR' })).toEqual(['Sales junior', 'Dev junior']);
+    expect(await titles({ industry: 'IT_SOFTWARE', level: 'SENIOR' })).toEqual(['Dev senior']);
+  });
+
+  it('maxExperience: tin yêu cầu kinh nghiệm ≤ giá trị, 0 = chỉ tin không yêu cầu', async () => {
+    await published({ title: '0 năm', experienceYears: 0 });
+    await published({ title: '2 năm', experienceYears: 2 });
+    await published({ title: '5 năm', experienceYears: 5 });
+    expect(await titles({ maxExperience: 2 })).toEqual(['2 năm', '0 năm']);
+    expect(await titles({ maxExperience: 0 })).toEqual(['0 năm']);
+  });
+
+  it('skill: bằng một kỹ năng của tin, không dấu, không phân biệt hoa thường, không khớp một phần', async () => {
+    await published({ title: 'Kế toán', skills: ['Kế toán thuế', 'Excel'] });
+    await published({ title: 'Dev', skills: ['TypeScript'] });
+    expect(await titles({ skill: 'ke toan thue' })).toEqual(['Kế toán']);
+    expect(await titles({ skill: 'EXCEL' })).toEqual(['Kế toán']);
+    expect(await titles({ skill: 'Type' })).toEqual([]);
+    expect(await titles({ skill: '  ' })).toHaveLength(2);
+  });
+
+  it('sort salary_desc: theo salaryMax giảm dần, thỏa thuận (null) ở cuối', async () => {
+    await published({ title: 'Thỏa thuận', salaryMin: null, salaryMax: null });
+    await published({ title: '20 triệu', salaryMin: null, salaryMax: 20_000_000 });
+    await published({ title: '40 triệu', salaryMin: null, salaryMax: 40_000_000 });
+    await published({ title: 'Từ 30 triệu', salaryMin: 30_000_000, salaryMax: null });
+    expect(await titles({ sort: 'salary_desc' })).toEqual(['40 triệu', '20 triệu', 'Từ 30 triệu', 'Thỏa thuận']);
+  });
+
+  it('sort deadline_asc: hạn gần nhất trước; mặc định newest', async () => {
+    await published({ title: 'Hạn xa', applicationDeadline: '2026-12-01T00:00:00Z' });
+    await published({ title: 'Hạn gần', applicationDeadline: '2026-10-20T00:00:00Z' });
+    await published({ title: 'Hạn giữa', applicationDeadline: '2026-11-01T00:00:00Z' });
+    expect(await titles({ sort: 'deadline_asc' })).toEqual(['Hạn gần', 'Hạn giữa', 'Hạn xa']);
+    expect(await titles({})).toEqual(['Hạn giữa', 'Hạn gần', 'Hạn xa']);
+    expect(await titles({ sort: 'newest' })).toEqual(['Hạn giữa', 'Hạn gần', 'Hạn xa']);
+  });
+
   it('không truyền page → trang 1', async () => {
     await published();
     expect(await service.listOpen({})).toMatchObject({ page: 1, total: 1 });
@@ -296,5 +352,25 @@ describe('getPublic', () => {
     const draft = await service.createDraft(A, input());
     expect(await service.getPublic(draft.id)).toBeNull();
     expect(await service.getPublic('missing' as JobPostingId)).toBeNull();
+  });
+});
+
+describe('listRelated', () => {
+  it('≤ 6 tin đang mở cùng ngành, mới nhất trước, trừ chính tin đó', async () => {
+    const self = await published({ title: 'Chính nó', industry: 'SALES' });
+    for (let i = 0; i < 7; i++) await published({ title: `Sales ${i}`, industry: 'SALES' });
+    await published({ title: 'Dev', industry: 'IT_SOFTWARE' });
+    const closed = await published({ title: 'Sales đã đóng', industry: 'SALES' });
+    await service.close(A, closed.id);
+    expect((await service.listRelated(self.id)).map((p) => p.title)).toEqual(
+      ['Sales 6', 'Sales 5', 'Sales 4', 'Sales 3', 'Sales 2', 'Sales 1'],
+    );
+  });
+
+  it('tin DRAFT hoặc không tồn tại → []', async () => {
+    await published({ industry: 'SALES' });
+    const draft = await service.createDraft(A, input({ industry: 'SALES' }));
+    expect(await service.listRelated(draft.id)).toEqual([]);
+    expect(await service.listRelated('missing' as JobPostingId)).toEqual([]);
   });
 });

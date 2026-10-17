@@ -10,6 +10,13 @@ export type EmploymentType = 'FULL_TIME' | 'PART_TIME' | 'INTERNSHIP' | 'CONTRAC
 export type ApplicationStatus =
   | 'SUBMITTED' | 'REVIEWING' | 'INTERVIEWING' | 'OFFERED'
   | 'HIRED' | 'REJECTED' | 'WITHDRAWN';
+export type Industry =
+  | 'IT_SOFTWARE' | 'SALES' | 'MARKETING' | 'ACCOUNTING_FINANCE' | 'HR' | 'ADMIN'
+  | 'CUSTOMER_SERVICE' | 'EDUCATION' | 'HEALTHCARE' | 'CONSTRUCTION' | 'MANUFACTURING'
+  | 'LOGISTICS' | 'HOSPITALITY' | 'DESIGN' | 'LEGAL' | 'OTHER';
+export type JobLevel = 'INTERN' | 'FRESHER' | 'JUNIOR' | 'MIDDLE' | 'SENIOR' | 'LEAD' | 'MANAGER';
+export type CompanySize = 'S1_10' | 'S11_50' | 'S51_200' | 'S201_500' | 'S500_PLUS';
+export type PostingSort = 'newest' | 'salary_desc' | 'deadline_asc';
 
 export type Profile = {
   userId: string;
@@ -27,12 +34,21 @@ export type PostingInput = {
   salaryMin: number | null;
   salaryMax: number | null;
   applicationDeadline: string;
+  industry: Industry;
+  level: JobLevel;
+  /** 0 = no experience required. */
+  experienceYears: number;
+  headcount: number;
+  skills: string[];
+  requirements: string;
+  benefits: string;
 };
 
 export type JobPosting = PostingInput & {
   id: string;
   employerId: string;
   companyName: string;
+  companyLogoUrl: string | null;
   status: PostingStatus;
   displayStatus: DisplayPostingStatus;
   createdAt: string;
@@ -44,12 +60,21 @@ export type SearchFilter = {
   location?: string;
   employmentType?: EmploymentType;
   minSalary?: number;
+  industry?: Industry;
+  level?: JobLevel;
+  /** Postings requiring at most this many years. */
+  maxExperience?: number;
+  /** Accent- and case-insensitive equality with one of the posting's skills. */
+  skill?: string;
+  /** Default 'newest'; 'salary_desc' puts negotiable (salary_max null) last. */
+  sort?: PostingSort;
   page?: number;
 };
 
 export type PostingSummary = Pick<
   JobPosting,
-  'id' | 'title' | 'companyName' | 'location' | 'employmentType' | 'salaryMin' | 'salaryMax' | 'applicationDeadline' | 'createdAt'
+  | 'id' | 'title' | 'companyName' | 'location' | 'employmentType' | 'salaryMin' | 'salaryMax' | 'applicationDeadline' | 'createdAt'
+  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl'
 >;
 
 /** isOpen = PUBLISHED and not past the deadline (ADR-0001). */

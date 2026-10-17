@@ -11,6 +11,7 @@ export type StoredJobPosting = PostingInput & {
   id: JobPostingId;
   employerId: EmployerId;
   companyName: string;
+  companyLogoUrl: string | null;
   status: PostingStatus;
   createdAt: string;
   updatedAt: string;
@@ -24,7 +25,7 @@ export interface IJobPostingRepository {
   update(id: JobPostingId, changes: Partial<PostingInput> & { status?: PostingStatus }): Promise<StoredJobPosting>;
   /** Newest first. */
   listByEmployer(employerId: EmployerId): Promise<StoredJobPosting[]>;
-  /** Open postings (see isOpen) matching every given criterion, newest first, sliced to the range; total counts all matches. */
+  /** Open postings (see isOpen) matching every given criterion, ordered by criteria.sort (default newest; ties newest first), sliced to the range; total counts all matches. */
   listOpen(
     criteria: SearchCriteria,
     range: { offset: number; limit: number },

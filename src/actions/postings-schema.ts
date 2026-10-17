@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
-const EMPLOYMENT_TYPES = ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'] as const;
+import type { Industry, JobLevel, PostingSort } from './types';
 
-// Kept in sync with the CHECK constraints in supabase/migrations/*_job_postings.sql.
+const EMPLOYMENT_TYPES = ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'] as const;
+const INDUSTRIES = [
+  'IT_SOFTWARE', 'SALES', 'MARKETING', 'ACCOUNTING_FINANCE', 'HR', 'ADMIN', 'CUSTOMER_SERVICE', 'EDUCATION',
+  'HEALTHCARE', 'CONSTRUCTION', 'MANUFACTURING', 'LOGISTICS', 'HOSPITALITY', 'DESIGN', 'LEGAL', 'OTHER',
+] as const satisfies readonly Industry[];
+const LEVELS = ['INTERN', 'FRESHER', 'JUNIOR', 'MIDDLE', 'SENIOR', 'LEAD', 'MANAGER'] as const satisfies readonly JobLevel[];
+const SORTS = ['newest', 'salary_desc', 'deadline_asc'] as const satisfies readonly PostingSort[];
+
+// Kept in sync with the CHECK constraints in supabase/migrations/*_job_postings.sql and *_rich_postings.sql.
 const salary = z
   .number({ invalid_type_error: 'Lương phải là số' })
   .int('Lương phải là số nguyên')
@@ -29,7 +37,33 @@ export const postingInputSchema = z.object({
     .string({ required_error: 'Vui lòng nhập hạn nộp hồ sơ' })
     .datetime({ offset: true, message: 'Hạn nộp hồ sơ không hợp lệ' })
     .transform((s) => new Date(s).toISOString()),
+  industry: z.enum(INDUSTRIES, { errorMap: () => ({ message: 'Ngành nghề không hợp lệ' }) }),
+  level: z.enum(LEVELS, { errorMap: () => ({ message: 'Cấp bậc không hợp lệ' }) }),
+  experienceYears: z
+    .number({ invalid_type_error: 'Số năm kinh nghiệm phải là số' })
+    .int('Số năm kinh nghiệm phải là số nguyên')
+    .min(0, 'Số năm kinh nghiệm không được âm')
+    .max(20, 'Số năm kinh nghiệm tối đa 20'),
+  headcount: z
+    .number({ invalid_type_error: 'Số lượng tuyển phải là số' })
+    .int('Số lượng tuyển phải là số nguyên')
+    .min(1, 'Số lượng tuyển tối thiểu 1')
+    .max(999, 'Số lượng tuyển tối đa 999'),
+  skills: z
+    .array(z.string().trim().min(1, 'Kỹ năng không được để trống').max(30, 'Mỗi kỹ năng tối đa 30 ký tự'))
+    .max(10, 'Tối đa 10 kỹ năng')
+    .refine((skills) => new Set(skills.map((s) => s.toLowerCase())).size === skills.length, 'Kỹ năng bị trùng'),
+  requirements: longText('Yêu cầu'),
+  benefits: longText('Quyền lợi'),
 });
+
+function longText(label: string) {
+  return z
+    .string({ required_error: `Vui lòng nhập ${label.toLowerCase()}` })
+    .trim()
+    .min(10, `${label} tối thiểu 10 ký tự`)
+    .max(5000, `${label} tối đa 5000 ký tự`);
+}
 
 export const postingIdSchema = z.string().uuid('Mã tin không hợp lệ');
 
@@ -57,6 +91,11 @@ export const searchFilterSchema = z
     location: text,
     employmentType: z.enum(EMPLOYMENT_TYPES).optional().catch(undefined),
     minSalary: z.coerce.number().int().positive().safe().optional().catch(undefined),
+    industry: z.enum(INDUSTRIES).optional().catch(undefined),
+    level: z.enum(LEVELS).optional().catch(undefined),
+    maxExperience: z.coerce.number().int().min(0).max(20).optional().catch(undefined),
+    skill: text,
+    sort: z.enum(SORTS).optional().catch(undefined),
     page: pageSchema,
   })
   .catch({ page: 1 });

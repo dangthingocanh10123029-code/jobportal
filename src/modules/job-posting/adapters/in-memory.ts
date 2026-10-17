@@ -1,3 +1,4 @@
+import type { PostingSort } from '@/actions/types';
 import { foldAccents, meetsMinSalary } from '../domain/search';
 import { isOpen } from '../domain/status';
 import type { Clock, EmployerId, IJobPostingRepository, JobPostingId, SearchCriteria, StoredJobPosting } from '../domain/types';
@@ -18,6 +19,7 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
       id: `posting-${this.nextId++}` as JobPostingId,
       employerId,
       companyName: this.companyNames[employerId] ?? '',
+      companyLogoUrl: null,
       status: 'DRAFT',
       createdAt: at,
       updatedAt: at,
@@ -45,7 +47,7 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
   }
 
   async listOpen(
-    { q, location, employmentType, minSalary }: SearchCriteria,
+    { q, location, employmentType, minSalary, industry, level, maxExperience, skill, sort = 'newest' }: SearchCriteria,
     { offset, limit }: { offset: number; limit: number },
   ) {
     const open = [...this.rows.values()]
@@ -54,7 +56,19 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
       .filter((r) => location === undefined || foldAccents(r.location).includes(foldAccents(location)))
       .filter((r) => employmentType === undefined || r.employmentType === employmentType)
       .filter((r) => minSalary === undefined || meetsMinSalary(r.salaryMax, minSalary))
-      .reverse();
+      .filter((r) => industry === undefined || r.industry === industry)
+      .filter((r) => level === undefined || r.level === level)
+      .filter((r) => maxExperience === undefined || r.experienceYears <= maxExperience)
+      .filter((r) => skill === undefined || r.skills.some((s) => foldAccents(s) === foldAccents(skill)))
+      .reverse() // newest first; the stable sort below keeps that as the tie-break
+      .sort(SORTS[sort]);
     return { rows: open.slice(offset, offset + limit).map((r) => ({ ...r })), total: open.length };
   }
 }
+
+// Mirrors the ORDER BY in SupabaseJobPostingRepository.listOpen.
+const SORTS: Record<PostingSort, (a: StoredJobPosting, b: StoredJobPosting) => number> = {
+  newest: () => 0,
+  salary_desc: (a, b) => (b.salaryMax ?? -1) - (a.salaryMax ?? -1),
+  deadline_asc: (a, b) => Date.parse(a.applicationDeadline) - Date.parse(b.applicationDeadline),
+};
