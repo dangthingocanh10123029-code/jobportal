@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Đủ file, đúng tên/đường dẫn/kích thước trong contract
 - [ ] Logo: trừu tượng, không chữ, không giống thương hiệu có thật, đa dạng màu nhưng hài hòa với bảng màu chung
