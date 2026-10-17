@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import { getCurrentProfile } from '@/actions/auth';
 import { getMyApplicationForPosting } from '@/actions/applications';
 import { getPostingDetail, getRelatedPostings } from '@/actions/postings';
+import { getSavedPostingIds } from '@/actions/candidates';
 import { ApplicationForm } from '@/components/applications/application-form';
 import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
+import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,7 +21,8 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
   const posting = await getPostingDetail(id);
   if (!posting) notFound();
   const relatedPostings = await getRelatedPostings(id);
-  const profile = posting.isOpen ? await getCurrentProfile() : null;
+  const profile = await getCurrentProfile();
+  const savedIds = profile?.role === 'CANDIDATE' ? await getSavedPostingIds() : [];
   const application = posting.isOpen && profile?.role === 'CANDIDATE'
     ? await getMyApplicationForPosting(id)
     : null;
@@ -46,6 +49,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
             <h1>{posting.title}</h1>
             <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
           </div>
+          {profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}
         </header>
 
         <div className="posting-detail-meta">
@@ -112,7 +116,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
                   <h3><Link href={`/jobs/${related.id}`}>{related.title}</Link></h3>
                   <p><Link href={`/companies/${related.employerId}`}>{related.companyName}</Link> · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
                 </div>
-                <Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`}><span aria-hidden="true">→</span></Link>
+                <div className="posting-card-actions">{profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(related.id)} postingId={related.id} /> : null}<Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`}><span aria-hidden="true">→</span></Link></div>
               </article>
             ))}
           </div>

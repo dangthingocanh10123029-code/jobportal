@@ -240,6 +240,13 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .public-posting-meta > span > span { margin-right: 4px; color: #94a3b8; font-size: 15px; }
 .posting-arrow { display: grid; width: 36px; height: 36px; flex: 0 0 auto; place-items: center; border-radius: 50%; color: var(--color-primary); background: var(--color-primary-soft); font-size: 20px; transition: color 150ms ease, background 150ms ease; }
 .posting-arrow:hover { color: #fff; background: var(--color-primary); }
+.posting-card-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 9px; }
+.saved-posting-control { position: relative; display: inline-flex; flex: 0 0 auto; }
+.saved-posting-button { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--color-border); border-radius: 50%; color: #94a3b8; background: #fff; cursor: pointer; font-size: 18px; transition: color 150ms ease, background 150ms ease, border-color 150ms ease, transform 150ms ease; }
+.saved-posting-button:hover { transform: scale(1.05); border-color: #fecaca; color: #dc2626; }
+.saved-posting-button.is-saved { border-color: #fecaca; color: #dc2626; background: #fff1f2; }
+.saved-posting-button:disabled { cursor: wait; opacity: .7; }
+.saved-posting-error { position: absolute; z-index: 2; top: calc(100% + 6px); right: 0; width: max-content; max-width: 230px; padding: 7px 9px; border-radius: 7px; color: #b91c1c; background: #fee2e2; box-shadow: 0 3px 12px rgb(15 23 42 / 10%); font-size: 11px; }
 .public-empty-state { display: flex; min-height: 300px; flex-direction: column; align-items: center; justify-content: center; padding: 34px 20px; text-align: center; box-shadow: none; }
 .public-empty-state img { max-width: 100%; height: auto; }
 .public-empty-state h3 { margin: 8px 0 0; font-size: 18px; }
@@ -289,6 +296,32 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .company-open-posting-content h3 a:hover { color: var(--color-primary); }
 .company-open-posting-content p { margin: 6px 0 0; color: var(--color-muted); font-size: 12px; }
 .company-open-posting-meta { display: flex; flex-wrap: wrap; gap: 7px 17px; margin-top: 10px; color: var(--color-muted); font-size: 12px; }
+.candidate-profile-page, .candidate-saved-page { padding-top: 44px; }
+.candidate-profile-card { max-width: 820px; padding: 28px; box-shadow: none; }
+.candidate-profile-form { gap: 20px; }
+.candidate-profile-identity { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; padding-bottom: 18px; border-bottom: 1px solid var(--color-border); }
+.candidate-profile-identity strong { font-size: 17px; }
+.candidate-profile-identity span { color: var(--color-muted); font-size: 13px; }
+.skills-tag-input { display: flex; flex-direction: column; gap: 9px; }
+.skills-tag-input .skill-tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.skills-tag-input .field-hint { color: var(--color-muted); font-size: 12px; font-weight: 400; }
+.skills-tag-input .form-error { color: var(--color-danger); font-size: 12px; }
+.form-success { margin: 0; color: var(--color-success); font-size: 13px; font-weight: 650; }
+.saved-posting-list { display: flex; flex-direction: column; gap: 13px; }
+.saved-posting-card { display: flex; align-items: center; gap: 17px; padding: 20px; box-shadow: none; }
+.saved-posting-content { min-width: 0; flex: 1; }
+.saved-posting-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.saved-posting-heading h2 { margin: 0; font-size: 17px; }
+.saved-posting-heading h2 a:hover { color: var(--color-primary); }
+.saved-posting-content > p { margin: 5px 0 0; color: var(--color-muted); font-size: 13px; }
+.saved-posting-content > p a:hover { color: var(--color-primary); }
+.saved-posting-meta { display: flex; flex-wrap: wrap; gap: 7px 15px; margin-top: 11px; color: var(--color-muted); font-size: 12px; }
+.posting-availability-badge { padding: 5px 9px; border-radius: 999px; color: #92400e; background: #fef3c7; font-size: 11px; font-weight: 700; }
+.saved-posting-card.is-closed .saved-posting-content { opacity: .8; }
+.candidate-saved-empty { display: flex; min-height: 330px; flex-direction: column; align-items: center; justify-content: center; padding: 34px 20px; text-align: center; box-shadow: none; }
+.candidate-saved-empty img { max-width: 100%; height: auto; }
+.candidate-saved-empty h2 { margin: 10px 0 0; font-size: 19px; }
+.candidate-saved-empty p { margin: 8px 0 19px; color: var(--color-muted); font-size: 14px; }
 .company-profile-layout { display: grid; grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.5fr); align-items: start; gap: 22px; }
 .company-logo-card { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px; box-shadow: none; }
 .company-logo-card h2 { margin: 0; font-size: 18px; }
@@ -384,6 +417,14 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .candidate-application-meta a:hover { color: #1d4ed8; }
 .employer-application-card { display: flex; align-items: center; gap: 20px; }
 .employer-application-card .candidate-application-main { flex: 1; }
+.applicant-headline { margin: 12px 0 0; color: #334155; font-size: 13px; font-weight: 650; }
+.applicant-skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.applicant-profile-details { flex: 0 0 auto; }
+.applicant-profile-panel { width: min(430px, 100%); margin-top: 12px; padding: 16px; border: 1px solid var(--color-border); border-radius: 11px; background: var(--color-surface); }
+.applicant-profile-panel h3 { margin: 0 0 12px; font-size: 14px; }
+.applicant-profile-panel > div + div { margin-top: 12px; }
+.applicant-profile-panel strong { font-size: 12px; }
+.applicant-profile-panel p { margin: 5px 0 0; color: #475569; font-size: 12px; line-height: 1.65; white-space: pre-wrap; }
 .employer-application-meta { margin-top: 13px; }
 .employer-application-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .employer-application-error { margin: 12px 0 0; font-size: 12px; }

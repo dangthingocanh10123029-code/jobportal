@@ -8,6 +8,7 @@ import {
 import type { ApplicationStatus, EmployerApplicationSummary } from '@/actions/types';
 import { allowedNextStatuses } from '@/modules/application';
 import { applicationStatusLabels, formatDate } from '@/components/format';
+import { ApplicantProfileDetails } from './applicant-profile-details';
 
 const transitionLabels: Partial<Record<ApplicationStatus, string>> = {
   REVIEWING: 'Bắt đầu xem xét',
@@ -78,11 +79,14 @@ function EmployerApplicationCard({ application }: { application: EmployerApplica
             {applicationStatusLabels[status]}
           </span>
         </div>
+        {application.candidateHeadline ? <p className="applicant-headline">{application.candidateHeadline}</p> : null}
+        {application.candidateSkills.length ? <div aria-label="Kỹ năng ứng viên" className="posting-skill-list applicant-skills">{application.candidateSkills.map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
         <div className="candidate-application-meta employer-application-meta">
           <span>Nhận hồ sơ ngày {formatDate(application.createdAt)}</span>
           <button className="button button-quiet button-small" disabled={downloading} onClick={downloadResume} type="button">
             {downloading ? 'Đang tạo link…' : 'Tải CV'}
           </button>
+          <ApplicantProfileDetails applicationId={application.id} />
         </div>
       </div>
 

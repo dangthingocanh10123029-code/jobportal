@@ -1,10 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent, type KeyboardEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { createPostingDraftAction, updatePostingAction } from '@/actions/postings';
 import type { EmploymentType, Industry, JobLevel, JobPosting, PostingInput } from '@/actions/types';
 import { industryLabels, jobLevelLabels } from '@/components/format';
+import { SkillsTagInput } from './skills-tag-input';
 
 const employmentTypes: { value: EmploymentType; label: string }[] = [
   { value: 'FULL_TIME', label: 'Toàn thời gian' },
@@ -52,30 +53,6 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
   const [error, setError] = useState('');
   const [salaryError, setSalaryError] = useState('');
   const [skills, setSkills] = useState<string[]>(initialPosting?.skills ?? []);
-  const [skillDraft, setSkillDraft] = useState('');
-  const [skillError, setSkillError] = useState('');
-
-  function addSkill(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key !== 'Enter') return;
-    event.preventDefault();
-    const skill = skillDraft.trim();
-    if (!skill) return;
-    if (skill.length > 30) {
-      setSkillError('Mỗi kỹ năng tối đa 30 ký tự.');
-      return;
-    }
-    if (skills.some((existing) => existing.toLocaleLowerCase() === skill.toLocaleLowerCase())) {
-      setSkillError('Kỹ năng này đã được thêm.');
-      return;
-    }
-    if (skills.length >= 10) {
-      setSkillError('Bạn chỉ có thể thêm tối đa 10 kỹ năng.');
-      return;
-    }
-    setSkills([...skills, skill]);
-    setSkillDraft('');
-    setSkillError('');
-  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -139,17 +116,7 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
       </div>
       <div className="field-label skills-field">
         Kỹ năng <span className="field-optional">(tối đa 10)</span>
-        <div className="skill-tag-list" aria-label="Kỹ năng đã thêm">
-          {skills.map((skill) => (
-            <span className="skill-tag" key={skill.toLocaleLowerCase()}>
-              {skill}
-              <button aria-label={`Xóa kỹ năng ${skill}`} onClick={() => setSkills(skills.filter((item) => item !== skill))} type="button">×</button>
-              <input name="skills" type="hidden" value={skill} />
-            </span>
-          ))}
-        </div>
-        <input className="text-input" disabled={skills.length >= 10} maxLength={30} onChange={(event) => { setSkillDraft(event.target.value); setSkillError(''); }} onKeyDown={addSkill} placeholder={skills.length >= 10 ? 'Đã đạt tối đa 10 kỹ năng' : 'Nhập kỹ năng rồi nhấn Enter'} value={skillDraft} />
-        {skillError ? <span className="form-error" role="alert">{skillError}</span> : null}
+        <SkillsTagInput maxSkills={10} onChange={setSkills} skills={skills} />
       </div>
       <label className="field-label">
         Yêu cầu <span className="required-mark">*</span>

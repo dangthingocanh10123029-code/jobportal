@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { listOpenPostings } from '@/actions/postings';
+import { getSavedPostingIds } from '@/actions/candidates';
+import { getCurrentProfile } from '@/actions/auth';
 import { searchFilterSchema } from '@/actions/postings-schema';
 import type { Industry, PostingSort, PostingSummary, SearchFilter } from '@/actions/types';
 import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels, postingSortLabels } from '@/components/format';
+import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 
-function PostingCard({ posting }: { posting: PostingSummary }) {
+function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean }) {
   return (
     <article className="public-posting-card">
       <img alt="" className="company-placeholder" height="48" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="48" />
@@ -26,9 +29,7 @@ function PostingCard({ posting }: { posting: PostingSummary }) {
         </div>
         {posting.skills.length ? <div aria-label="Kỹ năng" className="posting-skill-list">{posting.skills.slice(0, 3).map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
       </div>
-      <Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`}>
-        <span aria-hidden="true">→</span>
-      </Link>
+      <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`}><span aria-hidden="true">→</span></Link></div>
     </article>
   );
 }
@@ -79,7 +80,8 @@ function PageNavigation({ page, pageCount, filter }: { page: number; pageCount: 
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<HomeSearchParams> }) {
   const filter = searchFilterFromParams(await searchParams);
-  const postingsPage = await listOpenPostings(filter);
+  const [postingsPage, savedIds, profile] = await Promise.all([listOpenPostings(filter), getSavedPostingIds(), getCurrentProfile()]);
+  const isCandidate = profile?.role === 'CANDIDATE';
   const pageCount = Math.max(1, Math.ceil(postingsPage.total / postingsPage.pageSize));
   const hasFilters = Boolean(filter.q || filter.location || filter.employmentType || filter.minSalary || filter.industry || filter.level || filter.maxExperience !== undefined || filter.skill || (filter.sort && filter.sort !== 'newest'));
 
@@ -175,7 +177,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
         {postingsPage.items.length > 0 ? (
           <div aria-label="Danh sách việc làm đang mở" className="public-posting-list">
-            {postingsPage.items.map((posting) => <PostingCard key={posting.id} posting={posting} />)}
+            {postingsPage.items.map((posting) => <PostingCard isCandidate={isCandidate} key={posting.id} posting={posting} savedIds={savedIds} />)}
           </div>
         ) : (
           <div className="surface-card public-empty-state">
