@@ -4,7 +4,7 @@
 
 **Blocked by:** 16
 
-**Status:** in-progress (A merged + pushed, v2_checks 23/23, B đang làm)
+**Status:** resolved
 
 - [ ] Migration `20261017000400_*`: bảng `notifications` + RLS (chỉ chủ đọc/đánh dấu đã đọc), trigger trên `applications` insert và `application_status_changes` insert tạo thông báo đúng người nhận; cột/ bảng `posting_views` + RPC tăng lượt xem (security definer, không tính chủ tin)
 - [ ] `@/actions/notifications`, `@/actions/dashboard` theo contract mục 17; `getPostingDetail` ghi lượt xem; test

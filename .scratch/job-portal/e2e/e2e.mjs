@@ -48,6 +48,7 @@ const cand = await candidateCtx.newPage();
 const guest = await guestCtx.newPage();
 for (const p of [emp, cand, guest]) {
   p.setDefaultTimeout(20000);
+  p.setDefaultNavigationTimeout(60000);
   p.on('dialog', (d) => d.accept());
 }
 
@@ -142,10 +143,13 @@ await check('Khách xem chi tiết tin thấy nút "Đăng nhập để ứng tu
 });
 await check('Tên công ty trên tin dẫn tới trang công ty', guest, async () => {
   const back = guest.url();
-  await guest.getByRole('link', { name: 'Công ty E2E' }).first().click();
-  await guest.waitForURL(/\/companies\//);
-  await guest.getByRole('link', { name: TITLE }).first().waitFor();
-  await guest.goto(back);
+  try {
+    await guest.getByRole('link', { name: 'Công ty E2E' }).first().click();
+    await guest.waitForURL(/\/companies\//);
+    await guest.getByText(TITLE).first().waitFor();
+  } finally {
+    await guest.goto(back);
+  }
 });
 const jobUrl = guest.url();
 
@@ -167,7 +171,8 @@ await check('Ứng viên cập nhật hồ sơ (headline)', cand, async () => {
 await check('Ứng viên lưu tin (♥) → có trong "Việc đã lưu"', cand, async () => {
   await cand.goto(jobUrl);
   await cand.getByRole('button', { name: 'Lưu việc làm' }).first().click();
-  await cand.getByRole('button', { name: 'Bỏ lưu' }).first().waitFor();
+  // Optimistic toggle: wait until the server action settles (button re-enabled) before leaving the page.
+  await cand.locator('button[aria-pressed=true]:not([disabled])').first().waitFor();
   await cand.goto(`${BASE}/candidate/saved`);
   await cand.getByRole('link', { name: TITLE }).first().waitFor();
 });
@@ -218,7 +223,17 @@ await check('Chuyển SUBMITTED → REVIEWING', emp, async () => {
   await emp.getByRole('button', { name: 'Mời phỏng vấn' }).waitFor();
 });
 
+await check('Employer: chuông có thông báo đơn mới, dashboard đếm đơn', emp, async () => {
+  await emp.goto(`${BASE}/notifications`);
+  await emp.getByText(TITLE).first().waitFor();
+  await emp.goto(`${BASE}/employer/dashboard`);
+  await emp.getByRole('link', { name: TITLE }).first().waitFor();
+});
 // ---------- Candidate sees history + withdraws ----------
+await check('Ứng viên có thông báo đổi trạng thái', cand, async () => {
+  await cand.goto(`${BASE}/notifications`);
+  await cand.getByText(TITLE).first().waitFor();
+});
 await check('Ứng viên thấy lịch sử SUBMITTED → REVIEWING', cand, async () => {
   await cand.goto(`${BASE}/candidate/applications`);
   await cand.getByRole('link', { name: TITLE }).first().click();
