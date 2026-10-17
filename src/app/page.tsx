@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { listOpenPostings } from '@/actions/postings';
 import { searchFilterSchema } from '@/actions/postings-schema';
-import type { PostingSummary, SearchFilter } from '@/actions/types';
-import { employmentLabels, formatDate, formatSalary } from '@/components/format';
+import type { Industry, PostingSort, PostingSummary, SearchFilter } from '@/actions/types';
+import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels, postingSortLabels } from '@/components/format';
 
 function PostingCard({ posting }: { posting: PostingSummary }) {
   return (
@@ -17,10 +17,14 @@ function PostingCard({ posting }: { posting: PostingSummary }) {
           <span className="employment-badge">{employmentLabels[posting.employmentType]}</span>
         </div>
         <div className="public-posting-meta">
+          <span>{industryLabels[posting.industry]}</span>
+          <span>{jobLevelLabels[posting.level]}</span>
+          <span>{formatExperience(posting.experienceYears)}</span>
           <span><span aria-hidden="true">⌖</span> {posting.location}</span>
           <span><span aria-hidden="true">◷</span> {formatSalary(posting.salaryMin, posting.salaryMax)}</span>
           <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
         </div>
+        {posting.skills.length ? <div aria-label="Kỹ năng" className="posting-skill-list">{posting.skills.slice(0, 3).map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
       </div>
       <Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`}>
         <span aria-hidden="true">→</span>
@@ -35,7 +39,7 @@ function searchFilterFromParams(params: HomeSearchParams): SearchFilter {
   const firstValues = Object.fromEntries(
     Object.entries(params).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]),
   );
-  return searchFilterSchema.parse({ ...firstValues, employmentType: firstValues.type });
+  return searchFilterSchema.parse({ ...firstValues, employmentType: firstValues.type, maxExperience: firstValues.exp });
 }
 
 function searchHref(filter: SearchFilter, page: number) {
@@ -44,8 +48,21 @@ function searchHref(filter: SearchFilter, page: number) {
   if (filter.location) params.set('location', filter.location);
   if (filter.employmentType) params.set('type', filter.employmentType);
   if (filter.minSalary) params.set('minSalary', String(filter.minSalary));
+  if (filter.industry) params.set('industry', filter.industry);
+  if (filter.level) params.set('level', filter.level);
+  if (filter.maxExperience !== undefined) params.set('exp', String(filter.maxExperience));
+  if (filter.skill) params.set('skill', filter.skill);
+  if (filter.sort) params.set('sort', filter.sort);
   params.set('page', String(page));
   return `/?${params.toString()}`;
+}
+
+function industryHref(filter: SearchFilter, industry?: Industry) {
+  const href = new URLSearchParams(searchHref(filter, 1).split('?')[1]);
+  if (industry) href.set('industry', industry);
+  else href.delete('industry');
+  href.delete('page');
+  return `/?${href.toString()}`;
 }
 
 function PageNavigation({ page, pageCount, filter }: { page: number; pageCount: number; filter: SearchFilter }) {
@@ -64,7 +81,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const filter = searchFilterFromParams(await searchParams);
   const postingsPage = await listOpenPostings(filter);
   const pageCount = Math.max(1, Math.ceil(postingsPage.total / postingsPage.pageSize));
-  const hasFilters = Boolean(filter.q || filter.location || filter.employmentType || filter.minSalary);
+  const hasFilters = Boolean(filter.q || filter.location || filter.employmentType || filter.minSalary || filter.industry || filter.level || filter.maxExperience !== undefined || filter.skill || (filter.sort && filter.sort !== 'newest'));
 
   return (
     <main>
@@ -79,6 +96,17 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </section>
 
       <section aria-labelledby="open-postings" className="page-shell home-listings">
+        <nav aria-label="Lọc theo ngành nghề" className="industry-chips">
+          <Link aria-current={!filter.industry ? 'page' : undefined} className={`industry-chip${!filter.industry ? ' selected' : ''}`} href={industryHref(filter)}>
+            Tất cả ngành
+          </Link>
+          {(Object.keys(industryLabels) as Industry[]).map((industry) => (
+            <Link aria-current={filter.industry === industry ? 'page' : undefined} className={`industry-chip${filter.industry === industry ? ' selected' : ''}`} href={industryHref(filter, industry)} key={industry}>
+              <img alt="" height="20" src={`/images/industries/${industry.toLowerCase()}.svg`} width="20" />
+              {industryLabels[industry]}
+            </Link>
+          ))}
+        </nav>
         <form action="/" className="job-search-form" id="job-search" method="get">
           <label className="job-search-keyword field-label" htmlFor="search-keyword">
             Từ khóa
@@ -101,6 +129,34 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               <input className="text-input" defaultValue={filter.minSalary ?? ''} id="search-min-salary" min="1" name="minSalary" placeholder="Tùy chọn" step="1" type="number" />
               <span>₫ / tháng</span>
             </span>
+          </label>
+          <label className="field-label" htmlFor="search-industry">
+            Ngành nghề
+            <select className="text-input select-input" defaultValue={filter.industry ?? ''} id="search-industry" name="industry">
+              <option value="">Tất cả ngành</option>
+              {Object.entries(industryLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          <label className="field-label" htmlFor="search-level">
+            Cấp bậc
+            <select className="text-input select-input" defaultValue={filter.level ?? ''} id="search-level" name="level">
+              <option value="">Tất cả cấp bậc</option>
+              {Object.entries(jobLevelLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          <label className="field-label" htmlFor="search-experience">
+            Kinh nghiệm tối đa
+            <span className="salary-search-input"><input className="text-input" defaultValue={filter.maxExperience ?? ''} id="search-experience" max="20" min="0" name="exp" placeholder="Không giới hạn" type="number" /><span>năm</span></span>
+          </label>
+          <label className="field-label" htmlFor="search-skill">
+            Kỹ năng
+            <input className="text-input" defaultValue={filter.skill ?? ''} id="search-skill" name="skill" placeholder="Ví dụ: Excel" type="search" />
+          </label>
+          <label className="field-label" htmlFor="search-sort">
+            Sắp xếp
+            <select className="text-input select-input" defaultValue={filter.sort ?? 'newest'} id="search-sort" name="sort">
+              {(Object.entries(postingSortLabels) as [PostingSort, string][]).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
           </label>
           <div className="job-search-actions">
             <button className="button button-primary" type="submit">Tìm việc</button>

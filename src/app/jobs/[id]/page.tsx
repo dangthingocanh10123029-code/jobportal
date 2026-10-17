@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCurrentProfile } from '@/actions/auth';
 import { getMyApplicationForPosting } from '@/actions/applications';
-import { getPostingDetail } from '@/actions/postings';
+import { getPostingDetail, getRelatedPostings } from '@/actions/postings';
 import { ApplicationForm } from '@/components/applications/application-form';
-import { employmentLabels, formatDate, formatSalary } from '@/components/format';
+import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,6 +18,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const posting = await getPostingDetail(id);
   if (!posting) notFound();
+  const relatedPostings = await getRelatedPostings(id);
   const profile = posting.isOpen ? await getCurrentProfile() : null;
   const application = posting.isOpen && profile?.role === 'CANDIDATE'
     ? await getMyApplicationForPosting(id)
@@ -48,6 +49,10 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
         </header>
 
         <div className="posting-detail-meta">
+          <div><span aria-hidden="true">▦</span><span><small>Ngành nghề</small><strong>{industryLabels[posting.industry]}</strong></span></div>
+          <div><span aria-hidden="true">▤</span><span><small>Cấp bậc</small><strong>{jobLevelLabels[posting.level]}</strong></span></div>
+          <div><span aria-hidden="true">◷</span><span><small>Kinh nghiệm</small><strong>{formatExperience(posting.experienceYears)}</strong></span></div>
+          <div><span aria-hidden="true">♙</span><span><small>Số lượng tuyển</small><strong>{posting.headcount} người</strong></span></div>
           <div><span aria-hidden="true">⌖</span><span><small>Địa điểm</small><strong>{posting.location}</strong></span></div>
           <div><span aria-hidden="true">◷</span><span><small>Hình thức</small><strong>{employmentLabels[posting.employmentType]}</strong></span></div>
           <div><span aria-hidden="true">₫</span><span><small>Mức lương</small><strong>{formatSalary(posting.salaryMin, posting.salaryMax)}</strong></span></div>
@@ -58,6 +63,25 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           <h2 id="description-title">Mô tả công việc</h2>
           <p>{posting.description}</p>
         </section>
+
+        {posting.requirements.trim() ? (
+          <section aria-labelledby="requirements-title" className="posting-description">
+            <h2 id="requirements-title">Yêu cầu</h2>
+            <p>{posting.requirements}</p>
+          </section>
+        ) : null}
+        {posting.benefits.trim() ? (
+          <section aria-labelledby="benefits-title" className="posting-description">
+            <h2 id="benefits-title">Quyền lợi</h2>
+            <p>{posting.benefits}</p>
+          </section>
+        ) : null}
+        {posting.skills.length ? (
+          <section aria-labelledby="skills-title" className="posting-description">
+            <h2 id="skills-title">Kỹ năng</h2>
+            <div className="posting-skill-list">{posting.skills.map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div>
+          </section>
+        ) : null}
 
         {posting.isOpen && profile?.role === 'CANDIDATE' ? (
           <footer className="posting-detail-footer">
@@ -78,6 +102,22 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           </footer>
         ) : null}
       </article>
+      {relatedPostings.length ? (
+        <section aria-labelledby="related-postings-title" className="related-postings">
+          <div className="page-heading"><span className="eyebrow">Cùng lĩnh vực</span><h2 id="related-postings-title">Việc làm liên quan</h2></div>
+          <div className="related-posting-list">
+            {relatedPostings.map((related) => (
+              <article className="surface-card related-posting-card" key={related.id}>
+                <div>
+                  <h3><Link href={`/jobs/${related.id}`}>{related.title}</Link></h3>
+                  <p>{related.companyName} · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
+                </div>
+                <Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`}><span aria-hidden="true">→</span></Link>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

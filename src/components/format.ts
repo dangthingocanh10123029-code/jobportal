@@ -1,4 +1,4 @@
-import type { ApplicationStatus, DisplayPostingStatus, EmploymentType } from '@/actions/types';
+import type { ApplicationStatus, DisplayPostingStatus, EmploymentType, Industry, JobLevel, PostingSort } from '@/actions/types';
 
 export const applicationStatusLabels: Record<ApplicationStatus, string> = {
   SUBMITTED: 'Đã nộp',
@@ -23,6 +23,45 @@ export const employmentLabels: Record<EmploymentType, string> = {
   INTERNSHIP: 'Thực tập',
   CONTRACT: 'Hợp đồng',
 };
+
+export const industryLabels: Record<Industry, string> = {
+  IT_SOFTWARE: 'Công nghệ thông tin',
+  SALES: 'Kinh doanh',
+  MARKETING: 'Marketing',
+  ACCOUNTING_FINANCE: 'Kế toán / Tài chính',
+  HR: 'Nhân sự',
+  ADMIN: 'Hành chính',
+  CUSTOMER_SERVICE: 'Chăm sóc khách hàng',
+  EDUCATION: 'Giáo dục',
+  HEALTHCARE: 'Y tế',
+  CONSTRUCTION: 'Xây dựng',
+  MANUFACTURING: 'Sản xuất',
+  LOGISTICS: 'Logistics',
+  HOSPITALITY: 'Nhà hàng / Khách sạn',
+  DESIGN: 'Thiết kế',
+  LEGAL: 'Pháp lý',
+  OTHER: 'Ngành nghề khác',
+};
+
+export const jobLevelLabels: Record<JobLevel, string> = {
+  INTERN: 'Thực tập sinh',
+  FRESHER: 'Mới tốt nghiệp',
+  JUNIOR: 'Nhân viên',
+  MIDDLE: 'Chuyên viên',
+  SENIOR: 'Cấp cao',
+  LEAD: 'Trưởng nhóm',
+  MANAGER: 'Quản lý',
+};
+
+export const postingSortLabels: Record<PostingSort, string> = {
+  newest: 'Mới nhất',
+  salary_desc: 'Lương cao nhất',
+  deadline_asc: 'Sắp hết hạn',
+};
+
+export function formatExperience(years: number) {
+  return years === 0 ? 'Không yêu cầu kinh nghiệm' : `${years}+ năm kinh nghiệm`;
+}
 
 export function formatSalary(salaryMin: number | null, salaryMax: number | null) {
   if (salaryMin === null && salaryMax === null) return 'Thỏa thuận';

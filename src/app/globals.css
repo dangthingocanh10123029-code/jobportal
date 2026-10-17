@@ -197,9 +197,13 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .home-hero-content p { max-width: 500px; margin: 18px 0 26px; color: var(--color-muted); font-size: 17px; line-height: 1.65; }
 .home-hero-content .button { gap: 10px; }
 .home-listings { padding-top: 62px; }
+.industry-chips { display: flex; gap: 9px; margin: 0 0 18px; padding: 2px 0 8px; overflow-x: auto; scrollbar-width: thin; }
+.industry-chip { display: inline-flex; min-height: 38px; flex: 0 0 auto; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: 999px; color: #334155; background: #fff; font-size: 12px; font-weight: 650; transition: border-color 150ms ease, background 150ms ease, color 150ms ease; }
+.industry-chip:hover, .industry-chip.selected { border-color: #93c5fd; color: #1d4ed8; background: #eff6ff; }
+.industry-chip img { display: block; flex: 0 0 auto; }
 .job-search-form {
   display: grid;
-  grid-template-columns: minmax(210px, 1.7fr) minmax(150px, 1fr) minmax(170px, 1fr) minmax(190px, 1fr) auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: end;
   gap: 14px;
   margin: 0 0 44px;
@@ -208,6 +212,7 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
   border-radius: 16px;
   background: var(--color-surface);
 }
+.job-search-keyword { grid-column: span 2; }
 .job-search-form .field-label { min-width: 0; color: #334155; }
 .salary-search-input { display: flex; min-width: 0; align-items: center; gap: 8px; }
 .salary-search-input .text-input { min-width: 0; }
@@ -251,6 +256,7 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .posting-closed-notice strong { font-size: 14px; }
 .posting-closed-notice p { margin: 4px 0 0; color: #a16207; font-size: 13px; }
 .posting-detail-card { overflow: hidden; box-shadow: none; }
+.posting-skill-list { margin-top: 12px; }
 .posting-detail-header { display: flex; align-items: center; gap: 20px; padding: 32px; }
 .company-placeholder-large { border-radius: 17px; }
 .posting-detail-title { min-width: 0; }
@@ -266,6 +272,15 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .posting-description { padding: 30px 32px 38px; }
 .posting-description h2 { margin: 0 0 17px; font-size: 20px; letter-spacing: -0.02em; }
 .posting-description p { margin: 0; color: #334155; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
+.posting-description .posting-skill-list { margin-top: 0; }
+.related-postings { margin-top: 48px; }
+.related-postings .page-heading { margin-bottom: 18px; }
+.related-postings h2 { margin: 0; font-size: 25px; letter-spacing: -0.03em; }
+.related-posting-list { display: flex; flex-direction: column; gap: 10px; }
+.related-posting-card { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 20px; box-shadow: none; }
+.related-posting-card h3 { margin: 0; font-size: 15px; }
+.related-posting-card h3 a:hover { color: var(--color-primary); }
+.related-posting-card p { margin: 6px 0 0; color: var(--color-muted); font-size: 12px; }
 .posting-detail-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 32px; border-top: 1px solid var(--color-border); background: var(--color-surface); }
 .posting-detail-footer p { max-width: 480px; margin: 0; color: var(--color-muted); font-size: 13px; line-height: 1.5; }
 .posting-detail-footer .button { flex: 0 0 auto; }
