@@ -1,6 +1,7 @@
 'use server';
 
 import type { AuthError } from '@supabase/supabase-js';
+import { headers } from 'next/headers';
 import { cache } from 'react';
 import { createSupabaseServerClient, fetchProfile, PROFILE_COLUMNS, toProfile } from '@/lib/supabase-server';
 import {
@@ -38,6 +39,15 @@ function authError(error: AuthError): string {
   return 'Có lỗi xảy ra, vui lòng thử lại';
 }
 
+// Where the "Confirm email" link lands (src/app/auth/callback/route.ts), on the host the user is browsing.
+async function emailRedirectTo(): Promise<string> {
+  const h = await headers();
+  const host = h.get('x-forwarded-host') ?? h.get('host');
+  const origin =
+    h.get('origin') ?? (host ? `${h.get('x-forwarded-proto') ?? 'https'}://${host}` : process.env.NEXT_PUBLIC_SITE_URL);
+  return `${origin ?? ''}/auth/callback`;
+}
+
 export async function signUpAction(input: {
   email: string;
   password: string;
@@ -55,7 +65,10 @@ export async function signUpAction(input: {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { role: profile.role, full_name: profile.fullName, company_name: companyName } },
+    options: {
+      emailRedirectTo: await emailRedirectTo(),
+      data: { role: profile.role, full_name: profile.fullName, company_name: companyName },
+    },
   });
   if (error) return fail(authError(error));
   if (!data.user) return fail('Có lỗi xảy ra, vui lòng thử lại');
@@ -108,7 +121,11 @@ export async function resendSignupOtpAction(input: { email: string }): Promise<A
   if (!parsed.success) return fail(firstError(parsed.error));
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.resend({ type: 'signup', email: parsed.data.email });
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: parsed.data.email,
+    options: { emailRedirectTo: await emailRedirectTo() },
+  });
   if (error) return fail(authError(error));
   return { success: true, data: null };
 }

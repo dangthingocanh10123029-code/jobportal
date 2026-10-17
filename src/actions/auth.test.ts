@@ -72,6 +72,8 @@ vi.mock('@/lib/supabase-server', async (importOriginal) => ({
   createSupabaseServerClient: vi.fn(),
 }));
 
+vi.mock('next/headers', () => ({ headers: async () => new Headers({ origin: 'https://jobs.example' }) }));
+
 describe('signUpAction — needsEmailConfirmation', () => {
   it.each([
     ['chưa có session (bật xác nhận email) → true', null, true],
@@ -85,6 +87,15 @@ describe('signUpAction — needsEmailConfirmation', () => {
       success: true,
       data: { userId: 'u1', role: 'CANDIDATE', fullName: 'An', phone: null, companyName: null, needsEmailConfirmation },
     });
+  });
+
+  it('gửi emailRedirectTo về /auth/callback của origin', async () => {
+    const signUp = vi.fn(async () => ({ data: { user: { id: 'u1' }, session: null }, error: null }));
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(fromPartial({ auth: { signUp } }));
+    await signUpAction({ email: 'a@example.com', password: '12345678', role: 'CANDIDATE', fullName: 'An' });
+    expect(signUp).toHaveBeenCalledWith(
+      expect.objectContaining({ options: expect.objectContaining({ emailRedirectTo: 'https://jobs.example/auth/callback' }) }),
+    );
   });
 
   it('email đã tồn tại (identities rỗng) → báo đăng nhập', async () => {
@@ -155,6 +166,10 @@ describe('OTP — gọi Supabase', () => {
     const resend = vi.fn(async () => ({ data: {}, error }));
     vi.mocked(createSupabaseServerClient).mockResolvedValue(fromPartial({ auth: { resend } }));
     expect(await resendSignupOtpAction({ email: 'a@example.com' })).toEqual(expected);
-    expect(resend).toHaveBeenCalledWith({ type: 'signup', email: 'a@example.com' });
+    expect(resend).toHaveBeenCalledWith({
+      type: 'signup',
+      email: 'a@example.com',
+      options: { emailRedirectTo: 'https://jobs.example/auth/callback' },
+    });
   });
 });
