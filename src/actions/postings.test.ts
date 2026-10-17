@@ -4,6 +4,7 @@ import {
   createPostingDraftAction,
   getMyPosting,
   getPostingDetail,
+  getRelatedPostings,
   publishPostingAction,
   updatePostingAction,
 } from './postings';
@@ -18,6 +19,13 @@ const valid: PostingInput = {
   salaryMin: null,
   salaryMax: 20_000_000,
   applicationDeadline: '2026-11-01T17:00:00+07:00',
+  industry: 'IT_SOFTWARE',
+  level: 'JUNIOR',
+  experienceYears: 0,
+  headcount: 1,
+  skills: ['TypeScript'],
+  requirements: 'Biết TypeScript cơ bản.',
+  benefits: 'Lương tháng 13, bảo hiểm.',
 };
 
 // Invalid input is rejected before any Supabase call, so no env/session is needed here.
@@ -32,6 +40,18 @@ describe('createPostingDraftAction — input sai', () => {
     ['lương lẻ', { salaryMax: 1.5 }, 'Lương phải là số nguyên'],
     ['deadline không có múi giờ', { applicationDeadline: '2026-11-01T17:00' }, 'Hạn nộp hồ sơ không hợp lệ'],
     ['deadline rác', { applicationDeadline: 'mai' }, 'Hạn nộp hồ sơ không hợp lệ'],
+    ['ngành lạ', { industry: 'CRYPTO' }, 'Ngành nghề không hợp lệ'],
+    ['cấp bậc lạ', { level: 'CEO' }, 'Cấp bậc không hợp lệ'],
+    ['kinh nghiệm > 20', { experienceYears: 21 }, 'Số năm kinh nghiệm tối đa 20'],
+    ['kinh nghiệm âm', { experienceYears: -1 }, 'Số năm kinh nghiệm không được âm'],
+    ['số lượng 0', { headcount: 0 }, 'Số lượng tuyển tối thiểu 1'],
+    ['số lượng > 999', { headcount: 1000 }, 'Số lượng tuyển tối đa 999'],
+    ['11 kỹ năng', { skills: Array.from({ length: 11 }, (_, i) => `Kỹ năng ${i}`) }, 'Tối đa 10 kỹ năng'],
+    ['kỹ năng rỗng', { skills: ['  '] }, 'Kỹ năng không được để trống'],
+    ['kỹ năng > 30 ký tự', { skills: ['x'.repeat(31)] }, 'Mỗi kỹ năng tối đa 30 ký tự'],
+    ['kỹ năng trùng khác hoa thường', { skills: ['Excel', ' excel '] }, 'Kỹ năng bị trùng'],
+    ['yêu cầu < 10 ký tự', { requirements: 'ngắn' }, 'Yêu cầu tối thiểu 10 ký tự'],
+    ['quyền lợi > 5000 ký tự', { benefits: 'x'.repeat(5001) }, 'Quyền lợi tối đa 5000 ký tự'],
   ])('%s', async (_, override, error) => {
     expect(await createPostingDraftAction({ ...valid, ...override } as never)).toEqual({ success: false, error });
   });
@@ -45,6 +65,7 @@ describe('id sai', () => {
     expect(await closePostingAction({ id: '1' })).toEqual(error);
     expect(await getMyPosting('1')).toBeNull();
     expect(await getPostingDetail('1')).toBeNull();
+    expect(await getRelatedPostings('1')).toEqual([]);
   });
 });
 
@@ -68,6 +89,16 @@ describe('searchFilterSchema', () => {
     expect(
       searchFilterSchema.parse({ q: '  ke toan ', location: 'Hà Nội', employmentType: 'PART_TIME', minSalary: '10000000', page: '2' }),
     ).toEqual({ q: 'ke toan', location: 'Hà Nội', employmentType: 'PART_TIME', minSalary: 10_000_000, page: 2 });
+  });
+
+  it('bộ lọc v2 từ query string', () => {
+    expect(
+      searchFilterSchema.parse({ industry: 'SALES', level: 'SENIOR', maxExperience: '0', skill: ' Excel ', sort: 'salary_desc' }),
+    ).toEqual({ industry: 'SALES', level: 'SENIOR', maxExperience: 0, skill: 'Excel', sort: 'salary_desc', page: 1 });
+    expect(
+      searchFilterSchema.parse({ industry: 'X', level: 'CEO', maxExperience: '-1', skill: '', sort: 'random' }),
+    ).toEqual({ page: 1 });
+    expect(searchFilterSchema.parse({ maxExperience: '21' })).toEqual({ page: 1 });
   });
 
   it('giá trị rỗng hoặc rác → bỏ qua bộ lọc đó, không lỗi', () => {

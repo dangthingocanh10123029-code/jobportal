@@ -18,3 +18,22 @@ describe('SupabaseJobPostingRepository.listOpen', () => {
     await expect(repo.listOpen({}, { offset: 980, limit: 20 })).resolves.toEqual({ rows: [], total: 45 });
   });
 });
+
+describe('SupabaseJobPostingRepository.listOpen — query', () => {
+  it('skill được gấp dấu và quote thành mảng 1 phần tử; salary_desc để null cuối, hòa thì mới nhất trước', async () => {
+    let params = new URLSearchParams();
+    const repo = new SupabaseJobPostingRepository(
+      createClient('https://example.supabase.co', 'anon-key', {
+        global: {
+          fetch: async (input) => {
+            params = new URL(String(input)).searchParams;
+            return new Response('[]', { status: 200, headers: { 'content-range': '*/0' } });
+          },
+        },
+      }),
+    );
+    await repo.listOpen({ skill: 'Kế "toán", C#', sort: 'salary_desc' }, { offset: 0, limit: 20 });
+    expect(params.get('search_skills')).toBe('cs.{"ke \\"toan\\", c#"}');
+    expect(params.get('order')).toBe('salary_max.desc.nullslast,created_at.desc,id.asc');
+  });
+});

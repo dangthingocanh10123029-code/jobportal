@@ -1,5 +1,5 @@
 import { JobPostingError } from './domain/errors';
-import type { OpenPostingsPage, PostingDetail, SearchFilter } from '@/actions/types';
+import type { OpenPostingsPage, PostingDetail, PostingSummary, SearchFilter } from '@/actions/types';
 import { displayStatus, EDITABLE, isOpen, TRANSITIONS } from './domain/status';
 import type {
   Clock,
@@ -15,6 +15,7 @@ export { JobPostingError, type JobPostingErrorCode } from './domain/errors';
 export type * from './domain/types';
 
 export const PAGE_SIZE = 20;
+const RELATED_LIMIT = 6;
 
 /** Posting lifecycle (DRAFT --publish--> PUBLISHED --close--> CLOSED) plus the public read side. */
 export class JobPostingService {
@@ -59,18 +60,21 @@ export class JobPostingService {
     return posting?.employerId === employerId ? this.view(posting) : null;
   }
 
-  /** Public search: open postings matching every given criterion, newest first. `page` starts at 1. */
-  async listOpen({ q, location, employmentType, minSalary, page = 1 }: SearchFilter): Promise<OpenPostingsPage> {
+  /** Public search: open postings matching every given criterion, sorted by `sort` (default newest). `page` starts at 1. */
+  async listOpen({ page = 1, ...filter }: SearchFilter): Promise<OpenPostingsPage> {
     const { rows, total } = await this.repo.listOpen(
-      { q: blankToUndefined(q), location: blankToUndefined(location), employmentType, minSalary },
+      { ...filter, q: blankToUndefined(filter.q), location: blankToUndefined(filter.location), skill: blankToUndefined(filter.skill) },
       { offset: (page - 1) * PAGE_SIZE, limit: PAGE_SIZE },
     );
-    const items = rows.map(
-      ({ id, title, companyName, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt }) => ({
-        id, title, companyName, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt,
-      }),
-    );
-    return { items, total, page, pageSize: PAGE_SIZE };
+    return { items: rows.map(toSummary), total, page, pageSize: PAGE_SIZE };
+  }
+
+  /** Up to RELATED_LIMIT open postings in the same industry, newest first; [] for DRAFT or unknown ids. */
+  async listRelated(id: JobPostingId): Promise<PostingSummary[]> {
+    const posting = await this.repo.findById(id);
+    if (!posting || posting.status === 'DRAFT') return [];
+    const { rows } = await this.repo.listOpen({ industry: posting.industry }, { offset: 0, limit: RELATED_LIMIT + 1 });
+    return rows.filter((r) => r.id !== id).slice(0, RELATED_LIMIT).map(toSummary);
   }
 
   /** Public detail: CLOSED/EXPIRED still readable (isOpen = false); DRAFT looks missing. */
@@ -98,6 +102,15 @@ export class JobPostingService {
 
 function assertSalary({ salaryMin, salaryMax }: PostingInput) {
   if (salaryMin !== null && salaryMax !== null && salaryMin > salaryMax) throw new JobPostingError('INVALID_SALARY');
+}
+
+function toSummary(p: StoredJobPosting): PostingSummary {
+  const { id, title, companyName, companyLogoUrl, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt } = p;
+  const { industry, level, experienceYears, skills } = p;
+  return {
+    id, title, companyName, companyLogoUrl, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt,
+    industry, level, experienceYears, skills,
+  };
 }
 
 function blankToUndefined(text: string | undefined) {

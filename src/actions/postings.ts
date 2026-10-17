@@ -6,7 +6,15 @@ import { JobPostingError, JobPostingService, type EmployerId, type JobPostingId 
 import { SupabaseJobPostingRepository } from '@/modules/job-posting/adapters/supabase';
 import { firstError } from './auth-schema';
 import { postingIdSchema, postingInputSchema, searchFilterSchema } from './postings-schema';
-import type { ActionResult, JobPosting, OpenPostingsPage, PostingDetail, PostingInput, SearchFilter } from './types';
+import type {
+  ActionResult,
+  JobPosting,
+  OpenPostingsPage,
+  PostingDetail,
+  PostingInput,
+  PostingSummary,
+  SearchFilter,
+} from './types';
 
 const fail = (error: string) => ({ success: false, error }) as const;
 
@@ -85,3 +93,10 @@ export const getPostingDetail = cache(async (id: string): Promise<PostingDetail 
   if (!parsed.success) return null;
   return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).getPublic(parsed.data as JobPostingId);
 });
+
+/** Anyone. ≤ 6 open postings in the same industry, excluding this one; [] for DRAFT or unknown ids. */
+export async function getRelatedPostings(postingId: string): Promise<PostingSummary[]> {
+  const parsed = postingIdSchema.safeParse(postingId);
+  if (!parsed.success) return [];
+  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).listRelated(parsed.data as JobPostingId);
+}

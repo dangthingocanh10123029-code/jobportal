@@ -32,6 +32,14 @@ function readInput(form: HTMLFormElement): PostingInput {
     salaryMin: salaryMin ? Number(salaryMin) : null,
     salaryMax: salaryMax ? Number(salaryMax) : null,
     applicationDeadline: new Date(localDeadline).toISOString(),
+    // Tạm cho 14B: giá trị tin cũ trước v2, Codex thay bằng field thật.
+    industry: 'OTHER',
+    level: 'JUNIOR',
+    experienceYears: 0,
+    headcount: 1,
+    skills: [],
+    requirements: '',
+    benefits: '',
   };
 }
 

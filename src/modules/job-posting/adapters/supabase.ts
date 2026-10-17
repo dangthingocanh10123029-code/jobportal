@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { EmploymentType, PostingStatus } from '@/actions/types';
+import type { EmploymentType, Industry, JobLevel, PostingSort, PostingStatus } from '@/actions/types';
 import { foldAccents } from '../domain/search';
 import type {
   EmployerId,
@@ -24,12 +24,21 @@ type Row = {
   status: PostingStatus;
   created_at: string;
   updated_at: string;
+  industry: Industry;
+  level: JobLevel;
+  experience_years: number;
+  headcount: number;
+  skills: string[];
+  requirements: string;
+  benefits: string;
+  company_logo_url: string | null;
 };
 
 const VIEW = 'job_postings_with_company';
 // Explicit list: open_job_postings also carries the folded search columns, which are not needed back.
 const ROW_COLUMNS =
-  'id,employer_id,company_name,title,description,location,employment_type,salary_min,salary_max,application_deadline,status,created_at,updated_at';
+  'id,employer_id,company_name,title,description,location,employment_type,salary_min,salary_max,application_deadline,status,created_at,updated_at,' +
+  'industry,level,experience_years,headcount,skills,requirements,benefits,company_logo_url';
 
 // PostgREST: offset beyond the last row.
 const RANGE_NOT_SATISFIABLE = 'PGRST103';
@@ -38,11 +47,22 @@ const RANGE_NOT_SATISFIABLE = 'PGRST103';
 // ponytail: PostgREST still turns '*' into '%', so '*' in a keyword acts as a wildcard; harmless for search.
 const escapeLike = (text: string) => text.replace(/[\\%_]/g, '\\$&');
 
+// One-element Postgres array literal; quoting keeps commas and braces in a skill literal.
+const arrayOf = (text: string) => `{"${text.replace(/["\\]/g, '\\$&')}"}`;
+
+// Ties: newest first, then id, so pages stay stable. Mirrored by SORTS in the InMemory adapter.
+const ORDER: Record<PostingSort, [column: string, ascending: boolean][]> = {
+  newest: [],
+  salary_desc: [['salary_max', false]],
+  deadline_asc: [['application_deadline', true]],
+};
+
 function toPosting(row: Row): StoredJobPosting {
   return {
     id: row.id as JobPostingId,
     employerId: row.employer_id as EmployerId,
     companyName: row.company_name,
+    companyLogoUrl: row.company_logo_url,
     title: row.title,
     description: row.description,
     location: row.location,
@@ -50,6 +70,13 @@ function toPosting(row: Row): StoredJobPosting {
     salaryMin: row.salary_min,
     salaryMax: row.salary_max,
     applicationDeadline: new Date(row.application_deadline).toISOString(),
+    industry: row.industry,
+    level: row.level,
+    experienceYears: row.experience_years,
+    headcount: row.headcount,
+    skills: row.skills,
+    requirements: row.requirements,
+    benefits: row.benefits,
     status: row.status,
     createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
@@ -65,6 +92,13 @@ function toColumns(input: Partial<PostingInput> & { status?: PostingStatus }) {
     salary_min: input.salaryMin,
     salary_max: input.salaryMax,
     application_deadline: input.applicationDeadline,
+    industry: input.industry,
+    level: input.level,
+    experience_years: input.experienceYears,
+    headcount: input.headcount,
+    skills: input.skills,
+    requirements: input.requirements,
+    benefits: input.benefits,
     status: input.status,
   };
   // Drop undefined so a partial update only touches the given columns.
@@ -109,7 +143,7 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
   }
 
   async listOpen(
-    { q, location, employmentType, minSalary }: SearchCriteria,
+    { q, location, employmentType, minSalary, industry, level, maxExperience, skill, sort = 'newest' }: SearchCriteria,
     { offset, limit }: { offset: number; limit: number },
   ) {
     const matching = (options: { count: 'exact'; head?: boolean }) => {
@@ -119,9 +153,15 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
       if (employmentType !== undefined) query = query.eq('employment_type', employmentType);
       // salary_max null = negotiable / no upper bound: always matches. minSalary is a validated integer.
       if (minSalary !== undefined) query = query.or(`salary_max.is.null,salary_max.gte.${minSalary}`);
+      if (industry !== undefined) query = query.eq('industry', industry);
+      if (level !== undefined) query = query.eq('level', level);
+      if (maxExperience !== undefined) query = query.lte('experience_years', maxExperience);
+      if (skill !== undefined) query = query.filter('search_skills', 'cs', arrayOf(foldAccents(skill)));
       return query;
     };
-    const { data, error, count } = await matching({ count: 'exact' })
+    let ordered = matching({ count: 'exact' });
+    for (const [column, ascending] of ORDER[sort]) ordered = ordered.order(column, { ascending, nullsFirst: false });
+    const { data, error, count } = await ordered
       .order('created_at', { ascending: false })
       .order('id') // stable order across pages when created_at ties
       .range(offset, offset + limit - 1)
