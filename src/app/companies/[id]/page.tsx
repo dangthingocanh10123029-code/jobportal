@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCompany } from '@/actions/companies';
+import { getCurrentProfile } from '@/actions/auth';
+import { getSavedPostingIds } from '@/actions/candidates';
+import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 import { companySizeLabels, employmentLabels, formatDate, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -13,6 +16,8 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const company = await getCompany(id);
   if (!company) notFound();
+  const [profile, savedIds] = await Promise.all([getCurrentProfile(), getSavedPostingIds()]);
+  const isCandidate = profile?.role === 'CANDIDATE';
 
   return (
     <main className="page-shell company-detail-page">
@@ -42,7 +47,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                   <p>{industryLabels[posting.industry]} · {jobLevelLabels[posting.level]} · {employmentLabels[posting.employmentType]}</p>
                   <div className="company-open-posting-meta"><span>{posting.location}</span><span>{formatSalary(posting.salaryMin, posting.salaryMax)}</span><span>Hạn nộp {formatDate(posting.applicationDeadline)}</span></div>
                 </div>
-                <Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`}><span aria-hidden="true">→</span></Link>
+                <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`}><span aria-hidden="true">→</span></Link></div>
               </article>
             ))}
           </div>
