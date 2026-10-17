@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** resolved (chờ cấu hình Dashboard: template {{ .Token }} + SMTP)
+**Status:** resolved
 
 - [ ] `verifySignupOtpAction` dùng `supabase.auth.verifyOtp({ email, token, type: 'email' })`, set session cookie, trả Profile
 - [ ] `resendSignupOtpAction` dùng `supabase.auth.resend({ type: 'signup', email })`
