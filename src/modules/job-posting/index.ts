@@ -112,7 +112,7 @@ function assertSalary({ salaryMin, salaryMax }: PostingInput) {
   if (salaryMin !== null && salaryMax !== null && salaryMin > salaryMax) throw new JobPostingError('INVALID_SALARY');
 }
 
-function toSummary(p: StoredJobPosting): PostingSummary {
+export function toSummary(p: StoredJobPosting): PostingSummary {
   const { id, title, companyName, companyLogoUrl, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt } = p;
   const { industry, level, experienceYears, skills, employerId } = p;
   return {

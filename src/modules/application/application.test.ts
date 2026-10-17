@@ -19,7 +19,7 @@ beforeEach(() => {
   now = NOW;
   postings = new InMemoryJobPostingRepository({ [EMPLOYER]: 'ACME' }, () => now);
   repo = new InMemoryApplicationRepository(postings, () => now, {
-    [ANNA]: { fullName: 'Anna Nguyễn', phone: '0901234567' },
+    [ANNA]: { fullName: 'Anna Nguyễn', phone: '0901234567', headline: 'Frontend dev', skills: ['React'] },
     [BINH]: { fullName: 'Bình Trần', phone: null },
   });
   service = new ApplicationService(repo);
@@ -201,7 +201,7 @@ describe('changeStatus (RPC dùng chung với ticket 07)', () => {
 describe('Employer xử lý đơn (ticket 07)', () => {
   const OTHER = 'employer-b' as EmployerId;
 
-  it('liệt kê đơn của tin, mới nhất trước, kèm tên và số điện thoại Candidate', async () => {
+  it('liệt kê đơn của tin, mới nhất trước, kèm tên, số điện thoại, headline và kỹ năng Candidate', async () => {
     const postingId = await posting('PUBLISHED');
     const anna = await service.submit(ANNA, postingId, resume(ANNA));
     now = new Date('2026-10-17T00:00:00Z');
@@ -209,8 +209,10 @@ describe('Employer xử lý đơn (ticket 07)', () => {
     await service.submit(ANNA, await posting('PUBLISHED'), resume(ANNA));
 
     expect(await service.listForPosting(EMPLOYER, postingId)).toEqual([
-      { ...binh, candidateName: 'Bình Trần', candidatePhone: null },
-      { ...anna, candidateName: 'Anna Nguyễn', candidatePhone: '0901234567' },
+      { ...binh, candidateName: 'Bình Trần', candidatePhone: null, candidateHeadline: null, candidateSkills: [] },
+      {
+        ...anna, candidateName: 'Anna Nguyễn', candidatePhone: '0901234567', candidateHeadline: 'Frontend dev', candidateSkills: ['React'],
+      },
     ]);
   });
 

@@ -115,16 +115,20 @@ export class SupabaseApplicationRepository implements IApplicationRepository {
 
     const { data, error } = await this.supabase
       .from('employer_application_summaries')
-      .select(`${COLUMNS},candidate_name,candidate_phone`)
+      .select(`${COLUMNS},candidate_name,candidate_phone,candidate_headline,candidate_skills`)
       .eq('job_posting_id', jobPostingId)
       .order('created_at', { ascending: false })
-      .returns<(Row & { candidate_name: string; candidate_phone: string | null })[]>();
+      .returns<
+        (Row & { candidate_name: string; candidate_phone: string | null; candidate_headline: string | null; candidate_skills: string[] })[]
+      >();
     if (error) throw new Error(`Không đọc được danh sách hồ sơ: ${error.message}`);
     return data.map(
       (row): EmployerApplicationSummary => ({
         ...toApplication(row),
         candidateName: row.candidate_name,
         candidatePhone: row.candidate_phone,
+        candidateHeadline: row.candidate_headline,
+        candidateSkills: row.candidate_skills,
       }),
     );
   }

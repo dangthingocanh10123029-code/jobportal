@@ -49,13 +49,18 @@ export const postingInputSchema = z.object({
     .int('Số lượng tuyển phải là số nguyên')
     .min(1, 'Số lượng tuyển tối thiểu 1')
     .max(999, 'Số lượng tuyển tối đa 999'),
-  skills: z
-    .array(z.string().trim().min(1, 'Kỹ năng không được để trống').max(30, 'Mỗi kỹ năng tối đa 30 ký tự'))
-    .max(10, 'Tối đa 10 kỹ năng')
-    .refine((skills) => new Set(skills.map((s) => s.toLowerCase())).size === skills.length, 'Kỹ năng bị trùng'),
+  skills: skillsSchema(10),
   requirements: longText('Yêu cầu'),
   benefits: longText('Quyền lợi'),
 });
+
+/** Mirrored by valid_skills / valid_profile_skills in supabase/migrations. */
+export function skillsSchema(max: number) {
+  return z
+    .array(z.string().trim().min(1, 'Kỹ năng không được để trống').max(30, 'Mỗi kỹ năng tối đa 30 ký tự'))
+    .max(max, `Tối đa ${max} kỹ năng`)
+    .refine((skills) => new Set(skills.map((s) => s.toLowerCase())).size === skills.length, 'Kỹ năng bị trùng');
+}
 
 function longText(label: string) {
   return z
