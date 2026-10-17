@@ -47,7 +47,7 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
   }
 
   async listOpen(
-    { q, location, employmentType, minSalary, industry, level, maxExperience, skill, sort = 'newest' }: SearchCriteria,
+    { q, location, employmentType, minSalary, industry, level, maxExperience, skill, employerId, sort = 'newest' }: SearchCriteria,
     { offset, limit }: { offset: number; limit: number },
   ) {
     const open = [...this.rows.values()]
@@ -59,6 +59,7 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
       .filter((r) => industry === undefined || r.industry === industry)
       .filter((r) => level === undefined || r.level === level)
       .filter((r) => maxExperience === undefined || r.experienceYears <= maxExperience)
+      .filter((r) => employerId === undefined || r.employerId === employerId)
       .filter((r) => skill === undefined || r.skills.some((s) => foldAccents(s) === foldAccents(skill)))
       .reverse() // newest first; the stable sort below keeps that as the tie-break
       .sort(SORTS[sort]);

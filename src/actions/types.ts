@@ -101,3 +101,26 @@ export type StatusChange = {
   changedByRole: Role;
   changedAt: string;
 };
+
+export type Company = {
+  /** = the Employer's user id. */
+  id: string;
+  name: string;
+  logoUrl: string | null;
+  about: string | null;
+  size: CompanySize | null;
+  address: string | null;
+  website: string | null;
+};
+
+export type CompanySummary = Company & { openPostings: number };
+
+export type CompanyInput = {
+  name?: string;
+  about?: string;
+  size?: CompanySize | null;
+  address?: string;
+  website?: string;
+};
+
+export type CompaniesPage = { items: CompanySummary[]; total: number; page: number; pageSize: 20 };
