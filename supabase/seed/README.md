@@ -12,7 +12,16 @@ Bộ dữ liệu hoàn toàn hư cấu, viết mới cho Job Portal: tên công 
 
 ## Chạy
 
-Cần quyền `postgres` (connection string ở Supabase Dashboard → Project Settings → Database). Chạy từ gốc repo:
+Cần quyền `postgres` (connection string ở Supabase Dashboard → Project Settings → Database). Chạy từ gốc repo.
+
+**Lần đầu trên một project:** seed, rồi upload CV mẫu.
+
+```sh
+psql "$DATABASE_URL" -f supabase/seed/seed-demo.sql
+DATABASE_URL=... NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... supabase/seed/upload-demo-cvs.sh
+```
+
+**Các lần sau:** chỉ cần seed (CV mẫu vẫn còn trong storage).
 
 ```sh
 psql "$DATABASE_URL" -f supabase/seed/seed-demo.sql   # tự xóa bộ demo cũ rồi tạo lại
@@ -20,22 +29,14 @@ psql "$DATABASE_URL" -f supabase/seed/wipe-demo.sql   # chỉ xóa
 ```
 
 - Chạy lại bao nhiêu lần cũng không nhân đôi: seed gọi `wipe-demo.sql` trước, id sinh từ md5 nên cố định, `setseed` giữ nội dung giống nhau. Ngày tháng tính theo `now()`, nên chạy lại ngay trước buổi demo để hạn nộp còn mới.
-- Wipe xóa mọi user `*@demo.jobportal.test` và mọi thứ của họ (tin, đơn, lịch sử, thông báo, tin đã lưu, lượt xem, file trong bucket `resumes`/`company-logos`). Đơn của người dùng thật nộp vào tin demo cũng bị xóa theo tin.
+- Wipe xóa mọi user `*@demo.jobportal.test` và mọi thứ của họ (tin, đơn, lịch sử, thông báo, tin đã lưu, lượt xem), cùng thông báo của người dùng thật trỏ tới đơn/tin demo bị xóa. Đơn của người dùng thật nộp vào tin demo cũng bị xóa theo tin.
+- Wipe **không** đụng storage: xóa dòng `storage.objects` bằng SQL để lại file mồ côi. File tải lên trong lúc demo (CV nộp qua app, logo) nằm lại trong bucket; nếu cần dọn, xóa qua Dashboard → Storage.
 
-### Upload CV mẫu (một lần sau mỗi lần seed)
+### CV mẫu
 
-Seed tạo sẵn dòng `storage.objects` cho mỗi ứng viên (`resumes/<candidate_id>/<uuid>.pdf`), đủ để app nhận đơn hợp lệ. Để Employer mở được CV, upload nội dung file `sample-cv.pdf` vào đúng các đường dẫn đó:
+Mỗi ứng viên demo có một CV cố định `resumes/<candidate_id>/demo-cv.pdf` (nội dung `sample-cv.pdf`); id ứng viên cố định nên file dùng lại được qua mọi lần wipe/seed, và đơn demo chỉ tham chiếu tới nó (`resume_path`).
 
-```sh
-psql "$DATABASE_URL" -Atc "select name from storage.objects where bucket_id = 'resumes'
-  and owner_id in (select id::text from auth.users where email like '%@demo.jobportal.test')" |
-while read -r path; do
-  curl -sf -X POST "$SUPABASE_URL/storage/v1/object/resumes/$path" \
-    -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-    -H "Content-Type: application/pdf" -H "x-upsert: true" \
-    --data-binary @supabase/seed/sample-cv.pdf >/dev/null && echo "ok $path"
-done
-```
+`upload-demo-cvs.sh` đăng nhập từng ứng viên demo bằng mật khẩu chung (anon key, không cần service role) và upload CV vào thư mục của chính họ; ứng viên đã có CV thì bỏ qua, nên chạy lại an toàn. Cần `psql`, `curl`, `jq`. Seed in `WARNING: … chưa có CV trong storage` khi còn thiếu — chạy script là xong.
 
 ## Đăng nhập
 

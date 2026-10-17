@@ -416,12 +416,17 @@ begin
   end loop;
 end $$;
 
--- One sample CV object per candidate. Bytes are uploaded separately (README.md), the row is what the app checks.
-insert into storage.objects (bucket_id, name, owner_id, metadata)
-select 'resumes', id || '/' || pg_temp.demo_uuid('demo-cv-' || n) || '.pdf', id::text,
-  jsonb_build_object('mimetype', 'application/pdf', 'size', 789, 'contentLength', 789, 'cacheControl', 'max-age=3600',
-                     'eTag', '"demo"', 'lastModified', now(), 'httpStatusCode', 200)
-from demo_candidate;
+-- Each candidate's sample CV is a fixed file, resumes/<candidate_id>/demo-cv.pdf, uploaded once per project by
+-- upload-demo-cvs.sh through the Storage API. It outlives wipes (candidate ids are stable), so the seed only points at it.
+do $$
+declare v_missing int;
+begin
+  select count(*) into v_missing from demo_candidate c
+  where not exists (select 1 from storage.objects o where o.bucket_id = 'resumes' and o.name = c.id || '/demo-cv.pdf');
+  if v_missing > 0 then
+    raise warning '% ứng viên demo chưa có CV trong storage: chạy supabase/seed/upload-demo-cvs.sh (README.md)', v_missing;
+  end if;
+end $$;
 
 -- Postings: count by company size, 75% in the company's own industry, status/dates spread per ticket 18.
 do $$
@@ -540,10 +545,8 @@ do $$
 declare
   c record; p record;
   v_at timestamptz; v_times timestamptz[]; v_path text[]; v_x float8; v_app uuid; v_from text; v_by_candidate boolean;
-  v_resume text;
 begin
   for c in select * from demo_candidate order by n loop
-    select name into v_resume from storage.objects where bucket_id = 'resumes' and owner_id = c.id::text;
     for p in
       select jp.* from public.job_postings jp
       join demo_company co on co.id = jp.employer_id
@@ -568,7 +571,7 @@ begin
                        from generate_series(1, cardinality(v_path)) i order by i);
 
       insert into public.applications (id, job_posting_id, candidate_id, resume_path, status, created_at, updated_at)
-      values (v_app, p.id, c.id, v_resume, coalesce(v_path[cardinality(v_path)], 'SUBMITTED'), v_at,
+      values (v_app, p.id, c.id, c.id || '/demo-cv.pdf', coalesce(v_path[cardinality(v_path)], 'SUBMITTED'), v_at,
               coalesce(v_times[cardinality(v_times)], v_at));
       perform pg_temp.stamp_notification(p.employer_id, v_at);
       insert into public.application_status_changes (application_id, from_status, to_status, changed_by, changed_by_role, changed_at)
