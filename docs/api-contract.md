@@ -195,6 +195,7 @@ updateMyCompanyAction(input: { name?: string; about?: string; size?: CompanySize
   // name 1–150; about ≤ 5000; address ≤ 300; website URL http(s) ≤ 300; chuỗi rỗng = xóa
 uploadCompanyLogoAction(formData: FormData): Promise<ActionResult<Company>>
   // field 'logo': PNG/JPEG/WebP ≤ 1 MB (không nhận SVG). Bucket public 'company-logos', thư mục = user id
+  // logoUrl hợp lệ: URL public của bucket 'company-logos/<id>/…' hoặc logo tĩnh dữ liệu mẫu '/images/companies/logo-NN.svg'
 listCompanies(filter: { q?: string; page?: number }): Promise<{ items: CompanySummary[]; total: number; page: number; pageSize: 20 }>
 getCompany(id: string): Promise<(Company & { openPostings: PostingSummary[] }) | null>
 ```
