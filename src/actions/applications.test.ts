@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { apiFetch } from '@/lib/api';
 import {
   changeApplicationStatusAction,
   getMyApplication,
@@ -10,6 +11,9 @@ import {
 } from './applications';
 import { MAX_RESUME_BYTES } from './applications-schema';
 
+vi.mock('@/lib/api', () => ({ apiFetch: vi.fn() }));
+beforeEach(() => vi.mocked(apiFetch).mockReset());
+
 const POSTING_ID = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b';
 const pdf = (bytes: BlobPart = '%PDF-1.7 ...', type = 'application/pdf') => new File([bytes], 'cv.pdf', { type });
 
@@ -19,7 +23,7 @@ function form(fields: Record<string, string | File>) {
   return data;
 }
 
-// Invalid input is rejected before any Supabase call, so no env/session is needed here.
+// Invalid input is rejected before any API call.
 describe('submitApplicationAction — input sai', () => {
   it.each([
     ['thiếu mã tin', form({ resume: pdf() }), 'Mã tin không hợp lệ'],
@@ -84,3 +88,31 @@ describe('ticket 07 — input sai', () => {
   });
 });
 
+
+describe('gọi FastAPI', () => {
+  const APPLICATION_ID = '7a2b3c4d-5e6f-4a1b-8c2d-3e4f5a6b7c8d';
+
+  it('submitApplicationAction chuyển tiếp nguyên FormData; lỗi API → ActionResult thất bại', async () => {
+    const data = form({ postingId: POSTING_ID, resume: pdf() });
+    vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false, status: 409, error: 'Bạn đã nộp hồ sơ cho tin này rồi' });
+    expect(await submitApplicationAction(data)).toEqual({ success: false, error: 'Bạn đã nộp hồ sơ cho tin này rồi' });
+    expect(apiFetch).toHaveBeenCalledWith('/applications', { method: 'POST', formData: data });
+  });
+
+  it('changeApplicationStatusAction gửi { toStatus }', async () => {
+    vi.mocked(apiFetch).mockResolvedValueOnce({ ok: true, data: { id: APPLICATION_ID } });
+    expect(await changeApplicationStatusAction({ applicationId: APPLICATION_ID, toStatus: 'REVIEWING' })).toEqual({
+      success: true,
+      data: { id: APPLICATION_ID },
+    });
+    expect(apiFetch).toHaveBeenCalledWith(`/applications/${APPLICATION_ID}/status`, {
+      method: 'POST',
+      body: { toStatus: 'REVIEWING' },
+    });
+  });
+
+  it('listApplicationsForPosting: 404 → null', async () => {
+    vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false, status: 404, error: 'x' });
+    expect(await listApplicationsForPosting(POSTING_ID)).toBeNull();
+  });
+});
