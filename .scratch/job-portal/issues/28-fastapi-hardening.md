@@ -4,7 +4,7 @@
 
 **Blocked by:** 27
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ### Phần Codex (module candidates)
 - [ ] Sửa query `saved()` dùng đúng cột của view `saved_posting_summaries` (alias `s`): candidate_id, saved_at, id, employer_id, title, company_name, company_logo_url, location, employment_type, salary_min, salary_max, application_deadline, created_at, industry, level, experience_years, skills, status

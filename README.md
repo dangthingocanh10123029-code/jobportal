@@ -25,6 +25,7 @@ npm run dev                                # Next.js  → http://localhost:3000
 
 ```bash
 cd backend && uv run pytest && uv run ruff check   # nghiệp vụ (InMemory)
+cd backend && RUN_INTEGRATION=1 uv run pytest -m integration   # mọi query Postgres trên DB thật, tự ROLLBACK
 npm test && npm run typecheck                      # Server Actions, apiFetch
 ```
 

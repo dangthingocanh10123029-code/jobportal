@@ -46,3 +46,12 @@ Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp C
 - [x] E2E cleanup xóa CV qua Storage API (không để file mồ côi)
 - [x] rls_checks 55/55, v2_checks 23/23, E2E 34/34 sau 20A + 21B
 - Ghi chú: các lần dọn trước (SQL delete storage.objects) có thể đã để lại vài file e2e mồ côi trong bucket `resumes` (không còn dòng tham chiếu, cần service role key hoặc Dashboard → Storage để xóa)
+
+## v3 — FastAPI backend (tickets 22–28, 2026-10-17)
+- [x] `/health` ok (DB + JWKS ES256), Swagger `/docs`
+- [x] Toàn bộ Server Action nghiệp vụ gọi FastAPI; `src/modules` đã xóa
+- [x] pytest 133 + integration 8/8 (mọi read của 8 Postgres adapter trên DB thật, rollback); Vitest 161; typecheck sạch
+- [x] rls_checks 55/55, v2_checks 23/23, E2E 34/34 trên kiến trúc FastAPI
+- [x] Lỗi thật tìm ra bằng E2E: `GET /me/saved-postings` 500 (alias SQL) + Server Action nuốt lỗi → đã sửa (ticket 28), integration test chặn lớp lỗi này
+- [ ] `POST /me/company/logo` không xóa logo cũ khi đổi logo (file thừa trong bucket company-logos, không ảnh hưởng chức năng)
+- Ghi chú vận hành: `next dev` chạy lâu có thể tự restart vì ngưỡng bộ nhớ ("approaching the used memory threshold") → E2E timeout giả; khởi động lại dev server trước khi demo
