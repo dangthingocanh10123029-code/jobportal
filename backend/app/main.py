@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.db import close_pool
 from app.errors import install_error_handlers
+from app.modules.applications.router import router as applications_router
 from app.modules.candidates.router import router as candidates_router
 from app.modules.companies.router import router as companies_router
 from app.modules.dashboard.router import router as dashboard_router
@@ -33,6 +34,7 @@ app.add_middleware(
 install_error_handlers(app)
 app.include_router(health_router)
 app.include_router(postings_router)
+app.include_router(applications_router)
 app.include_router(companies_router)
 app.include_router(candidates_router)
 app.include_router(notifications_router)
