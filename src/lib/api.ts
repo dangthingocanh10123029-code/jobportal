@@ -12,7 +12,7 @@ type ApiOptions = {
   auth?: boolean;
 };
 
-/** Calls the FastAPI backend (`API_URL`). HTTP errors → `{ ok: false }`; network errors throw. */
+/** Calls the FastAPI backend (`API_URL`). HTTP errors → `{ ok: false }` (5xx also logged); network errors throw. */
 export async function apiFetch<T>(path: string, { method = 'GET', body, formData, auth = true }: ApiOptions = {}): Promise<ApiResult<T>> {
   const base = process.env.API_URL;
   if (!base) throw new Error('Thiếu biến môi trường API_URL');
@@ -32,6 +32,7 @@ export async function apiFetch<T>(path: string, { method = 'GET', body, formData
   const res = await fetch(`${base}${path}`, { method, headers, body: payload, cache: 'no-store' });
   const json: unknown = res.status === 204 ? null : await res.json().catch(() => null);
   if (res.ok) return { ok: true, data: json as T };
+  if (res.status >= 500) console.error('[api]', method, path, res.status);
   const error = (json as { error?: unknown } | null)?.error;
   return { ok: false, status: res.status, error: typeof error === 'string' ? error : `Lỗi máy chủ (${res.status})` };
 }

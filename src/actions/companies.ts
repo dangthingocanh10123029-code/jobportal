@@ -1,15 +1,14 @@
 'use server';
 
 import { apiFetch } from '@/lib/api';
-import { fail, toAction } from './_shared';
+import { fail, readOr, toAction } from './_shared';
 import { firstError } from './auth-schema';
 import { companyFilterSchema, companyIdSchema, companyInputSchema, companyLogoSchema } from './companies-schema';
 import type { ActionResult, CompaniesPage, Company, CompanyInput, PostingSummary } from './types';
 
 /** The signed-in Employer's Company; null for anyone else. */
 export async function getMyCompany(): Promise<Company | null> {
-  const res = await apiFetch<Company>('/me/company');
-  return res.ok ? res.data : null;
+  return readOr(await apiFetch<Company>('/me/company'), null);
 }
 
 /** Omitted fields stay; an empty string clears about/address/website. The name is mirrored to profiles.company_name. */
