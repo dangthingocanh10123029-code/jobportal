@@ -1,3 +1,4 @@
+import psycopg
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -41,3 +42,8 @@ def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(RequestValidationError)
     async def _validation(_: Request, exc: RequestValidationError) -> JSONResponse:
         return JSONResponse({"error": validation_message(list(exc.errors()))}, status_code=422)
+
+    # Lost connection, pool timeout or statement_timeout: answer fast instead of hanging or a bare 500.
+    @app.exception_handler(psycopg.OperationalError)
+    async def _db_unavailable(_: Request, exc: psycopg.OperationalError) -> JSONResponse:
+        return JSONResponse({"error": "Hệ thống đang bận, vui lòng thử lại"}, status_code=503)
