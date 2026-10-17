@@ -14,6 +14,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const searchParams = useSearchParams();
   const next = searchParams.get('next');
   const isSignup = mode === 'signup';
+  const linkError = !isSignup && searchParams.get('error') === 'link';
   const [role, setRole] = useState<Role>('CANDIDATE');
   const [email, setEmail] = useState('');
   const [pending, setPending] = useState(false);
@@ -83,10 +84,11 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
     }
   }
 
-  if (showOtp) return <OtpStep email={email} />;
+  if (showOtp) return <OtpStep email={email} next={!isSignup ? next ?? undefined : undefined} />;
 
   return (
     <form className="form-stack" onSubmit={handleSubmit}>
+      {linkError ? <p className="form-error" role="alert">Link xác nhận không hợp lệ hoặc đã hết hạn. Hãy đăng nhập hoặc nhập mã xác nhận.</p> : null}
       {isSignup ? (
         <fieldset className="role-picker">
           <legend>Bạn tham gia với vai trò nào?</legend>

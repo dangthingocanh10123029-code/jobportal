@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { resendSignupOtpAction, verifySignupOtpAction } from '@/actions/auth';
 
-export function OtpStep({ email }: { email: string }) {
+export function OtpStep({ email, next }: { email: string; next?: string }) {
   const router = useRouter();
   const [token, setToken] = useState('');
   const [pending, setPending] = useState(false);
@@ -27,7 +27,10 @@ export function OtpStep({ email }: { email: string }) {
         setError(result.error);
         return;
       }
-      router.push('/account');
+      const destination = next?.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\')
+        ? next
+        : '/account';
+      router.push(destination);
       router.refresh();
     } finally {
       setPending(false);
