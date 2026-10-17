@@ -6,6 +6,7 @@ import { searchFilterSchema } from '@/actions/postings-schema';
 import type { Industry, PostingSort, PostingSummary, SearchFilter } from '@/actions/types';
 import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels, postingSortLabels } from '@/components/format';
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
+import { Button, Input } from '@/components/ui/primitives';
 
 function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean }) {
   return (
@@ -112,7 +113,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         <form action="/" className="job-search-form" id="job-search" method="get">
           <label className="job-search-keyword field-label" htmlFor="search-keyword">
             Từ khóa
-            <input autoComplete="off" className="text-input" defaultValue={filter.q ?? ''} id="search-keyword" name="q" placeholder="Ví dụ: kế toán, thiết kế..." type="search" />
+            <Input autoComplete="off" defaultValue={filter.q ?? ''} id="search-keyword" name="q" placeholder="Ví dụ: kế toán, thiết kế..." type="search" />
           </label>
           <label className="field-label" htmlFor="search-location">
             Địa điểm
@@ -125,6 +126,9 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               {Object.entries(employmentLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
+          <details className="advanced-search">
+          <summary>Bộ lọc nâng cao <span aria-hidden="true">⌄</span></summary>
+          <div className="advanced-search-fields">
           <label className="field-label" htmlFor="search-min-salary">
             Lương tối thiểu
             <span className="salary-search-input">
@@ -160,8 +164,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               {(Object.entries(postingSortLabels) as [PostingSort, string][]).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
+          </div>
+          </details>
           <div className="job-search-actions">
-            <button className="button button-primary" type="submit">Tìm việc</button>
+            <Button type="submit">Tìm việc</Button>
             {hasFilters ? <Link className="clear-search-link" href="/">Xóa bộ lọc</Link> : null}
           </div>
         </form>

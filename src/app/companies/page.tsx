@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { listCompanies } from '@/actions/companies';
 import { companySizeLabels } from '@/components/format';
+import { PageHeader } from '@/components/ui/primitives';
 
 type CompanySearchParams = Record<string, string | string[] | undefined>;
 
@@ -22,11 +23,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
 
   return (
     <main className="page-shell companies-page">
-      <header className="page-heading companies-heading">
-        <span className="eyebrow">Nhà tuyển dụng</span>
-        <h1>Khám phá công ty</h1>
-        <p>Tìm hiểu các doanh nghiệp đang tìm kiếm đồng đội mới.</p>
-      </header>
+      <PageHeader className="companies-heading" description="Tìm hiểu các doanh nghiệp đang tìm kiếm đồng đội mới." eyebrow="Nhà tuyển dụng" title="Khám phá công ty" />
       <form action="/companies" className="companies-search-form" method="get">
         <label className="field-label" htmlFor="company-search">Tìm theo tên công ty<input autoComplete="organization" className="text-input" defaultValue={q ?? ''} id="company-search" name="q" placeholder="Ví dụ: công nghệ, giáo dục..." type="search" /></label>
         <button className="button button-primary" type="submit">Tìm công ty</button>
