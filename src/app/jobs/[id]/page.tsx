@@ -40,11 +40,11 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
 
       <article className="surface-card posting-detail-card">
         <header className="posting-detail-header">
-          <img alt="" className="company-placeholder company-placeholder-large" height="64" src="/images/company-placeholder.svg" width="64" />
+          <img alt="" className="company-placeholder company-placeholder-large" height="64" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="64" />
           <div className="posting-detail-title">
             <span className="eyebrow">Cơ hội nghề nghiệp</span>
             <h1>{posting.title}</h1>
-            <p>{posting.companyName}</p>
+            <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
           </div>
         </header>
 
@@ -110,7 +110,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
               <article className="surface-card related-posting-card" key={related.id}>
                 <div>
                   <h3><Link href={`/jobs/${related.id}`}>{related.title}</Link></h3>
-                  <p>{related.companyName} · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
+                  <p><Link href={`/companies/${related.employerId}`}>{related.companyName}</Link> · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
                 </div>
                 <Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`}><span aria-hidden="true">→</span></Link>
               </article>
