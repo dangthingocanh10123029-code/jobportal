@@ -45,7 +45,8 @@ insert into auth.users (id, email, raw_user_meta_data) values
   ((select c2 from ids), 'c2@test.local', '{"role":"CANDIDATE","full_name":"Ứng viên Hai"}');
 select pg_temp.ok((select count(*) from profiles where id in (select unnest(array[e1,e2,c1,c2]) from ids)) = 4, '01 trigger tạo 4 profile');
 select pg_temp.ok((select role from profiles where id = (select c1 from ids)) = 'CANDIDATE', '01 role CANDIDATE đúng');
-select pg_temp.fails($$insert into auth.users (id, email, raw_user_meta_data) values (gen_random_uuid(), 'bad@test.local', '{"role":"ADMIN"}')$$, 'check', '01 role không hợp lệ bị chặn khi đăng ký');
+select pg_temp.fails($$insert into auth.users (id, email, raw_user_meta_data) values (gen_random_uuid(), 'bad@test.local', '{"role":"ADMIN"}')$$, 'check|sign-up role', '01 tự đăng ký role ADMIN bị chặn');
+select pg_temp.fails($$insert into auth.users (id, email, raw_user_meta_data) values (gen_random_uuid(), 'bad2@test.local', '{"role":"SUPERUSER"}')$$, 'check|sign-up role', '01 role lạ bị chặn khi đăng ký');
 
 -- Postings as postgres (deadline fixtures need direct inserts)
 insert into job_postings (id, employer_id, title, description, location, employment_type, salary_min, salary_max, application_deadline, status)
