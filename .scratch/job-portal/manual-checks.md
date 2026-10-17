@@ -55,3 +55,10 @@ Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp C
 - [x] Lỗi thật tìm ra bằng E2E: `GET /me/saved-postings` 500 (alias SQL) + Server Action nuốt lỗi → đã sửa (ticket 28), integration test chặn lớp lỗi này
 - [ ] `POST /me/company/logo` không xóa logo cũ khi đổi logo (file thừa trong bucket company-logos, không ảnh hưởng chức năng)
 - Ghi chú vận hành: `next dev` chạy lâu có thể tự restart vì ngưỡng bộ nhớ ("approaching the used memory threshold") → E2E timeout giả; khởi động lại dev server trước khi demo
+
+## Hiệu năng + giao diện (tickets 29–31, 2026-10-17)
+- [x] API p50 (RTT ~104 ms tới pooler Tokyo): 520–1150 ms → 210–430 ms (`backend/scripts/bench.py`)
+- [x] Trang (next dev): `/` 1,15 s → 0,56 s; `/jobs/[id]` 2,28 s → 0,72 s; `/companies` 0,80 → 0,45 s
+- [x] Giao diện Layered & Depth; không tràn ngang ở 360px
+- [x] E2E 45/45 (44 chức năng + 0 lỗi console/hydration); integration 10/10; rls 55/55; v2 23/23
+- Còn có thể: chạy bản production (`next build && next start`) khi demo; chuyển Supabase sang region Singapore (RTT ~30 ms)

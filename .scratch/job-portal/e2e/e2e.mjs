@@ -49,7 +49,10 @@ const guestCtx = await browser.newContext();
 const emp = await employerCtx.newPage();
 const cand = await candidateCtx.newPage();
 const guest = await guestCtx.newPage();
+const consoleErrors = [];
 for (const p of [emp, cand, guest]) {
+  p.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(`${p === emp ? 'emp' : p === cand ? 'cand' : 'guest'} ${p.url()}: ${m.text().slice(0, 200)}`); });
+  p.on('pageerror', (e) => consoleErrors.push(`pageerror ${p.url()}: ${e.message.slice(0, 200)}`));
   p.setDefaultTimeout(45000);
   p.setDefaultNavigationTimeout(60000);
   p.on('dialog', (d) => d.accept());
@@ -303,7 +306,8 @@ await check('Rút hồ sơ có bước xác nhận → "Đã rút hồ sơ"', ca
   if (await cand.getByRole('button', { name: 'Rút hồ sơ' }).count()) throw new Error('nút rút vẫn còn');
 });
 await check('Nhà tuyển dụng thấy "Đã rút hồ sơ", không còn nút chuyển trạng thái', emp, async () => {
-  await emp.reload();
+  await emp.goto(`${BASE}/employer/postings`);
+  await emp.locator('article', { hasText: TITLE }).getByRole('link', { name: 'Xem hồ sơ' }).click();
   await emp.getByText('Đã rút hồ sơ').first().waitFor();
   if (await emp.getByRole('button', { name: 'Mời phỏng vấn' }).count()) throw new Error('vẫn còn nút');
 });
@@ -371,6 +375,9 @@ await check('Đăng xuất → về /login, header có "Đăng nhập"', cand, a
   await cand.waitForURL(/\/login\?next=/);
 });
 
+results.push([consoleErrors.length ? 'FAIL' : 'PASS', `Không có lỗi console/hydration (${consoleErrors.length})`]);
+console.log(`${consoleErrors.length ? 'FAIL' : 'PASS'} Không có lỗi console/hydration (${consoleErrors.length})`);
+for (const line of consoleErrors.slice(0, 8)) console.log('     ' + line);
 await browser.close();
 const failed = results.filter(([s]) => s === 'FAIL').length;
 console.log(`\n${results.length - failed}/${results.length} PASS`);

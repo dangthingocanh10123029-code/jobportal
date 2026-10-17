@@ -4,7 +4,7 @@
 
 **Blocked by:** 28
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ### Phần A — Claude logic (backend + actions)
 - [ ] `user_tx`: gộp thiết lập role + claims thành một lệnh (`select set_config('role', %s, true), set_config('request.jwt.claims', %s, true)`) và dùng psycopg pipeline để BEGIN + thiết lập + truy vấn đầu đi chung một lượt; giữ nguyên bảo đảm RLS (test: role/claims đúng, không rò giữa các request của pool)
