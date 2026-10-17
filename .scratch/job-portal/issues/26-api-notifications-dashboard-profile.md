@@ -4,7 +4,7 @@
 
 **Blocked by:** 25
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `backend/app/modules/notifications/**`: list 30 mới nhất, unread count (0 khi khách), mark read (ids rỗng = tất cả, tối đa 100 id)
 - [ ] `backend/app/modules/dashboard/**`: dashboard Employer từ view `employer_posting_stats`, byStatus đủ 7 khóa, displayStatus EXPIRED

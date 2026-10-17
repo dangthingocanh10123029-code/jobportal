@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `backend/app/main.py` (FastAPI, `/docs`, CORS từ `ALLOWED_ORIGINS`), `app/config.py` (pydantic-settings đọc `backend/.env`)
 - [ ] `app/db.py`: `psycopg_pool.ConnectionPool` (session pooler) + context manager `user_tx(claims | None)` mở transaction, `set local role authenticated|anon`, `select set_config('request.jwt.claims', <json>, true)`; không bao giờ chạy truy vấn người dùng với quyền postgres

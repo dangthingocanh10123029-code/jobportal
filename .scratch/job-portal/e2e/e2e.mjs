@@ -147,6 +147,9 @@ await check('Tên công ty trên tin dẫn tới trang công ty', guest, async (
     await guest.getByRole('link', { name: 'Công ty E2E' }).first().click();
     await guest.waitForURL(/\/companies\//);
     await guest.getByText(TITLE).first().waitFor();
+  } catch (error) {
+    await guest.screenshot({ path: `${DIR}fail-company.png`, fullPage: true });
+    throw error;
   } finally {
     await guest.goto(back);
   }

@@ -4,7 +4,7 @@
 
 **Blocked by:** 22
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `backend/app/modules/companies/**`: list (tìm không dấu qua view `company_summaries`, phân trang 20), get kèm tin đang mở, get/patch của tôi (validate giống `companies-schema.ts`: tên 1–150, about ≤5000, website http/https ≤300, size enum), upload logo (PNG/JPEG/WebP ≤1MB, kiểm tra magic bytes, Storage REST với token người dùng, cập nhật `logo_url`)
 - [ ] `backend/app/modules/candidates/**`: candidate profile get/patch (skills ≤20, 1–30, không trùng), applicant profile (chỉ chủ tin), saved postings toggle/list/ids
