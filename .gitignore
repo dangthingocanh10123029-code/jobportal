@@ -4,3 +4,8 @@ next-env.d.ts
 .env*.local
 *.tsbuildinfo
 supabase/.temp/
+backend/.venv/
+backend/.env
+__pycache__/
+.pytest_cache/
+.ruff_cache/

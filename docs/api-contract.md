@@ -256,6 +256,40 @@ Lượt xem tin tăng khi `getPostingDetail` được gọi cho tin không phả
 | `/notifications` | đã đăng nhập | 17 |
 | `/employer/dashboard` | Employer | 17 |
 
+## v3 — REST API FastAPI (ADR-0003)
+
+Base URL: env `API_URL` (dev `http://127.0.0.1:8000`). Swagger: `/docs`. Server Actions gọi qua `apiFetch` trong `src/lib/api.ts` (logic): tự gắn `Authorization: Bearer <access_token>` từ session, ném lỗi mạng, trả JSON.
+Quy ước: JSON camelCase đúng kiểu TS ở trên; thành công 200/201 trả object/array; lỗi nghiệp vụ 400/403/404/409/422 trả `{ "error": "<tiếng Việt>" }` — Server Action chuyển thành `ActionResult` thất bại. "(auth)" = cần Bearer; "(emp)"/"(cand)" = đúng vai trò, sai vai trò → 403.
+
+| Method + path | Thay cho (Server Action / hàm đọc) | Ticket |
+|---|---|---|
+| `GET /health` | — (kiểm tra DB + JWKS) | 22 |
+| `GET /postings?q&location&type&industry&level&exp&skill&minSalary&sort&page` | `listOpenPostings` | 23 |
+| `GET /postings/{id}` | `getPostingDetail` (ghi lượt xem) | 23 |
+| `GET /postings/{id}/related` | `getRelatedPostings` | 23 |
+| `GET /me/postings` (emp) · `GET /me/postings/{id}` (emp) | `listMyPostings` · `getMyPosting` | 23 |
+| `POST /me/postings` (emp) · `PUT /me/postings/{id}` (emp) | `createPostingDraftAction` · `updatePostingAction` | 23 |
+| `POST /me/postings/{id}/publish` · `/close` (emp) | `publishPostingAction` · `closePostingAction` | 23 |
+| `POST /applications` (cand, multipart `postingId`, `resume`) | `submitApplicationAction` | 24 |
+| `GET /postings/{id}/my-application` (cand) | `getMyApplicationForPosting` | 24 |
+| `GET /me/applications` · `GET /me/applications/{id}` (cand) | `listMyApplications` · `getMyApplication` | 24 |
+| `POST /me/applications/{id}/withdraw` (cand) | `withdrawApplicationAction` | 24 |
+| `GET /me/postings/{id}/applications` (emp) | `listApplicationsForPosting` (403/404 → null) | 24 |
+| `POST /applications/{id}/status` (emp, `{ toStatus }`) | `changeApplicationStatusAction` | 24 |
+| `GET /applications/{id}/resume-url` (emp) | `getResumeUrlAction` | 24 |
+| `GET /companies?q&page` · `GET /companies/{id}` | `listCompanies` · `getCompany` | 25 |
+| `GET /me/company` · `PATCH /me/company` (emp) | `getMyCompany` · `updateMyCompanyAction` | 25 |
+| `POST /me/company/logo` (emp, multipart `logo`) | `uploadCompanyLogoAction` | 25 |
+| `GET /me/candidate-profile` · `PATCH /me/candidate-profile` (cand) | `getMyCandidateProfile` · `updateCandidateProfileAction` | 25 |
+| `GET /applications/{id}/applicant` (emp) | `getApplicantProfile` | 25 |
+| `POST /me/saved-postings/{postingId}/toggle` · `GET /me/saved-postings` · `GET /me/saved-postings/ids` (cand) | `toggleSavedPostingAction` · `listSavedPostings` · `getSavedPostingIds` | 25 |
+| `GET /me/notifications` · `GET /me/notifications/unread-count` · `POST /me/notifications/read` (`{ ids? }`) (auth) | `listMyNotifications` · `getUnreadNotificationCount` · `markNotificationsReadAction` | 26 |
+| `GET /me/dashboard` (emp) | `getEmployerDashboard` | 26 |
+| `GET /me/profile` · `PATCH /me/profile` (auth) | `getCurrentProfile` · `updateProfileAction` | 26 |
+
+Giữ ở Next.js (Supabase Auth, cookie): `signUpAction`, `signInAction`, `signOutAction`, `verifySignupOtpAction`, `resendSignupOtpAction`, `/auth/callback`, middleware.
+`allowedNextStatuses` (hàm thuần cho UI) chuyển về `src/lib/application-status.ts` ở ticket 27; Python có bản tương đương trong domain applications.
+
 ## Hình ảnh (Antigravity → Codex)
 
 Antigravity giao đúng tên file và đường dẫn dưới đây (ticket 08). Codex tham chiếu theo đường dẫn này ngay từ đầu, kể cả khi file chưa merge (ảnh tạm thời không hiện là chấp nhận được, không tự tạo ảnh thay thế).
