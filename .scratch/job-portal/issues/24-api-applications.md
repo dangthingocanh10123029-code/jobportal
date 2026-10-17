@@ -4,7 +4,7 @@
 
 **Blocked by:** 23
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Domain Python: bảng transition + `allowed_next_statuses(status, role)` giống TS; lỗi POSTING_NOT_OPEN / ALREADY_APPLIED / INVALID_RESUME / INVALID_TRANSITION / APPLICATION_NOT_FOUND → thông báo tiếng Việt như hiện tại
 - [ ] `POST /applications`: kiểm tra PDF (MIME + magic `%PDF-`, ≤ 5 MB), upload `resumes/<uid>/<uuid>.pdf` qua Storage REST với Bearer người dùng, gọi RPC; RPC lỗi → xóa file vừa upload (best effort)
