@@ -6,7 +6,7 @@
 
 **Blocked by:** 30
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Design system tách ra `src/app/styles/` (tokens, base, components, utilities) hoặc giữ `globals.css` nhưng có mục rõ ràng; component dùng chung trong `src/components/ui/` (Button, Card, Input/Select, Badge, StatCard, EmptyState, PageHeader) — các trang dùng lại thay vì lặp class
 - [ ] Header: dính khi cuộn, nền trắng + viền dưới mảnh, logo/menu/khu tài khoản cân đối; mobile có menu gọn
