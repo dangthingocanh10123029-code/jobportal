@@ -1,12 +1,22 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type { AppNotification } from '@/actions/types';
 import { markNotificationsReadAction } from '@/actions/notifications';
 
-function relativeTime(value: string) {
-  const delta = new Date(value).getTime() - Date.now();
+function absoluteTime(value: string) {
+  const date = new Date(new Date(value).getTime() + 7 * 60 * 60 * 1000);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const hour = String(date.getUTCHours()).padStart(2, '0');
+  const minute = String(date.getUTCMinutes()).padStart(2, '0');
+  return `${day}/${month}/${year} ${hour}:${minute} (giờ Việt Nam)`;
+}
+
+function relativeTime(value: string, now: number) {
+  const delta = new Date(value).getTime() - now;
   const seconds = Math.round(delta / 1000);
   const units: [Intl.RelativeTimeFormatUnit, number][] = [
     ['year', 60 * 60 * 24 * 365], ['month', 60 * 60 * 24 * 30], ['week', 60 * 60 * 24 * 7],
@@ -23,6 +33,14 @@ export function NotificationsList({ notifications }: { notifications: AppNotific
   const [error, setError] = useState('');
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateNow = () => setNow(Date.now());
+    updateNow();
+    const intervalId = window.setInterval(updateNow, 30_000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   function openNotification(notification: AppNotification) {
     if (!notification.link.startsWith('/') || notification.link.startsWith('//')) {
@@ -78,9 +96,12 @@ export function NotificationsList({ notifications }: { notifications: AppNotific
       <div className="notification-list">
         {notifications.map((notification) => {
           const busy = isPending && pendingId === notification.id;
+          const timeLabel = now === null
+            ? absoluteTime(notification.createdAt)
+            : relativeTime(notification.createdAt, now);
           return (
             <button
-              aria-label={`${notification.readAt ? '' : 'Chưa đọc: '}${notification.title}. ${notification.body}. ${relativeTime(notification.createdAt)}`}
+              aria-label={`${notification.readAt ? '' : 'Chưa đọc: '}${notification.title}. ${notification.body}. ${timeLabel}`}
               className={`notification-item${notification.readAt ? '' : ' notification-unread'}`}
               disabled={isPending}
               key={notification.id}
@@ -91,7 +112,13 @@ export function NotificationsList({ notifications }: { notifications: AppNotific
               <span className="notification-copy">
                 <span className="notification-title">{notification.title}</span>
                 <span className="notification-body">{notification.body}</span>
-                <time className="notification-time" dateTime={notification.createdAt}>{relativeTime(notification.createdAt)}</time>
+                <time
+                  className="notification-time"
+                  dateTime={notification.createdAt}
+                  title={absoluteTime(notification.createdAt)}
+                >
+                  {timeLabel}
+                </time>
               </span>
               {busy ? <span aria-hidden="true" className="notification-opening">Đang mở…</span> : null}
             </button>
