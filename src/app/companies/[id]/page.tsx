@@ -5,6 +5,7 @@ import { getCurrentProfile } from '@/actions/auth';
 import { getSavedPostingIds } from '@/actions/candidates';
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 import { companySizeLabels, employmentLabels, formatDate, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
+import { StatCard } from '@/components/ui/primitives';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -36,6 +37,11 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
             {company.website ? <a href={company.website} rel="noopener" target="_blank">{company.website}<span aria-hidden="true"> ↗</span></a> : null}
           </div>
         </div>
+      </section>
+      <section aria-label="Tổng quan công ty" className="company-metrics">
+        <StatCard label="Vị trí đang tuyển" value={company.openPostings.length} />
+        <StatCard label="Quy mô công ty" value={company.size ? companySizeLabels[company.size] : 'Đang cập nhật'} />
+        <StatCard label="Địa chỉ" value={company.address ?? 'Đang cập nhật'} />
       </section>
       {company.about ? <section aria-labelledby="company-about-title" className="surface-card company-about-card"><h2 id="company-about-title">Giới thiệu</h2><p>{company.about}</p></section> : null}
       <section aria-labelledby="company-open-postings-title" className="company-open-postings">

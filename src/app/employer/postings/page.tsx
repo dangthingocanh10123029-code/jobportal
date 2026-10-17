@@ -3,6 +3,7 @@ import { listMyPostings } from '@/actions/postings';
 import type { JobPosting } from '@/actions/types';
 import { PostingControls } from '@/components/postings/posting-controls';
 import { formatDate, formatSalary, postingStatusLabels } from '@/components/format';
+import { PageHeader, StatCard } from '@/components/ui/primitives';
 
 function PostingCard({ posting }: { posting: JobPosting }) {
   return (
@@ -42,20 +43,16 @@ export default async function EmployerPostingsPage() {
   return (
     <main className="page-shell employer-postings-page">
       <div className="employer-page-topline">
-        <div className="page-heading">
-          <span className="eyebrow">Không gian nhà tuyển dụng</span>
-          <h1>Tin tuyển dụng của tôi</h1>
-          <p>Quản lý tin đang đăng và chuẩn bị cơ hội mới cho ứng viên.</p>
-        </div>
+        <PageHeader description="Quản lý tin đang đăng và chuẩn bị cơ hội mới cho ứng viên." eyebrow="Không gian nhà tuyển dụng" title="Tin tuyển dụng của tôi" />
         <Link className="button button-primary create-posting-button" href="/employer/postings/new">
           <span aria-hidden="true">＋</span> Tạo tin tuyển dụng
         </Link>
       </div>
 
       <div aria-label="Tổng quan tin tuyển dụng" className="posting-stats">
-        <div className="posting-stat"><span>Tổng số tin</span><strong>{postings.length}</strong></div>
-        <div className="posting-stat"><span>Đang tuyển</span><strong>{activeCount}</strong></div>
-        <div className="posting-stat"><span>Bản nháp</span><strong>{draftCount}</strong></div>
+        <StatCard label="Tổng số tin" value={postings.length} />
+        <StatCard label="Đang tuyển" value={activeCount} />
+        <StatCard label="Bản nháp" value={draftCount} />
       </div>
 
       {postings.length ? (

@@ -18,6 +18,16 @@ export async function SiteHeader() {
           {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/saved">Việc đã lưu</Link></> : null}
           {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
         </nav>
+        <details className="mobile-menu">
+          <summary aria-label="Mở menu"><span aria-hidden="true" className="mobile-menu-icon">☰</span><span className="mobile-menu-label">Menu</span></summary>
+          <nav aria-label="Điều hướng di động" className="mobile-menu-panel">
+            <Link href="/">Tìm việc</Link>
+            <Link href="/companies">Công ty</Link>
+            {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/saved">Việc đã lưu</Link></> : null}
+            {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
+            {profile ? <Link href="/notifications">Thông báo ({unreadCount})</Link> : <><Link href="/login">Đăng nhập</Link><Link href="/signup">Tạo tài khoản</Link></>}
+          </nav>
+        </details>
         <div className="site-header-end">
           {profile ? (
             <>

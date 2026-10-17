@@ -41,18 +41,45 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
         </section>
       ) : null}
 
-      <article className="surface-card posting-detail-card">
-        <header className="posting-detail-header">
-          <img alt="" className="company-placeholder company-placeholder-large" height="64" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="64" />
-          <div className="posting-detail-title">
-            <span className="eyebrow">Cơ hội nghề nghiệp</span>
-            <h1>{posting.title}</h1>
-            <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
-          </div>
-          {profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}
-        </header>
+      <div className="posting-detail-layout">
+        <article className="surface-card posting-detail-card">
+          <header className="posting-detail-header">
+            <img alt="" className="company-placeholder company-placeholder-large" height="64" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="64" />
+            <div className="posting-detail-title">
+              <span className="eyebrow">Cơ hội nghề nghiệp</span>
+              <h1>{posting.title}</h1>
+              <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
+            </div>
+            {profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}
+          </header>
 
-        <div className="posting-detail-meta">
+          <section aria-labelledby="description-title" className="posting-description">
+            <h2 id="description-title">Mô tả công việc</h2>
+            <p>{posting.description}</p>
+          </section>
+
+          {posting.requirements.trim() ? (
+            <section aria-labelledby="requirements-title" className="posting-description">
+              <h2 id="requirements-title">Yêu cầu</h2>
+              <p>{posting.requirements}</p>
+            </section>
+          ) : null}
+          {posting.benefits.trim() ? (
+            <section aria-labelledby="benefits-title" className="posting-description">
+              <h2 id="benefits-title">Quyền lợi</h2>
+              <p>{posting.benefits}</p>
+            </section>
+          ) : null}
+          {posting.skills.length ? (
+            <section aria-labelledby="skills-title" className="posting-description">
+              <h2 id="skills-title">Kỹ năng</h2>
+              <div className="posting-skill-list">{posting.skills.map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div>
+            </section>
+          ) : null}
+        </article>
+
+        <aside aria-label="Thông tin và ứng tuyển" className="posting-detail-sidebar">
+          <section aria-label="Thông tin tuyển dụng" className="surface-card posting-detail-meta">
           <div><span aria-hidden="true">▦</span><span><small>Ngành nghề</small><strong>{industryLabels[posting.industry]}</strong></span></div>
           <div><span aria-hidden="true">▤</span><span><small>Cấp bậc</small><strong>{jobLevelLabels[posting.level]}</strong></span></div>
           <div><span aria-hidden="true">◷</span><span><small>Kinh nghiệm</small><strong>{formatExperience(posting.experienceYears)}</strong></span></div>
@@ -61,34 +88,15 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           <div><span aria-hidden="true">◷</span><span><small>Hình thức</small><strong>{employmentLabels[posting.employmentType]}</strong></span></div>
           <div><span aria-hidden="true">₫</span><span><small>Mức lương</small><strong>{formatSalary(posting.salaryMin, posting.salaryMax)}</strong></span></div>
           <div><span aria-hidden="true">▣</span><span><small>Hạn nộp</small><strong>{formatDate(posting.applicationDeadline, 'long')}</strong></span></div>
-        </div>
-
-        <section aria-labelledby="description-title" className="posting-description">
-          <h2 id="description-title">Mô tả công việc</h2>
-          <p>{posting.description}</p>
-        </section>
-
-        {posting.requirements.trim() ? (
-          <section aria-labelledby="requirements-title" className="posting-description">
-            <h2 id="requirements-title">Yêu cầu</h2>
-            <p>{posting.requirements}</p>
           </section>
-        ) : null}
-        {posting.benefits.trim() ? (
-          <section aria-labelledby="benefits-title" className="posting-description">
-            <h2 id="benefits-title">Quyền lợi</h2>
-            <p>{posting.benefits}</p>
+          <section aria-label="Công ty tuyển dụng" className="surface-card posting-company-summary">
+            <img alt="" height="52" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="52" />
+            <div><span className="eyebrow">Nhà tuyển dụng</span><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></div>
+            <Link aria-label={`Xem công ty ${posting.companyName}`} className="company-summary-arrow" href={`/companies/${posting.employerId}`}>→</Link>
           </section>
-        ) : null}
-        {posting.skills.length ? (
-          <section aria-labelledby="skills-title" className="posting-description">
-            <h2 id="skills-title">Kỹ năng</h2>
-            <div className="posting-skill-list">{posting.skills.map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div>
-          </section>
-        ) : null}
 
         {posting.isOpen && profile?.role === 'CANDIDATE' ? (
-          <footer className="posting-detail-footer">
+          <section className="surface-card posting-detail-footer">
             {application ? (
               <div aria-live="polite" className="application-submitted">
                 <span aria-hidden="true">✓</span>
@@ -98,14 +106,15 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
                 </div>
               </div>
             ) : <ApplicationForm postingId={posting.id} />}
-          </footer>
+          </section>
         ) : posting.isOpen && !profile ? (
-          <footer className="posting-detail-footer">
+          <section className="surface-card posting-detail-footer">
             <p>Quan tâm đến cơ hội này? Đăng nhập bằng tài khoản ứng viên để nộp hồ sơ.</p>
             <Link className="button button-primary" href={`/login?next=${encodeURIComponent(`/jobs/${posting.id}`)}`}>Đăng nhập để ứng tuyển</Link>
-          </footer>
+          </section>
         ) : null}
-      </article>
+        </aside>
+      </div>
       {relatedPostings.length ? (
         <section aria-labelledby="related-postings-title" className="related-postings">
           <div className="page-heading"><span className="eyebrow">Cùng lĩnh vực</span><h2 id="related-postings-title">Việc làm liên quan</h2></div>

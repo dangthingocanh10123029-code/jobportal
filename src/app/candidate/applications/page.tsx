@@ -1,17 +1,14 @@
 import Link from 'next/link';
 import { listMyApplications } from '@/actions/applications';
 import { applicationStatusLabels, formatDate } from '@/components/format';
+import { PageHeader } from '@/components/ui/primitives';
 
 export default async function CandidateApplicationsPage() {
   const applications = await listMyApplications();
 
   return (
     <main className="page-shell candidate-applications-page">
-      <div className="page-heading candidate-applications-heading">
-        <span className="eyebrow">Hành trình ứng tuyển</span>
-        <h1>Đơn của tôi</h1>
-        <p>Theo dõi trạng thái và cập nhật mới nhất của các hồ sơ bạn đã gửi.</p>
-      </div>
+      <PageHeader className="candidate-applications-heading" description="Theo dõi trạng thái và cập nhật mới nhất của các hồ sơ bạn đã gửi." eyebrow="Hành trình ứng tuyển" title="Đơn của tôi" />
 
       {applications.length > 0 ? (
         <div aria-label="Danh sách hồ sơ ứng tuyển" className="candidate-application-list">

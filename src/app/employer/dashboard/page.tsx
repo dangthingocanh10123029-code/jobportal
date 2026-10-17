@@ -2,17 +2,9 @@ import Link from 'next/link';
 import { getEmployerDashboard } from '@/actions/dashboard';
 import type { ApplicationStatus } from '@/actions/types';
 import { applicationStatusLabels, postingStatusLabels } from '@/components/format';
+import { PageHeader, StatCard } from '@/components/ui/primitives';
 
 const statuses: ApplicationStatus[] = ['SUBMITTED', 'REVIEWING', 'INTERVIEWING', 'OFFERED', 'HIRED', 'REJECTED', 'WITHDRAWN'];
-
-function TotalCard({ label, value, icon }: { label: string; value: number; icon: string }) {
-  return (
-    <article className="dashboard-total-card">
-      <span aria-hidden="true" className="dashboard-total-icon">{icon}</span>
-      <div><p>{label}</p><strong>{value.toLocaleString('vi-VN')}</strong></div>
-    </article>
-  );
-}
 
 export default async function EmployerDashboardPage() {
   const dashboard = await getEmployerDashboard();
@@ -22,17 +14,13 @@ export default async function EmployerDashboardPage() {
 
   return (
     <main className="page-shell employer-dashboard-page">
-      <div className="page-heading dashboard-heading">
-        <span className="eyebrow">Không gian nhà tuyển dụng</span>
-        <h1>Dashboard</h1>
-        <p>Tổng quan hiệu quả tuyển dụng và hoạt động ứng tuyển của công ty.</p>
-      </div>
+      <PageHeader className="dashboard-heading" description="Tổng quan hiệu quả tuyển dụng và hoạt động ứng tuyển của công ty." eyebrow="Không gian nhà tuyển dụng" title="Dashboard" />
 
       <section aria-label="Tổng quan tuyển dụng" className="dashboard-totals">
-        <TotalCard icon="▤" label="Tin tuyển dụng" value={dashboard.totals.postings} />
-        <TotalCard icon="◉" label="Đang mở" value={dashboard.totals.open} />
-        <TotalCard icon="♧" label="Đơn ứng tuyển" value={dashboard.totals.applications} />
-        <TotalCard icon="⌁" label="Lượt xem" value={dashboard.totals.views} />
+        <StatCard icon="▤" label="Tin tuyển dụng" value={dashboard.totals.postings.toLocaleString('vi-VN')} />
+        <StatCard icon="◉" label="Đang mở" value={dashboard.totals.open.toLocaleString('vi-VN')} />
+        <StatCard icon="♧" label="Đơn ứng tuyển" value={dashboard.totals.applications.toLocaleString('vi-VN')} />
+        <StatCard icon="⌁" label="Lượt xem" value={dashboard.totals.views.toLocaleString('vi-VN')} />
       </section>
 
       <section aria-labelledby="dashboard-status-title" className="surface-card dashboard-status-card">
