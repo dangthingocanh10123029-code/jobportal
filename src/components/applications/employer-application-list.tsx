@@ -6,7 +6,7 @@ import {
   getResumeUrlAction,
 } from '@/actions/applications';
 import type { ApplicationStatus, EmployerApplicationSummary } from '@/actions/types';
-import { allowedNextStatuses } from '@/modules/application';
+import { allowedNextStatuses } from '@/lib/application-status';
 import { applicationStatusLabels, formatDate } from '@/components/format';
 import { ApplicantProfileDetails } from './applicant-profile-details';
 

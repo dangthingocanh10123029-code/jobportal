@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getMyApplication } from '@/actions/applications';
 import type { StatusChange } from '@/actions/types';
-import { allowedNextStatuses } from '@/modules/application';
+import { allowedNextStatuses } from '@/lib/application-status';
 import { WithdrawApplicationButton } from '@/components/applications/withdraw-application-button';
 import { applicationStatusLabels, formatDateTime } from '@/components/format';
 

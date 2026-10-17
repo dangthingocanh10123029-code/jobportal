@@ -4,7 +4,7 @@
 
 **Blocked by:** 24, 26
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `src/actions/{companies,candidates,notifications,dashboard}.ts` + `getCurrentProfile`/`updateProfileAction` gọi `apiFetch`; `getCurrentActor` cho middleware vẫn đọc Supabase trực tiếp (nhẹ, không phụ thuộc API)
 - [ ] `allowedNextStatuses` chuyển sang `src/lib/application-status.ts` (re-export từ `@/modules/application` nếu UI còn import, rồi Codex/Coordinator đổi import)
