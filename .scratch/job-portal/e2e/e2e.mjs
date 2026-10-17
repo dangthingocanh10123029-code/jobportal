@@ -75,6 +75,16 @@ await check('Tạo tin: lương min > max bị chặn ở form', emp, async () =
   await emp.fill('textarea[name=description]', 'Phụ trách sổ sách kế toán, báo cáo thuế hàng tháng cho công ty.');
   await emp.fill('input[name=location]', 'Đà Nẵng');
   await emp.selectOption('select[name=employmentType]', 'FULL_TIME');
+  await emp.selectOption('select[name=industry]', 'ACCOUNTING_FINANCE');
+  await emp.selectOption('select[name=level]', 'MIDDLE');
+  await emp.fill('input[name=experienceYears]', '2');
+  await emp.fill('input[name=headcount]', '3');
+  await emp.getByPlaceholder('Nhập kỹ năng rồi nhấn Enter').fill('Excel');
+  await emp.getByPlaceholder('Nhập kỹ năng rồi nhấn Enter').press('Enter');
+  await emp.getByPlaceholder('Nhập kỹ năng rồi nhấn Enter').fill('MISA');
+  await emp.getByPlaceholder('Nhập kỹ năng rồi nhấn Enter').press('Enter');
+  await emp.fill('textarea[name=requirements]', 'Tốt nghiệp chuyên ngành kế toán, thành thạo Excel và MISA.');
+  await emp.fill('textarea[name=benefits]', 'Lương tháng 13, bảo hiểm đầy đủ, du lịch hằng năm.');
   await emp.fill('input[name=salaryMin]', '20000000');
   await emp.fill('input[name=salaryMax]', '10000000');
   const d = new Date(Date.now() + 7 * 864e5);
@@ -114,11 +124,21 @@ await check('Lọc lương tối thiểu 25tr KHÔNG ra tin', guest, async () =>
   await guest.goto(`${BASE}/?q=${encodeURIComponent(TITLE)}&minSalary=25000000`);
   await guest.getByText('Không tìm thấy tin phù hợp').waitFor();
 });
+await check('Lọc ngành Kế toán + kỹ năng "misa" + sắp xếp lương cao ra tin', guest, async () => {
+  await guest.goto(`${BASE}/?industry=ACCOUNTING_FINANCE&skill=misa&sort=salary_desc&q=e2e`);
+  await guest.getByRole('link', { name: TITLE }).first().waitFor();
+});
+await check('Lọc kinh nghiệm tối đa 1 năm KHÔNG ra tin (tin yêu cầu 2 năm)', guest, async () => {
+  await guest.goto(`${BASE}/?exp=1&q=${encodeURIComponent(TITLE)}`);
+  await guest.getByText('Không tìm thấy tin phù hợp').waitFor();
+});
 await check('Khách xem chi tiết tin thấy nút "Đăng nhập để ứng tuyển"', guest, async () => {
   await guest.getByRole('link', { name: 'Xóa bộ lọc' }).click().catch(() => {});
   await guest.goto(`${BASE}/?q=${encodeURIComponent(TITLE)}`);
   await guest.getByRole('link', { name: TITLE }).first().click();
   await guest.getByRole('link', { name: 'Đăng nhập để ứng tuyển' }).waitFor();
+  await guest.getByText('Lương tháng 13, bảo hiểm đầy đủ').waitFor();
+  await guest.getByText('MISA').first().waitFor();
 });
 const jobUrl = guest.url();
 
