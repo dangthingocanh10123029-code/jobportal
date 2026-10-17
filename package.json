@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev:api": "cd backend && uv run uvicorn app.main:app --reload --port 8000"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

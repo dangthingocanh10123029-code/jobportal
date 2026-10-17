@@ -1,0 +1,6 @@
+from typing import Protocol
+
+
+class HealthRepository(Protocol):
+    def ping_db(self) -> bool: ...
+    def ping_jwks(self) -> bool: ...
