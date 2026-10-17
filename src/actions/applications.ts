@@ -1,7 +1,7 @@
 'use server';
 
-import { apiFetch, type ApiResult } from '@/lib/api';
-import { fail } from './_shared';
+import { apiFetch } from '@/lib/api';
+import { fail, toAction } from './_shared';
 import {
   applicationIdSchema,
   changeApplicationStatusSchema,
@@ -19,9 +19,6 @@ import type {
   EmployerApplicationSummary,
   StatusChange,
 } from './types';
-
-// Zod still rejects bad input here, so the form gets the same messages without a round trip; FastAPI re-checks.
-const toAction = <T>(res: ApiResult<T>): ActionResult<T> => (res.ok ? { success: true, data: res.data } : fail(res.error));
 
 /** FormData fields: postingId, resume (PDF ≤ 5 MB). FastAPI uploads the Resume, then submits atomically. */
 export async function submitApplicationAction(formData: FormData): Promise<ActionResult<Application>> {

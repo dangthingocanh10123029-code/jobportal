@@ -15,7 +15,7 @@ const form = (logo?: File) => {
   return data;
 };
 
-// Invalid input is rejected before any Supabase call, so no env/session is needed here.
+// Invalid input is rejected before any API call, so no env/session is needed here.
 describe('updateMyCompanyAction — input sai', () => {
   it.each([
     ['tên rỗng', { name: '   ' }, 'Vui lòng nhập tên công ty'],
@@ -33,11 +33,11 @@ describe('updateMyCompanyAction — input sai', () => {
 });
 
 describe('companyInputSchema', () => {
-  it('chuỗi rỗng = xóa (null), trường bỏ trống giữ nguyên, cắt khoảng trắng', () => {
+  it('chuỗi rỗng (= xóa) giữ nguyên, trường bỏ trống giữ nguyên, cắt khoảng trắng', () => {
     expect(companyInputSchema.parse({ name: ' ACME ', about: '', address: '  ', website: ' https://acme.vn ', size: null })).toEqual({
       name: 'ACME',
-      about: null,
-      address: null,
+      about: '',
+      address: '',
       website: 'https://acme.vn',
       size: null,
     });

@@ -40,8 +40,8 @@ export const resendSignupOtpSchema = z.object({ email: credentials.email });
 
 export const updateProfileSchema = z.object({
   fullName: fullName.optional(),
-  // Empty string clears the phone number.
-  phone: z.union([z.literal('').transform(() => null), phone]).optional(),
+  // Empty string clears the phone number (FastAPI stores null).
+  phone: z.union([z.literal(''), phone]).optional(),
   companyName: companyName.optional(),
 });
 

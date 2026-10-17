@@ -3,7 +3,8 @@
 import type { AuthError } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
 import { cache } from 'react';
-import { createSupabaseServerClient, fetchProfile, PROFILE_COLUMNS, toProfile } from '@/lib/supabase-server';
+import { apiFetch } from '@/lib/api';
+import { createSupabaseServerClient, fetchProfile } from '@/lib/supabase-server';
 import {
   firstError,
   resendSignupOtpSchema,
@@ -12,7 +13,7 @@ import {
   updateProfileSchema,
   verifySignupOtpSchema,
 } from './auth-schema';
-import { fail } from './_shared';
+import { fail, toAction } from './_shared';
 import type { ActionResult, Profile, Role } from './types';
 
 const AUTH_ERRORS: Record<string, string> = {
@@ -143,35 +144,17 @@ export async function updateProfileAction(input: {
 }): Promise<ActionResult<Profile>> {
   const parsed = updateProfileSchema.safeParse(input);
   if (!parsed.success) return fail(firstError(parsed.error));
-
-  const supabase = await createSupabaseServerClient();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return fail('Bạn cần đăng nhập');
-  const current = await fetchProfile(supabase, auth.user.id);
-  if (!current) return fail('Không tìm thấy hồ sơ tài khoản');
-
-  const { fullName, phone, companyName } = parsed.data;
-  const changes = {
-    ...(fullName !== undefined && { full_name: fullName }),
-    ...(phone !== undefined && { phone }),
-    // Only Employers have a company name.
-    ...(companyName !== undefined && current.role === 'EMPLOYER' && { company_name: companyName }),
-  };
-  if (Object.keys(changes).length === 0) return { success: true, data: current };
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(changes)
-    .eq('id', current.userId)
-    .select(PROFILE_COLUMNS)
-    .single();
-  if (error) return fail('Không cập nhật được hồ sơ, vui lòng thử lại');
-  return { success: true, data: toProfile(data) };
+  // FastAPI ignores companyName for Candidates.
+  return toAction(await apiFetch<Profile>('/me/profile', { method: 'PATCH', body: parsed.data }));
 }
 
 // cache(): the header (layout) and the page share one lookup per request.
 export const getCurrentProfile = cache(async (): Promise<Profile | null> => {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
-  return data.user ? fetchProfile(supabase, data.user.id) : null;
+  // Signed out → no API round trip. getSession reads the cookie; middleware verified it and FastAPI checks the JWT.
+  const { data } = await (await createSupabaseServerClient()).auth.getSession();
+  if (!data.session) return null;
+  const res = await apiFetch<Profile>('/me/profile');
+  if (res.ok) return res.data;
+  if (res.status === 401 || res.status === 404) return null;
+  throw new Error(`Không đọc được profile: ${res.error}`);
 });

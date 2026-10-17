@@ -1,8 +1,8 @@
 'use server';
 
 import { cache } from 'react';
-import { apiFetch, type ApiResult } from '@/lib/api';
-import { fail } from './_shared';
+import { apiFetch } from '@/lib/api';
+import { fail, toAction } from './_shared';
 import { firstError } from './auth-schema';
 import { postingIdSchema, postingInputSchema, searchFilterSchema } from './postings-schema';
 import type {
@@ -14,10 +14,6 @@ import type {
   PostingSummary,
   SearchFilter,
 } from './types';
-
-// Zod still rejects bad input here, so the form gets the same messages without a round trip; FastAPI re-checks.
-const toAction = (res: ApiResult<JobPosting>): ActionResult<JobPosting> =>
-  res.ok ? { success: true, data: res.data } : fail(res.error);
 
 export async function createPostingDraftAction(input: PostingInput): Promise<ActionResult<JobPosting>> {
   const parsed = postingInputSchema.safeParse(input);

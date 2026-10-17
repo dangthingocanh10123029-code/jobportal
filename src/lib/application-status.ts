@@ -1,8 +1,8 @@
-import type { ApplicationStatus, Role } from '@/modules/shared/types';
+import type { ApplicationStatus, Role } from '@/actions/types';
 
-// Spec "Application Status state machine". Mirrored by public.application_transition_allowed
-// in supabase/migrations/*_applications.sql.
-export const TRANSITIONS: Record<ApplicationStatus, readonly ApplicationStatus[]> = {
+// Spec "Application Status state machine". Mirrored by allowed_next_statuses in backend/app/modules/applications
+// and public.application_transition_allowed in supabase/migrations/*_applications.sql. UI uses it to offer buttons.
+const TRANSITIONS: Record<ApplicationStatus, readonly ApplicationStatus[]> = {
   SUBMITTED: ['REVIEWING', 'REJECTED', 'WITHDRAWN'],
   REVIEWING: ['INTERVIEWING', 'REJECTED', 'WITHDRAWN'],
   INTERVIEWING: ['OFFERED', 'REJECTED', 'WITHDRAWN'],

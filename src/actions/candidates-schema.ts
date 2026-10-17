@@ -2,13 +2,12 @@ import { z } from 'zod';
 import { skillsSchema } from './postings-schema';
 
 // Kept in sync with the profiles CHECKs in supabase/migrations/*_candidate_profile_saved.sql.
-// Contract: an empty string clears the field.
+// Contract: an empty string clears the field (FastAPI stores null; it rejects null itself).
 const clearable = (label: string, max: number) =>
   z
     .string({ invalid_type_error: `${label} không hợp lệ` })
     .trim()
-    .max(max, `${label} tối đa ${max} ký tự`)
-    .transform((s) => s || null);
+    .max(max, `${label} tối đa ${max} ký tự`);
 
 export const candidateProfileInputSchema = z.object({
   headline: clearable('Tiêu đề hồ sơ', 150).optional(),

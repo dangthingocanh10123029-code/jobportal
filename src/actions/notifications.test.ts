@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { markNotificationsReadAction } from './notifications';
 
-// Invalid input is rejected before any Supabase call, so no env/session is needed here.
+// Invalid input is rejected before any API call, so no env/session is needed here.
 describe('markNotificationsReadAction — input sai', () => {
   it.each([
     ['id không phải uuid', { ids: ['abc'] }, 'Mã thông báo không hợp lệ'],
