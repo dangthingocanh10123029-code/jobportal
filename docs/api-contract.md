@@ -61,6 +61,10 @@ verifySignupOtpAction(input: { email: string; token: string }): Promise<ActionRe
 resendSignupOtpAction(input: { email: string }): Promise<ActionResult<null>>
   // gửi lại mã; lỗi: gửi quá nhanh / hết lượt gửi email
 // signInAction với tài khoản chưa xác nhận trả lỗi 'Email chưa được xác nhận…' → UI cho nhập mã
+
+// 13 — Link xác nhận trong email (PKCE ?code=), route handler do Codex tạo ở src/app/auth/callback/route.ts
+handleAuthCallback(request: NextRequest): Promise<NextResponse>   // export từ '@/lib/auth-callback'
+  // đổi ?code= lấy session (set cookie) rồi redirect tới ?next= nội bộ hoặc '/account'; lỗi → '/login?error=link'
 ```
 
 ## 02 — Employer quản lý tin (`@/actions/postings`)
