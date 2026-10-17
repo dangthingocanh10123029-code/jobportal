@@ -45,6 +45,7 @@ ROLES = {"emp": "EMPLOYER", "cand": "CANDIDATE"}
 @pytest.fixture
 def client(monkeypatch):
     monkeypatch.setattr(auth, "fetch_role", lambda claims: ROLES.get(claims["sub"]))
+    monkeypatch.setattr(auth, "_roles", {})
     app = FastAPI()
     install_error_handlers(app)
     app.dependency_overrides[get_jwks_client] = FakeJwks
@@ -117,3 +118,17 @@ def test_role_guards(client):
     res = client.get("/emp", headers=bearer(token("cand")))
     assert res.status_code == 403 and "error" in res.json()
     assert client.get("/cand", headers=bearer(token("emp"))).status_code == 403
+
+
+def test_role_is_cached_per_user_but_missing_profile_is_not(monkeypatch):
+    calls = []
+    roles = {"emp": "EMPLOYER"}
+    monkeypatch.setattr(auth, "fetch_role", lambda claims: calls.append(claims["sub"]) or roles.get(claims["sub"]))
+    monkeypatch.setattr(auth, "_roles", {})
+    assert [auth.cached_role({"sub": "emp"}) for _ in range(2)] == ["EMPLOYER", "EMPLOYER"]
+    assert [auth.cached_role({"sub": "new"}) for _ in range(2)] == [None, None]
+    assert calls == ["emp", "new", "new"]
+    later = time.monotonic() + auth.ROLE_TTL_SECONDS + 1
+    monkeypatch.setattr(auth.time, "monotonic", lambda: later)
+    auth.cached_role({"sub": "emp"})
+    assert calls[-1] == "emp"

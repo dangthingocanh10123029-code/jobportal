@@ -1,3 +1,4 @@
+import time
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Annotated, Any, Literal
@@ -43,6 +44,26 @@ def fetch_role(claims: dict[str, Any]) -> Role | None:
     return row[0] if row else None
 
 
+# A profile's role never changes (no column grant on profiles.role), so it is cached per user id.
+ROLE_TTL_SECONDS = 300
+ROLE_CACHE_MAX = 10_000
+_roles: dict[str, tuple[float, Role]] = {}
+
+
+def cached_role(claims: dict[str, Any]) -> Role | None:
+    """fetch_role, remembered for ROLE_TTL_SECONDS. A missing profile is not cached (it may be created next)."""
+    now = time.monotonic()
+    hit = _roles.get(claims["sub"])
+    if hit and hit[0] > now:
+        return hit[1]
+    role = fetch_role(claims)
+    if role is not None:
+        if len(_roles) >= ROLE_CACHE_MAX:
+            _roles.clear()  # ponytail: drop everything when full; switch to LRU if many active users thrash it
+        _roles[claims["sub"]] = (now + ROLE_TTL_SECONDS, role)
+    return role
+
+
 _bearer = HTTPBearer(auto_error=False)
 
 
@@ -53,7 +74,7 @@ def optional_user(
     if creds is None:
         return None
     claims = verify_token(creds.credentials, jwks)
-    role = fetch_role(claims)
+    role = cached_role(claims)
     if role is None:
         raise DomainError(401, "Tài khoản chưa có hồ sơ")
     return Actor(user_id=claims["sub"], role=role, claims=claims, token=creds.credentials)
