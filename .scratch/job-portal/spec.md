@@ -63,6 +63,16 @@ A web app with two roles. An Employer creates Job Postings, publishes them immed
 39. As an Employer, I want a dashboard with posting views and Applications by status, so that I track hiring.
 40. As a presenter, I want realistic demo data (fictional companies, postings, candidates, applications) that I can seed and wipe, so that the portal looks alive.
 
+### v4 — Admin (2026-10-17)
+41. As an Admin, I want a system overview (users by role, postings and applications by status, 30-day sign-ups and applications, top companies and industries), so that I see platform health.
+42. As an Admin, I want to search and filter users and lock/unlock an account with a reason, so that abusive accounts stop using the platform.
+43. As a locked user, I want to be told my account is locked when I try to sign in or act, so that I know why.
+44. As an Admin, I want to list every posting (any status) and hide/unhide a violating posting with a reason, so that the public listing stays clean.
+45. As an Employer, I want a notification with the reason when my posting is hidden, so that I can fix it.
+46. As an Admin, I want to verify companies so that a verified badge shows on company pages and postings.
+47. As an Admin, I want an append-only audit log of every admin action (who, what, target, when, details), so that moderation is accountable.
+48. As the system, I must never let anyone self-assign the Admin role; admins are promoted by a database script.
+
 ## Implementation Decisions
 
 ### Modules (Deep Modules, one seam each)
@@ -116,7 +126,7 @@ The transition table lives in the domain and is mirrored by a database function 
 - Supabase adapters and RLS are verified manually against a real Supabase project in each ticket's acceptance criteria; no network in the unit suite.
 
 ## Out of Scope
-- Admin role and posting moderation.
+- (v4 đưa Admin + kiểm duyệt vào phạm vi, xem stories 41–48.)
 - Payments, VIP postings.
 - Email or push notifications.
 - AI recommendations, chat.

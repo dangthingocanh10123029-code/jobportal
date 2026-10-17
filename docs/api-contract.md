@@ -290,6 +290,56 @@ Quy ước: JSON camelCase đúng kiểu TS ở trên; thành công 200/201 tr�
 Giữ ở Next.js (Supabase Auth, cookie): `signUpAction`, `signInAction`, `signOutAction`, `verifySignupOtpAction`, `resendSignupOtpAction`, `/auth/callback`, middleware.
 `allowedNextStatuses` (hàm thuần cho UI) chuyển về `src/lib/application-status.ts` ở ticket 27; Python có bản tương đương trong domain applications.
 
+## 32 — Quản trị (Admin) — v4
+
+```ts
+type Role = 'CANDIDATE' | 'EMPLOYER' | 'ADMIN';   // ADMIN chỉ do script SQL cấp, không đăng ký được
+type NotificationType = ... | 'POSTING_HIDDEN';  // gửi Employer khi tin bị ẩn (body có lý do)
+
+type AdminStats = {
+  users: { CANDIDATE: number; EMPLOYER: number; ADMIN: number; locked: number };
+  postings: { DRAFT: number; PUBLISHED: number; CLOSED: number; EXPIRED: number; hidden: number };
+  applications: Record<ApplicationStatus, number>;
+  daily: { date: string; signups: number; applications: number; postings: number }[];   // 30 ngày gần nhất, đủ 30 phần tử
+  topCompanies: { id: string; name: string; openPostings: number; applications: number }[];   // 5
+  topIndustries: { industry: Industry; openPostings: number }[];                              // 5
+};
+type AdminUser = {
+  userId: string; email: string; role: Role; displayName: string;   // fullName hoặc companyName
+  createdAt: string; lastSignInAt: string | null;
+  lockedAt: string | null; lockedReason: string | null;
+};
+type AdminUserDetail = AdminUser & { phone: string | null; postings: number; applications: number };
+type AdminPosting = PostingSummary & { status: PostingStatus; displayStatus: DisplayPostingStatus;
+  applications: number; hiddenAt: string | null; hiddenReason: string | null };
+type AdminCompany = CompanySummary & { verifiedAt: string | null; employerEmail: string };
+type AuditEntry = { id: string; actorId: string; actorEmail: string;
+  action: 'USER_LOCKED' | 'USER_UNLOCKED' | 'POSTING_HIDDEN' | 'POSTING_UNHIDDEN' | 'COMPANY_VERIFIED' | 'COMPANY_UNVERIFIED';
+  targetType: 'USER' | 'POSTING' | 'COMPANY'; targetId: string; targetLabel: string;
+  details: Record<string, string>; createdAt: string };
+type Page<T> = { items: T[]; total: number; page: number; pageSize: 20 };
+
+// @/actions/admin — mọi hàm: không phải ADMIN → null / ActionResult lỗi 'Chỉ quản trị viên…'
+getAdminStats(): Promise<AdminStats | null>
+listAdminUsers(filter: { q?: string; role?: Role; locked?: boolean; page?: number }): Promise<Page<AdminUser> | null>
+getAdminUser(userId: string): Promise<AdminUserDetail | null>
+setUserLockAction(input: { userId: string; locked: boolean; reason?: string }): Promise<ActionResult<AdminUser>>
+  // khóa cần reason 5–500 ký tự; không khóa được chính mình hoặc ADMIN khác
+listAdminPostings(filter: { q?: string; status?: DisplayPostingStatus; hidden?: boolean; employerId?: string; page?: number }): Promise<Page<AdminPosting> | null>
+setPostingHiddenAction(input: { postingId: string; hidden: boolean; reason?: string }): Promise<ActionResult<AdminPosting>>
+  // ẩn cần reason 5–500; tin ẩn: không có trong danh sách công khai/tìm kiếm, /jobs/[id] trả 404 cho người ngoài, không nhận đơn mới; đơn cũ giữ nguyên
+listAdminCompanies(filter: { q?: string; verified?: boolean; page?: number }): Promise<Page<AdminCompany> | null>
+setCompanyVerifiedAction(input: { companyId: string; verified: boolean }): Promise<ActionResult<AdminCompany>>
+listAuditLog(filter: { action?: AuditEntry['action']; actorId?: string; page?: number }): Promise<Page<AuditEntry> | null>
+```
+`Company`, `PostingSummary`, `PostingDetail` bổ sung `companyVerified: boolean` (huy hiệu ✓).
+`JobPosting` (của Employer) bổ sung `hiddenAt: string | null; hiddenReason: string | null` — trang `/employer/postings` hiện nhãn "Bị ẩn" + lý do.
+Tài khoản bị khóa: `signInAction` trả 'Tài khoản đã bị khóa: <lý do>'; mọi API trả 403 cùng thông báo; middleware đăng xuất + chuyển `/login?error=locked`.
+
+REST (FastAPI, require_admin): `GET /admin/stats` · `GET /admin/users` · `GET /admin/users/{id}` · `POST /admin/users/{id}/lock` (`{ locked, reason? }`) · `GET /admin/postings` · `POST /admin/postings/{id}/hidden` (`{ hidden, reason? }`) · `GET /admin/companies` · `POST /admin/companies/{id}/verified` (`{ verified }`) · `GET /admin/audit`.
+
+Routes (Codex): `/admin` (tổng quan), `/admin/users`, `/admin/users/[id]`, `/admin/postings`, `/admin/companies`, `/admin/audit` — chỉ ADMIN (middleware); header có mục "Quản trị" cho ADMIN.
+
 ## Hình ảnh (Antigravity → Codex)
 
 Antigravity giao đúng tên file và đường dẫn dưới đây (ticket 08). Codex tham chiếu theo đường dẫn này ngay từ đầu, kể cả khi file chưa merge (ảnh tạm thời không hiện là chấp nhận được, không tự tạo ảnh thay thế).
