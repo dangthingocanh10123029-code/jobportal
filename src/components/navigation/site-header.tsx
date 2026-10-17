@@ -4,8 +4,7 @@ import { getUnreadNotificationCount } from '@/actions/notifications';
 import { SignOutButton } from './sign-out-button';
 
 export async function SiteHeader() {
-  const profile = await getCurrentProfile();
-  const unreadCount = profile ? await getUnreadNotificationCount() : 0;
+  const [profile, unreadCount] = await Promise.all([getCurrentProfile(), getUnreadNotificationCount()]);
 
   return (
     <header className="site-header">

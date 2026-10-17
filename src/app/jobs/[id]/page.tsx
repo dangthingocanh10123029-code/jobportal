@@ -18,14 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function PostingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const posting = await getPostingDetail(id);
+  const [posting, profile] = await Promise.all([getPostingDetail(id), getCurrentProfile()]);
   if (!posting) notFound();
-  const relatedPostings = await getRelatedPostings(id);
-  const profile = await getCurrentProfile();
-  const savedIds = profile?.role === 'CANDIDATE' ? await getSavedPostingIds() : [];
-  const application = posting.isOpen && profile?.role === 'CANDIDATE'
-    ? await getMyApplicationForPosting(id)
-    : null;
+  const isCandidate = profile?.role === 'CANDIDATE';
+  const [relatedPostings, savedIds, application] = await Promise.all([
+    getRelatedPostings(id),
+    isCandidate ? getSavedPostingIds() : Promise.resolve([]),
+    posting.isOpen && isCandidate ? getMyApplicationForPosting(id) : Promise.resolve(null),
+  ]);
 
   return (
     <main className="page-shell posting-detail-page">

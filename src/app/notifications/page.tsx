@@ -4,9 +4,8 @@ import { NotificationsList } from '@/components/notifications/notifications-list
 import { redirect } from 'next/navigation';
 
 export default async function NotificationsPage() {
-  const profile = await getCurrentProfile();
+  const [profile, notifications] = await Promise.all([getCurrentProfile(), listMyNotifications()]);
   if (!profile) redirect('/login?next=%2Fnotifications');
-  const notifications = await listMyNotifications();
 
   return (
     <main className="page-shell notifications-page">

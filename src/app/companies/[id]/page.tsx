@@ -14,9 +14,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const company = await getCompany(id);
+  const [company, profile, savedIds] = await Promise.all([
+    getCompany(id),
+    getCurrentProfile(),
+    getSavedPostingIds(),
+  ]);
   if (!company) notFound();
-  const [profile, savedIds] = await Promise.all([getCurrentProfile(), getSavedPostingIds()]);
   const isCandidate = profile?.role === 'CANDIDATE';
 
   return (
