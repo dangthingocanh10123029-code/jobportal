@@ -30,7 +30,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
         <img alt={`Logo ${company.name}`} className="company-detail-logo" height="112" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="112" />
         <div className="company-detail-heading">
           <span className="eyebrow">Hồ sơ nhà tuyển dụng</span>
-          <h1>{company.name}</h1>
+          <h1>{company.name} {company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check">✓</span> : null}</h1>
           <div className="company-detail-facts">
             {company.size ? <span>{companySizeLabels[company.size]}</span> : null}
             {company.address ? <span>{company.address}</span> : null}
@@ -52,7 +52,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
               <article className="surface-card company-open-posting-card" key={posting.id}>
                 <img alt="" className="company-list-logo" height="56" src={posting.companyLogoUrl ?? company.logoUrl ?? '/images/company-placeholder.svg'} width="56" />
                 <div className="company-open-posting-content">
-                  <h3><Link href={`/jobs/${posting.id}`}>{posting.title}</Link></h3>
+                  <h3><Link href={`/jobs/${posting.id}`}>{posting.title}</Link>{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</h3>
                   <p>{industryLabels[posting.industry]} · {jobLevelLabels[posting.level]} · {employmentLabels[posting.employmentType]}</p>
                   <div className="company-open-posting-meta"><span>{posting.location}</span><span>{formatSalary(posting.salaryMin, posting.salaryMax)}</span><span>Hạn nộp {formatDate(posting.applicationDeadline)}</span></div>
                 </div>

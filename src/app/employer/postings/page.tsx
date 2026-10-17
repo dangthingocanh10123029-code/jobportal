@@ -24,6 +24,7 @@ function PostingCard({ posting }: { posting: JobPosting }) {
           <span><span aria-hidden="true">◷</span> {formatSalary(posting.salaryMin, posting.salaryMax)}</span>
           <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
         </div>
+        {posting.hiddenAt ? <div className="hidden-posting-notice"><strong>Tin đã bị ẩn bởi quản trị viên</strong><p>{posting.hiddenReason}</p></div> : null}
       </div>
       <div className="posting-card-actions">
         <Link className="button button-quiet button-small" href={`/employer/postings/${posting.id}/applications`}>

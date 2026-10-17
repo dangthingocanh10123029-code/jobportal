@@ -35,7 +35,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
             <Link className="surface-card company-list-card" href={`/companies/${company.id}`} key={company.id}>
               <img alt="" className="company-list-logo" height="64" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="64" />
               <span className="company-list-card-content">
-                <strong>{company.name}</strong>
+                <strong>{company.name}{company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</strong>
                 <span>{company.size ? companySizeLabels[company.size] : 'Quy mô chưa cập nhật'}</span>
                 <span>{company.openPostings} tin đang tuyển</span>
               </span>

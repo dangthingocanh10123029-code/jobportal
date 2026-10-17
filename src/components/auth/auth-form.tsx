@@ -15,6 +15,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const next = searchParams.get('next');
   const isSignup = mode === 'signup';
   const linkError = !isSignup && searchParams.get('error') === 'link';
+  const lockedError = !isSignup && searchParams.get('error') === 'locked';
   const [role, setRole] = useState<Role>('CANDIDATE');
   const [email, setEmail] = useState('');
   const [pending, setPending] = useState(false);
@@ -89,6 +90,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   return (
     <form className="form-stack" onSubmit={handleSubmit}>
       {linkError ? <p className="form-error" role="alert">Link xác nhận không hợp lệ hoặc đã hết hạn. Hãy đăng nhập hoặc nhập mã xác nhận.</p> : null}
+      {lockedError ? <p className="form-error" role="alert">Tài khoản này đang bị khóa. Vui lòng liên hệ bộ phận hỗ trợ để được trợ giúp.</p> : null}
       {isSignup ? (
         <fieldset className="role-picker">
           <legend>Bạn tham gia với vai trò nào?</legend>
