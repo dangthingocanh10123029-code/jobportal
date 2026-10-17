@@ -2,7 +2,7 @@ import logging
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 
 from app.auth import EmployerActor, OptionalUser
 from app.modules.postings.domain import PostingError
@@ -40,16 +40,20 @@ def list_open_postings(service: Service, query: Annotated[SearchQuery, Query()])
 
 
 @router.get("/postings/{posting_id}", response_model=PostingDetail)
-def get_posting_detail(posting_id: UUID, service: Service) -> PostingDetail:
-    """Anyone. DRAFT and unknown ids → 404. Counts a view unless the caller owns the posting."""
+def get_posting_detail(posting_id: UUID, service: Service, background: BackgroundTasks) -> PostingDetail:
+    """Anyone. DRAFT and unknown ids → 404. Counts a view (after the response) unless the caller owns the posting."""
     detail = service.get_public(posting_id)
     if detail is None:
         raise PostingError("NOT_FOUND")
+    background.add_task(_record_view, service, posting_id)
+    return detail
+
+
+def _record_view(service: PostingService, posting_id: UUID) -> None:
     try:
         service.record_view(posting_id)
     except Exception:  # a lost view count must not break the page
         log.exception("record_posting_view failed for %s", posting_id)
-    return detail
 
 
 @router.get("/postings/{posting_id}/related", response_model=list[PostingSummary])

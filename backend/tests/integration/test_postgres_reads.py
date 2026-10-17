@@ -4,6 +4,7 @@ One transaction per module, always rolled back: temporary users and rows never p
 Run: RUN_INTEGRATION=1 uv run pytest -m integration
 """
 
+import json
 import os
 from contextlib import contextmanager
 from uuid import UUID, uuid4
@@ -11,7 +12,6 @@ from uuid import UUID, uuid4
 import psycopg
 import pytest
 
-from app import db
 from app.modules.applications.postgres import PostgresApplicationRepository
 from app.modules.applications.schemas import (
     CandidateApplicationSummary,
@@ -36,15 +36,22 @@ pytestmark = [
 ADAPTERS = ["applications", "candidates", "companies", "dashboard", "health", "notifications", "postings", "profiles"]
 
 
-class _SharedPool:
-    """Hands every user_tx the test connection, so each call is a savepoint inside the rolled-back transaction."""
+def _savepoint_tx(conn):
+    """Stands in for user_tx (whose COMMIT would end the test transaction): same role/claims setup, as a savepoint.
 
-    def __init__(self, conn):
-        self.conn = conn
+    user_tx itself is covered by test_user_tx.py.
+    """
 
     @contextmanager
-    def connection(self):
-        yield self.conn
+    def tx(claims, pool=None):
+        with conn.transaction():
+            conn.execute(
+                "select set_config('role', %s, true), set_config('request.jwt.claims', %s, true)",
+                ("authenticated" if claims else "anon", json.dumps(claims or {"role": "anon"})),
+            )
+            yield conn
+
+    return tx
 
 
 def _claims(user_id: UUID) -> dict:
@@ -80,9 +87,9 @@ def seed():
                values (%s, 'SUBMITTED', %s, 'CANDIDATE')""",
             (application, candidate),
         )
-        shared = _SharedPool(conn)
+        tx = _savepoint_tx(conn)
         for name in ADAPTERS:
-            mp.setattr(f"app.modules.{name}.postgres.user_tx", lambda claims, pool=None: db.user_tx(claims, shared))
+            mp.setattr(f"app.modules.{name}.postgres.user_tx", tx)
         yield {"employer": employer, "candidate": candidate, "posting": posting, "application": application}
 
 
