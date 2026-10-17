@@ -39,3 +39,10 @@ Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp C
 - [x] Seed demo trên Supabase thật: 40 công ty, 302 tin, 30 ứng viên, 187 đơn, 432 thông báo; CV mẫu upload qua Storage API bằng chính phiên của từng ứng viên (không cần service role key) — 187/187 đơn có file CV
 - [x] E2E Playwright 34/34 PASS khi đã có dữ liệu demo
 - Ghi chú: README seed hướng dẫn upload CV bằng service role key; cách không cần key: xóa dòng storage trống (`storage.allow_delete_query`) rồi đăng nhập từng ứng viên demo (`DemoJob!2026`) và POST file vào đúng đường dẫn
+
+## /code-review v2 → tickets 20–21 (2026-10-17)
+- [x] Refactor 20A: `_shared.ts` (fail/requireEmployer/requireCandidate/requireSignedIn), safeParse, branded types, kiểu domain ở `src/modules/shared/types.ts`
+- [x] Seed: CV demo cố định `resumes/<candidate>/demo-cv.pdf`, `upload-demo-cvs.sh` (không cần service key) đã chạy; 30 CV cũ (tên uuid) đã xóa qua Storage API; 187/187 đơn demo có CV
+- [x] E2E cleanup xóa CV qua Storage API (không để file mồ côi)
+- [x] rls_checks 55/55, v2_checks 23/23, E2E 34/34 sau 20A + 21B
+- Ghi chú: các lần dọn trước (SQL delete storage.objects) có thể đã để lại vài file e2e mồ côi trong bucket `resumes` (không còn dòng tham chiếu, cần service role key hoặc Dashboard → Storage để xóa)

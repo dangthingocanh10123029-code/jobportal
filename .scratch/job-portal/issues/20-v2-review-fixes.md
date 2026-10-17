@@ -4,7 +4,7 @@
 
 **Blocked by:** 14–19
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ### Standards
 - [ ] §2.3: `listCompanies` (`src/actions/companies.ts:95`) và `listOpenPostings` (`src/actions/postings.ts:85`) dùng `safeParse` (lỗi → giá trị mặc định), không dùng `.parse`
