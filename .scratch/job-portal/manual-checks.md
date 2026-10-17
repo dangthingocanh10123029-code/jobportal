@@ -32,3 +32,10 @@ Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp C
 - [x] `/auth/callback`: thiếu/sai code → `/login?error=link`; Redirect URLs đã thêm `http://localhost:3000/auth/callback`
 - [x] E2E chạy lại 27/27 PASS
 - [ ] Bấm link trong email thật → vào app đã đăng nhập (cần một lượt đăng ký thật)
+
+## v2 (tickets 14–19) — 2026-10-17
+- [x] 4 migration v2 đã push (0100 rich postings, 0200 companies, 0300 candidate profile/saved, 0400 notifications/dashboard)
+- [x] `v2_checks.sql` 23/23 PASS; `rls_checks.sql` vẫn 55/55
+- [x] Seed demo trên Supabase thật: 40 công ty, 302 tin, 30 ứng viên, 187 đơn, 432 thông báo; CV mẫu upload qua Storage API bằng chính phiên của từng ứng viên (không cần service role key) — 187/187 đơn có file CV
+- [x] E2E Playwright 34/34 PASS khi đã có dữ liệu demo
+- Ghi chú: README seed hướng dẫn upload CV bằng service role key; cách không cần key: xóa dòng storage trống (`storage.allow_delete_query`) rồi đăng nhập từng ứng viên demo (`DemoJob!2026`) và POST file vào đúng đường dẫn

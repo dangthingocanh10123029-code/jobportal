@@ -4,7 +4,7 @@
 
 **Blocked by:** 17
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `supabase/seed/seed-demo.sql`: ~40 công ty hư cấu (Employer `*@demo.jobportal.test`, đã xác nhận, logo `/images/companies/logo-XX.svg`, about/quy mô/địa chỉ), ~300 tin phủ 16 ngành, 8+ tỉnh/thành, đủ cấp bậc, lương VND/tháng theo cấp bậc (có tin thỏa thuận), hạn nộp trải 1–60 ngày (một ít đã hết hạn/đóng/nháp), mô tả/yêu cầu/quyền lợi tiếng Việt viết mới ghép từ mẫu theo ngành; ~30 ứng viên có hồ sơ; ~200 đơn với lịch sử trạng thái hợp lệ; tin đã lưu; lượt xem
 - [ ] Seed idempotent (chạy lại không nhân đôi), dùng `setseed` cho dữ liệu cố định; CV mẫu: `resume_path` trỏ file PDF mẫu upload một lần
