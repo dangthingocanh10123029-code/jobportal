@@ -4,7 +4,7 @@
 
 **Blocked by:** 14
 
-**Status:** in-progress (A merged + pushed, B đang làm)
+**Status:** resolved
 
 - [ ] Migration `20261017000200_*`: bảng `companies` (id = employer, RLS public đọc, owner sửa), tạo dòng cho Employer hiện có + trigger khi Employer đăng ký; bucket public `company-logos` (PNG/JPEG/WebP ≤ 1 MB, thư mục = user id); view tin dùng tên + logo từ `companies`; đồng bộ `profiles.company_name`
 - [ ] `@/actions/companies` theo contract mục 15, Zod (website http/https), test input sai
