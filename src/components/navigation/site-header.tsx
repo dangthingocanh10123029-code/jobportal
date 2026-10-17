@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { getCurrentProfile } from '@/actions/auth';
+import { getUnreadNotificationCount } from '@/actions/notifications';
 import { SignOutButton } from './sign-out-button';
 
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
+  const unreadCount = profile ? await getUnreadNotificationCount() : 0;
 
   return (
     <header className="site-header">
@@ -15,11 +17,17 @@ export async function SiteHeader() {
           <Link href="/">Tìm việc</Link>
           <Link href="/companies">Công ty</Link>
           {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/saved">Việc đã lưu</Link></> : null}
-          {profile?.role === 'EMPLOYER' ? <><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
+          {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
         </nav>
         <div className="site-header-end">
           {profile ? (
             <>
+              <Link aria-label={`Thông báo, ${unreadCount} chưa đọc`} className="notification-bell" href="/notifications">
+                <svg aria-hidden="true" fill="none" height="21" viewBox="0 0 24 24" width="21">
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+                </svg>
+                {unreadCount > 0 ? <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span> : null}
+              </Link>
               <Link className="profile-link" href="/account">Tài khoản</Link>
               <SignOutButton />
             </>
