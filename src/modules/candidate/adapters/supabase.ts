@@ -25,6 +25,7 @@ type ApplicantRow = {
 
 type SavedRow = {
   id: string;
+  employer_id: string;
   title: string;
   company_name: string;
   company_logo_url: string | null;
@@ -46,7 +47,7 @@ const COLUMNS = 'id,full_name,phone,headline,skills,experience,education';
 const APPLICANT_COLUMNS =
   'candidate_id,candidate_name,candidate_phone,candidate_headline,candidate_skills,candidate_experience,candidate_education';
 const SAVED_COLUMNS =
-  'id,title,company_name,company_logo_url,location,employment_type,salary_min,salary_max,application_deadline,created_at,' +
+  'id,employer_id,title,company_name,company_logo_url,location,employment_type,salary_min,salary_max,application_deadline,created_at,' +
   'industry,level,experience_years,skills,status,saved_at';
 
 // Postgres: RLS with check failed (posting DRAFT / not a Candidate) or the posting does not exist.
@@ -145,6 +146,7 @@ export class SupabaseCandidateRepository implements ICandidateRepository {
     return data.map(
       (row): SavedPostingRow => ({
         id: row.id,
+        employerId: row.employer_id,
         title: row.title,
         companyName: row.company_name,
         companyLogoUrl: row.company_logo_url,

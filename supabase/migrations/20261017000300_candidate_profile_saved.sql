@@ -68,7 +68,7 @@ grant insert (candidate_id, posting_id) on public.saved_postings to authenticate
 -- Saved list: posting summary + status (isOpen is computed in the app, ADR-0001) + saved_at.
 create view public.saved_posting_summaries with (security_invoker = true) as
   select s.candidate_id, s.created_at as saved_at,
-         p.id, p.title, p.company_name, p.company_logo_url, p.location, p.employment_type, p.salary_min, p.salary_max,
+         p.id, p.employer_id, p.title, p.company_name, p.company_logo_url, p.location, p.employment_type, p.salary_min, p.salary_max,
          p.application_deadline, p.created_at, p.industry, p.level, p.experience_years, p.skills, p.status
   from public.saved_postings s
   join public.job_postings_with_company p on p.id = s.posting_id;
