@@ -13,8 +13,9 @@ export async function SiteHeader() {
         </Link>
         <nav aria-label="Điều hướng chính" className="main-nav">
           <Link href="/">Tìm việc</Link>
+          <Link href="/companies">Công ty</Link>
           {profile?.role === 'CANDIDATE' ? <Link href="/candidate/applications">Đơn ứng tuyển</Link> : null}
-          {profile?.role === 'EMPLOYER' ? <Link href="/employer/postings">Tin tuyển dụng</Link> : null}
+          {profile?.role === 'EMPLOYER' ? <><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
         </nav>
         <div className="site-header-end">
           {profile ? (

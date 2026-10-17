@@ -7,12 +7,12 @@ import { employmentLabels, formatDate, formatExperience, formatSalary, industryL
 function PostingCard({ posting }: { posting: PostingSummary }) {
   return (
     <article className="public-posting-card">
-      <img alt="" className="company-placeholder" height="48" src="/images/company-placeholder.svg" width="48" />
+      <img alt="" className="company-placeholder" height="48" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="48" />
       <div className="public-posting-content">
         <div className="public-posting-heading">
           <div>
             <h3><Link href={`/jobs/${posting.id}`}>{posting.title}</Link></h3>
-            <p className="public-posting-company">{posting.companyName}</p>
+            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
           </div>
           <span className="employment-badge">{employmentLabels[posting.employmentType]}</span>
         </div>

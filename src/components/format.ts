@@ -1,4 +1,4 @@
-import type { ApplicationStatus, DisplayPostingStatus, EmploymentType, Industry, JobLevel, PostingSort } from '@/actions/types';
+import type { ApplicationStatus, CompanySize, DisplayPostingStatus, EmploymentType, Industry, JobLevel, PostingSort } from '@/actions/types';
 
 export const applicationStatusLabels: Record<ApplicationStatus, string> = {
   SUBMITTED: 'Đã nộp',
@@ -57,6 +57,14 @@ export const postingSortLabels: Record<PostingSort, string> = {
   newest: 'Mới nhất',
   salary_desc: 'Lương cao nhất',
   deadline_asc: 'Sắp hết hạn',
+};
+
+export const companySizeLabels: Record<CompanySize, string> = {
+  S1_10: '1–10 nhân viên',
+  S11_50: '11–50 nhân viên',
+  S51_200: '51–200 nhân viên',
+  S201_500: '201–500 nhân viên',
+  S500_PLUS: 'Trên 500 nhân viên',
 };
 
 export function formatExperience(years: number) {
