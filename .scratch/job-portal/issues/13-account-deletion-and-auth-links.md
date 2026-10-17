@@ -4,7 +4,7 @@
 
 **Blocked by:** 05, 11
 
-**Status:** in-progress
+**Status:** resolved
 
 - [ ] Migration `20261016000700_*`: `application_status_changes.changed_by` nullable + `on delete set null`; `applications.job_posting_id` `on delete cascade` (xóa Employer → tin → đơn → lịch sử)
 - [ ] `handleAuthCallback` trong `src/lib/auth-callback.ts` (exchangeCodeForSession, chỉ nhận next nội bộ), test thuần cho kiểm tra next

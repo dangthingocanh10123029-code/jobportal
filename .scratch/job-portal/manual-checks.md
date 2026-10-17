@@ -19,10 +19,16 @@ Chạy lại: `psql "<session pooler URL>" -q -At -f .scratch/job-portal/rls_che
 - [x] Đăng ký → mã OTP qua email (SMTP Gmail) → xác nhận + đăng nhập → `/account` → cập nhật hồ sơ (2026-10-16 17:20)
 - [x] Đăng xuất / đăng nhập, chặn route theo role (E2E 2026-10-17)
 - [x] Upload CV thật qua Storage API (E2E)
-- [ ] File mồ côi bị dọn khi nộp lỗi (policy `resumes_delete_unused` — Supabase chặn DELETE storage bằng SQL nên chỉ thử được qua API)
+- [x] Storage API: xóa được CV mồ côi, KHÔNG xóa được CV đã gắn đơn (`resumes_delete_unused`) — `e2e/remaining.sh`
 - [x] `createSignedUrl` 60s cho Employer tải CV — trả về PDF (E2E)
-- [ ] Hai request rút/đổi trạng thái đồng thời (`FOR UPDATE`) chỉ tạo 1 Status Change
-- [ ] Supabase advisor cảnh báo security-definer view `employer_application_summaries` / `employer_companies` — đúng thiết kế
+- [x] Hai request đồng thời (Ứng viên rút + Employer từ chối): B chờ khóa `FOR UPDATE` rồi bị `INVALID_TRANSITION`; kết quả WITHDRAWN, 2 Status Change
+- [x] Security advisor: 2 security-definer view + RPC submit/change status là đúng thiết kế; `handle_new_user` đã revoke EXECUTE (ticket 13); còn `auth_leaked_password_protection` (bật trong Dashboard, gói Pro)
 
 ## E2E Playwright — 27/27 PASS (2026-10-17)
 Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp CV → tải CV → đổi trạng thái → lịch sử → rút đơn → đóng tin → đăng xuất. DB khớp: tin CLOSED, đơn WITHDRAWN, 3 Status Change, CV `application/pdf` trong bucket `resumes`.
+
+## Ticket 13 (2026-10-17)
+- [x] Migration 0700 đã push: xóa Employer kéo theo tin + đơn; xóa Candidate không bị chặn; 55/55 rls_checks vẫn PASS
+- [x] `/auth/callback`: thiếu/sai code → `/login?error=link`; Redirect URLs đã thêm `http://localhost:3000/auth/callback`
+- [x] E2E chạy lại 27/27 PASS
+- [ ] Bấm link trong email thật → vào app đã đăng nhập (cần một lượt đăng ký thật)
