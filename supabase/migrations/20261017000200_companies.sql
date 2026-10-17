@@ -4,12 +4,14 @@
 create table public.companies (
   id uuid primary key references public.profiles (id) on delete cascade,
   name text not null check (length(btrim(name)) between 1 and 150),
-  -- Public URL of an object in the Employer's own folder of the company-logos bucket.
+  -- Public URL of an object in the Employer's own folder of the company-logos bucket,
+  -- or a static seed logo (ticket 18) served from public/images/companies/.
   -- ponytail: the host is not pinned (the project URL is unknown to SQL); a crafted API call can point at another
   -- host's path of the same shape. Move to a stored object path + URL built in the app if that matters.
   logo_url text check (
     logo_url is null
     or logo_url ~ ('^https?://[^/]+/storage/v1/object/public/company-logos/' || id::text || '/[^/]+$')
+    or logo_url ~ '^/images/companies/logo-[0-9]{2}\.svg$'
   ),
   about text check (about is null or length(about) <= 5000),
   size text check (size is null or size in ('S1_10', 'S11_50', 'S51_200', 'S201_500', 'S500_PLUS')),
