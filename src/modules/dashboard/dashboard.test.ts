@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { InMemoryDashboardRepository } from './adapters/in-memory';
+import type { JobPostingId } from '@/modules/job-posting';
 import { DashboardService, type EmployerId, type PostingStats } from './index';
 
 const now = () => new Date('2026-10-17T00:00:00Z');
 const posting = (id: string, status: PostingStats['status'], deadline: string, views: number, applicationsByStatus: PostingStats['applicationsByStatus']): PostingStats => ({
-  id, title: `Tin ${id}`, status, applicationDeadline: deadline, views, applicationsByStatus,
+  id: id as JobPostingId, title: `Tin ${id}`, status, applicationDeadline: deadline, views, applicationsByStatus,
 });
 
 describe('DashboardService.forEmployer', () => {

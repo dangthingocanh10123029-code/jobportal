@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { EmploymentType, Industry, JobLevel, PostingSort, PostingStatus } from '@/actions/types';
+import type { EmploymentType, Industry, JobLevel, PostingSort, PostingStatus, PostingSummary } from '@/modules/shared/types';
 import { foldAccents } from '../domain/search';
 import type {
   EmployerId,
@@ -34,6 +34,17 @@ type Row = {
   company_logo_url: string | null;
 };
 
+/** The columns behind a PostingSummary; other views of postings (saved_posting_summaries) select them too. */
+export type PostingSummaryRow = Pick<
+  Row,
+  | 'id' | 'employer_id' | 'title' | 'company_name' | 'company_logo_url' | 'location' | 'employment_type' | 'salary_min' | 'salary_max'
+  | 'application_deadline' | 'created_at' | 'industry' | 'level' | 'experience_years' | 'skills'
+>;
+
+export const SUMMARY_COLUMNS =
+  'id,employer_id,title,company_name,company_logo_url,location,employment_type,salary_min,salary_max,application_deadline,created_at,' +
+  'industry,level,experience_years,skills';
+
 const VIEW = 'job_postings_with_company';
 // Explicit list: open_job_postings also carries the folded search columns, which are not needed back.
 const ROW_COLUMNS =
@@ -57,28 +68,36 @@ const ORDER: Record<PostingSort, [column: string, ascending: boolean][]> = {
   deadline_asc: [['application_deadline', true]],
 };
 
-function toPosting(row: Row): StoredJobPosting {
+export function toPostingSummary(row: PostingSummaryRow): PostingSummary {
   return {
-    id: row.id as JobPostingId,
-    employerId: row.employer_id as EmployerId,
+    id: row.id,
+    employerId: row.employer_id,
     companyName: row.company_name,
     companyLogoUrl: row.company_logo_url,
     title: row.title,
-    description: row.description,
     location: row.location,
     employmentType: row.employment_type,
     salaryMin: row.salary_min,
     salaryMax: row.salary_max,
     applicationDeadline: new Date(row.application_deadline).toISOString(),
+    createdAt: new Date(row.created_at).toISOString(),
     industry: row.industry,
     level: row.level,
     experienceYears: row.experience_years,
-    headcount: row.headcount,
     skills: row.skills,
+  };
+}
+
+function toPosting(row: Row): StoredJobPosting {
+  return {
+    ...toPostingSummary(row),
+    id: row.id as JobPostingId,
+    employerId: row.employer_id as EmployerId,
+    description: row.description,
+    headcount: row.headcount,
     requirements: row.requirements,
     benefits: row.benefits,
     status: row.status,
-    createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
   };
 }

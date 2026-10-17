@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from '@/actions/types';
+import type { ApplicationStatus } from '@/modules/shared/types';
 import { TRANSITIONS } from '@/modules/application/domain/status';
 import { displayStatus } from '@/modules/job-posting/domain/status';
 import type { Clock } from '@/modules/job-posting';

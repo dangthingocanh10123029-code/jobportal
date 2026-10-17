@@ -1,6 +1,6 @@
 import type { Clock, EmployerId, IJobPostingRepository, JobPostingId } from '@/modules/job-posting';
 import { isOpen } from '@/modules/job-posting/domain/status';
-import type { Actor, ApplicationStatus } from '@/actions/types';
+import type { Actor, ApplicationStatus } from '@/modules/shared/types';
 import { ApplicationError } from '../domain/errors';
 import { allowedNextStatuses } from '../domain/status';
 import type { Application, ApplicationId, CandidateId, IApplicationRepository, StatusChange } from '../domain/types';

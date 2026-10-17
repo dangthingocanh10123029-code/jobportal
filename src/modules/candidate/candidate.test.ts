@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { fromPartial } from '@total-typescript/shoehorn';
 import { InMemoryJobPostingRepository } from '@/modules/job-posting/adapters/in-memory';
+import type { ApplicationId } from '@/modules/application';
 import type { EmployerId, JobPostingId, PostingInput } from '@/modules/job-posting';
 import { InMemoryCandidateRepository } from './adapters/in-memory';
 import { CandidateService, type CandidateId, type CandidateProfile } from './index';
@@ -80,11 +81,11 @@ describe('getApplicantProfile', () => {
     repo.addApplication({ id: 'application-1', candidateId: ANNA, jobPostingId: id });
     await service.updateProfile(ANNA, { headline: 'Frontend dev', skills: ['React'] });
 
-    expect(await service.getApplicantProfile(EMPLOYER, 'application-1')).toEqual({
+    expect(await service.getApplicantProfile(EMPLOYER, 'application-1' as ApplicationId)).toEqual({
       ...anna, headline: 'Frontend dev', skills: ['React'],
     });
-    expect(await service.getApplicantProfile(OTHER_EMPLOYER, 'application-1')).toBeNull();
-    expect(await service.getApplicantProfile(EMPLOYER, 'application-2')).toBeNull();
+    expect(await service.getApplicantProfile(OTHER_EMPLOYER, 'application-1' as ApplicationId)).toBeNull();
+    expect(await service.getApplicantProfile(EMPLOYER, 'application-2' as ApplicationId)).toBeNull();
   });
 });
 

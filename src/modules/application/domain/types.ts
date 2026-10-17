@@ -5,7 +5,7 @@ import type {
   CandidateApplicationSummary,
   EmployerApplicationSummary,
   StatusChange,
-} from '@/actions/types';
+} from '@/modules/shared/types';
 import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 
 export type { Application, CandidateApplicationSummary, EmployerApplicationSummary, StatusChange };

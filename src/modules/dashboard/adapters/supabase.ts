@@ -1,9 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { ApplicationStatus, PostingStatus } from '@/actions/types';
+import type { ApplicationStatus, PostingStatus } from '@/modules/shared/types';
 import type { EmployerId, IDashboardRepository, PostingStats } from '../domain/types';
+import type { JobPostingId } from '@/modules/job-posting';
 
 type Row = {
-  id: string;
+  id: JobPostingId;
   title: string;
   status: PostingStatus;
   application_deadline: string;

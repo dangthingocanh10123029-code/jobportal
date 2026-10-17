@@ -1,5 +1,5 @@
 import type { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
-import type { Actor, ApplicationStatus, Role } from '@/actions/types';
+import type { Actor, ApplicationStatus, Role } from '@/modules/shared/types';
 import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 import { ApplicationError, isApplicationErrorCode } from '../domain/errors';
 import type {

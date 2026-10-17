@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from '@/actions/types';
+import type { ApplicationStatus } from '@/modules/shared/types';
 import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 import type {
   Application,

@@ -1,11 +1,11 @@
-import type { ApplicationStatus, EmployerDashboard, PostingStatus } from '@/actions/types';
-import type { EmployerId } from '@/modules/job-posting';
+import type { ApplicationStatus, EmployerDashboard, PostingStatus } from '@/modules/shared/types';
+import type { EmployerId, JobPostingId } from '@/modules/job-posting';
 
 export type { EmployerDashboard, EmployerId };
 
 /** One of the Employer's postings with its view count and Application count per status (missing = 0). */
 export type PostingStats = {
-  id: string;
+  id: JobPostingId;
   title: string;
   status: PostingStatus;
   applicationDeadline: string;

@@ -1,4 +1,4 @@
-import type { CompaniesPage } from '@/actions/types';
+import type { CompaniesPage } from '@/modules/shared/types';
 import type { Company, CompanyChanges, CompanyId, ICompanyRepository } from './domain/types';
 
 export type * from './domain/types';

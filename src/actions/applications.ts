@@ -1,9 +1,9 @@
 'use server';
 
-import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
-import { ApplicationError, ApplicationService, type ApplicationId, type CandidateId } from '@/modules/application';
+import { ApplicationError, ApplicationService, type ApplicationId } from '@/modules/application';
 import { SupabaseApplicationRepository } from '@/modules/application/adapters/supabase';
-import type { EmployerId, JobPostingId } from '@/modules/job-posting';
+import type { JobPostingId } from '@/modules/job-posting';
+import { fail, requireCandidate, requireEmployer } from './_shared';
 import {
   applicationIdSchema,
   changeApplicationStatusSchema,
@@ -22,30 +22,16 @@ import type {
   StatusChange,
 } from './types';
 
-const fail = (error: string) => ({ success: false, error }) as const;
-
 /** Service for the signed-in Candidate, or null for anyone else. */
 async function candidateContext() {
-  const supabase = await createSupabaseServerClient();
-  const actor = await getCurrentActor(supabase);
-  if (actor?.role !== 'CANDIDATE') return null;
-  return {
-    supabase,
-    service: new ApplicationService(new SupabaseApplicationRepository(supabase)),
-    candidateId: actor.userId as CandidateId,
-  };
+  const ctx = await requireCandidate();
+  return ctx && { ...ctx, service: new ApplicationService(new SupabaseApplicationRepository(ctx.supabase)) };
 }
 
 /** Service for the signed-in Employer, or null for anyone else. */
 async function employerContext() {
-  const supabase = await createSupabaseServerClient();
-  const actor = await getCurrentActor(supabase);
-  if (actor?.role !== 'EMPLOYER') return null;
-  return {
-    supabase,
-    service: new ApplicationService(new SupabaseApplicationRepository(supabase)),
-    employerId: actor.userId as EmployerId,
-  };
+  const ctx = await requireEmployer();
+  return ctx && { ...ctx, service: new ApplicationService(new SupabaseApplicationRepository(ctx.supabase)) };
 }
 
 /** FormData fields: postingId, resume (PDF ≤ 5 MB). Uploads the Resume, then submits atomically. */

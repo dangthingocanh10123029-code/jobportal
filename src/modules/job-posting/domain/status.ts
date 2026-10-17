@@ -1,4 +1,4 @@
-import type { DisplayPostingStatus, PostingStatus } from '@/actions/types';
+import type { DisplayPostingStatus, PostingStatus } from '@/modules/shared/types';
 
 // Mirrored by the job_postings_guard trigger in supabase/migrations/*_job_postings.sql.
 export const TRANSITIONS = {

@@ -1,9 +1,10 @@
-import type { Company, CompanySize, CompanySummary } from '@/actions/types';
+import type { EmployerId } from '@/modules/job-posting';
+import type { Company, CompanySize, CompanySummary } from '@/modules/shared/types';
 
 export type { Company, CompanySummary };
 
-/** = the Employer's user id. */
-export type CompanyId = string & { readonly __brand: 'CompanyId' };
+/** A Company is keyed by its Employer's user id, so the two ids are one type. */
+export type CompanyId = EmployerId;
 
 /** null clears a field; undefined leaves it as is. */
 export type CompanyChanges = {

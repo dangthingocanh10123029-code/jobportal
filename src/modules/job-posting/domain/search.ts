@@ -1,4 +1,4 @@
-import type { SearchFilter } from '@/actions/types';
+import type { SearchFilter } from '@/modules/shared/types';
 
 /** Search Filter without paging; blank text fields already dropped. employerId: the company page only. */
 export type SearchCriteria = Omit<SearchFilter, 'page'> & { employerId?: string };

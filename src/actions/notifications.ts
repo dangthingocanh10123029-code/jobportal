@@ -1,20 +1,16 @@
 'use server';
 
-import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
 import { NotificationService, type RecipientId } from '@/modules/notification';
 import { SupabaseNotificationRepository } from '@/modules/notification/adapters/supabase';
+import { fail, requireSignedIn } from './_shared';
 import { firstError } from './auth-schema';
 import { markNotificationsReadSchema } from './notifications-schema';
 import type { ActionResult, AppNotification } from './types';
 
-const fail = (error: string) => ({ success: false, error }) as const;
-
 /** Service plus the signed-in user's id, or null when signed out. */
 async function context() {
-  const supabase = await createSupabaseServerClient();
-  const actor = await getCurrentActor(supabase);
-  if (!actor) return null;
-  return { service: new NotificationService(new SupabaseNotificationRepository(supabase)), userId: actor.userId as RecipientId };
+  const ctx = await requireSignedIn();
+  return ctx && { service: new NotificationService(new SupabaseNotificationRepository(ctx.supabase)), userId: ctx.userId as RecipientId };
 }
 
 /** 30 newest; [] when signed out. */

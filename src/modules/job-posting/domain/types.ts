@@ -1,4 +1,4 @@
-import type { DisplayPostingStatus, PostingInput, PostingStatus } from '@/actions/types';
+import type { DisplayPostingStatus, PostingInput, PostingStatus } from '@/modules/shared/types';
 import type { SearchCriteria } from './search';
 
 export type { PostingInput, SearchCriteria };

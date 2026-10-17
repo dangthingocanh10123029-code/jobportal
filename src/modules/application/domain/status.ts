@@ -1,4 +1,4 @@
-import type { ApplicationStatus, Role } from '@/actions/types';
+import type { ApplicationStatus, Role } from '@/modules/shared/types';
 
 // Spec "Application Status state machine". Mirrored by public.application_transition_allowed
 // in supabase/migrations/*_applications.sql.
