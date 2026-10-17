@@ -18,4 +18,16 @@ describe('middleware', () => {
     const open = await middleware(new NextRequest('http://localhost/'));
     expect(open.status).toBe(200);
   });
+
+  it('tài khoản bị khóa → đăng xuất, về /login?error=locked (kể cả trang công khai)', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://example.supabase.co');
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'anon-key');
+    vi.mocked(getCurrentActor).mockResolvedValue({ userId: 'u1', role: 'CANDIDATE', locked: true });
+
+    for (const path of ['/', '/candidate/applications', '/admin']) {
+      const res = await middleware(new NextRequest(`http://localhost${path}`));
+      expect(res.headers.get('location')).toBe('http://localhost/login?error=locked');
+    }
+    expect((await middleware(new NextRequest('http://localhost/login?error=locked'))).status).toBe(200);
+  });
 });

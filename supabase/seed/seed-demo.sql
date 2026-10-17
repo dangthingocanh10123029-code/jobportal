@@ -365,6 +365,10 @@ from (
   union all
   select id, email, now() - make_interval(days => 50 + n), jsonb_build_object('role', 'CANDIDATE', 'full_name', full_name)
   from demo_candidate
+  union all
+  -- Sign-up cannot ask for ADMIN (handle_new_user); promoted below, like supabase/seed/make-admin.sql.
+  select pg_temp.demo_uuid('demo-admin'), 'admin@demo.jobportal.test', now() - interval '120 days',
+         jsonb_build_object('role', 'CANDIDATE', 'full_name', 'Quản trị viên Demo')
 ) u;
 insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
 select pg_temp.demo_uuid('demo-identity-' || id), id, id::text, 'email',
@@ -372,6 +376,7 @@ select pg_temp.demo_uuid('demo-identity-' || id), id, id::text, 'email',
 from auth.users where email like '%@demo.jobportal.test';
 update public.profiles p set created_at = u.created_at from auth.users u
 where u.id = p.id and u.email like '%@demo.jobportal.test';
+update public.profiles set role = 'ADMIN' where id = pg_temp.demo_uuid('demo-admin');
 
 update public.companies co set
   logo_url = format('/images/companies/logo-%s.svg', lpad(((c.n - 1) % 24 + 1)::text, 2, '0')),

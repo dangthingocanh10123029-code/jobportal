@@ -1,6 +1,6 @@
 import type { Role } from '@/actions/types';
 
-const ROLE_AREAS: Record<string, Role> = { '/employer': 'EMPLOYER', '/candidate': 'CANDIDATE' };
+const ROLE_AREAS: Record<string, Role> = { '/employer': 'EMPLOYER', '/candidate': 'CANDIDATE', '/admin': 'ADMIN' };
 const AUTH_ONLY = ['/account'];
 const GUEST_ONLY = ['/login', '/signup'];
 

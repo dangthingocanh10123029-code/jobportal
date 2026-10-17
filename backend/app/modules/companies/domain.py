@@ -13,6 +13,7 @@ class Company:
     size: str | None = None
     address: str | None = None
     website: str | None = None
+    verified: bool = False
 
     def json(self) -> dict:
         return {
@@ -23,6 +24,7 @@ class Company:
             "size": self.size,
             "address": self.address,
             "website": self.website,
+            "companyVerified": self.verified,
         }
 
 

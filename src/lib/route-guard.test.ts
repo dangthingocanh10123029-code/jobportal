@@ -24,6 +24,15 @@ describe('routeGuard', () => {
     expect(routeGuard('/account', 'CANDIDATE')).toBeNull();
   });
 
+  it('chỉ ADMIN vào /admin/*', () => {
+    expect(routeGuard('/admin', null)).toBe('/login?next=%2Fadmin');
+    expect(routeGuard('/admin/users/1', 'CANDIDATE')).toBe('/');
+    expect(routeGuard('/admin/audit', 'EMPLOYER')).toBe('/');
+    expect(routeGuard('/admin/users', 'ADMIN')).toBeNull();
+    expect(routeGuard('/employer/postings', 'ADMIN')).toBe('/');
+    expect(routeGuard('/administrator', 'CANDIDATE')).toBeNull();
+  });
+
   it('không nhầm tiền tố giống nhau', () => {
     expect(routeGuard('/employers', 'CANDIDATE')).toBeNull();
     expect(routeGuard('/accounting', null)).toBeNull();

@@ -196,7 +196,7 @@ def test_list_open_only_open_newest_first(service, clock):
         "id": newer.id, "employer_id": A, "title": "Tin mới hơn", "company_name": "ACME", "company_logo_url": None,
         "location": "Hà Nội", "employment_type": "FULL_TIME", "salary_min": 15_000_000, "salary_max": 25_000_000,
         "application_deadline": at("2026-11-01T00:00:00Z"), "created_at": newer.created_at, "industry": "IT_SOFTWARE",
-        "level": "JUNIOR", "experience_years": 1, "skills": ["TypeScript", "React"],
+        "level": "JUNIOR", "experience_years": 1, "skills": ["TypeScript", "React"], "company_verified": False,
     }
 
 

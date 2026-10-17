@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Literal
 
-ProfileRole = Literal["CANDIDATE", "EMPLOYER"]
+ProfileRole = Literal["CANDIDATE", "EMPLOYER", "ADMIN"]
 
 
 @dataclass(frozen=True)

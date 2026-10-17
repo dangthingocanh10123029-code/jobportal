@@ -48,6 +48,7 @@ Mật khẩu chung cho mọi tài khoản demo: **`DemoJob!2026`** (email đã x
 | Employer | `maybac-tech@demo.jobportal.test` | Công ty Cổ phần Công nghệ Mây Bạc: công ty IT, nhiều tin đang mở |
 | Candidate | `ta.minh.chau@demo.jobportal.test` | Tạ Minh Châu: 8 đơn, đủ trạng thái từ Đã nộp tới Đã tuyển dụng / Đã rút hồ sơ |
 | Candidate | `bui.thanh.tam@demo.jobportal.test` | Bùi Thanh Tâm: 9 đơn, có đơn được tuyển, nhiều thông báo |
+| Admin | `admin@demo.jobportal.test` | Quản trị viên Demo: vào `/admin` (tổng quan, khóa người dùng, ẩn tin, xác minh công ty, nhật ký) |
 | Candidate | `au.khai.hoan@demo.jobportal.test` | Âu Khải Hoàn: lập trình viên, hồ sơ IT, có đơn bị từ chối và đơn đã rút |
 
 Email Employer là `<slug>@demo.jobportal.test`; email ứng viên là họ tên không dấu nối bằng dấu chấm. Bảng trên lấy từ lần chạy local (PostgreSQL 14); nếu trên Supabase thứ tự khác, tìm lại bằng:
@@ -63,3 +64,15 @@ from public.applications a join auth.users u on u.id = a.candidate_id
 join public.application_status_changes h on h.application_id = a.id
 where u.email like '%@demo.jobportal.test' group by 1 order by 2 desc limit 3;
 ```
+
+## Cấp quyền Admin (ticket 32)
+
+Không ai tự đăng ký được vai trò ADMIN (`handle_new_user` chỉ nhận `CANDIDATE`/`EMPLOYER`). Cách duy nhất là chạy script với quyền `postgres`:
+
+```sh
+psql "$DATABASE_URL" -v email=ten@congty.vn -f supabase/seed/make-admin.sql
+```
+
+- Tài khoản phải tồn tại sẵn (đăng ký dạng Ứng viên trước). Script từ chối tài khoản Nhà tuyển dụng (Admin không được kiểm duyệt chính công ty/tin của mình) và xóa các trường hồ sơ ứng viên (headline, kỹ năng, kinh nghiệm, học vấn).
+- Seed demo tự tạo sẵn `admin@demo.jobportal.test` (cùng mật khẩu chung) theo đúng cách này.
+- Thu hồi quyền: không có script, cập nhật tay `update public.profiles set role = 'CANDIDATE' where id = …`.

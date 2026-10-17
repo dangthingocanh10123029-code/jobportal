@@ -29,6 +29,7 @@ def posting(row):
         "level": row[12],
         "experienceYears": row[13],
         "skills": row[14] or [],
+        "companyVerified": row[15],
     }
 
 
@@ -96,7 +97,7 @@ class PostgresCandidateRepository:
             rows = conn.execute(
                 """select s.candidate_id,s.saved_at,s.id,s.employer_id,s.title,s.company_name,s.company_logo_url,
                           s.location,s.employment_type,s.salary_min,s.salary_max,s.application_deadline,s.created_at,
-                          s.industry,s.level,s.experience_years,s.skills,s.status
+                          s.industry,s.level,s.experience_years,s.skills,s.status,s.company_verified
                    from public.saved_posting_summaries s
                    where s.candidate_id=%s order by s.saved_at desc""",
                 (user_id,),
@@ -106,7 +107,7 @@ class PostgresCandidateRepository:
         now = datetime.now(UTC)
         result = []
         for r in rows:
-            item = posting(r[2:17])
+            item = posting((*r[2:17], r[18]))
             item["savedAt"] = r[1].isoformat()
             item["isOpen"] = r[17] == "PUBLISHED" and r[11] >= now
             result.append(item)

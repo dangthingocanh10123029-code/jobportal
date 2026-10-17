@@ -20,6 +20,8 @@ const AUTH_ERRORS: Record<string, string> = {
   user_already_exists: 'Email này đã được đăng ký',
   email_exists: 'Email này đã được đăng ký',
   invalid_credentials: 'Email hoặc mật khẩu không đúng',
+  // No reason here: anyone can try any email (contract §32); the reason shows only to the account's own token.
+  user_banned: 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.',
   email_not_confirmed: 'Email chưa được xác nhận, vui lòng kiểm tra hộp thư',
   weak_password: 'Mật khẩu quá yếu',
   over_request_rate_limit: 'Bạn thao tác quá nhanh, vui lòng thử lại sau',
