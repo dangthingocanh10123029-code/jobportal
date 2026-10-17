@@ -307,6 +307,10 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .candidate-profile-identity span { color: var(--color-muted); font-size: 13px; }
 .skills-tag-input { display: flex; flex-direction: column; gap: 9px; }
 .skills-tag-input .skill-tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-tag { display: inline-flex; max-width: 100%; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px; color: var(--color-primary); background: var(--color-primary-soft); font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; }
+.skill-tag button { display: inline-grid; flex: 0 0 auto; width: 18px; height: 18px; place-items: center; padding: 0; border: 0; border-radius: 50%; color: inherit; background: transparent; cursor: pointer; font-size: 16px; line-height: 1; }
+.skill-tag button:hover { background: rgb(37 99 235 / 12%); }
+.skill-tag button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 .skills-tag-input .field-hint { color: var(--color-muted); font-size: 12px; font-weight: 400; }
 .skills-tag-input .form-error { color: var(--color-danger); font-size: 12px; }
 .form-success { margin: 0; color: var(--color-success); font-size: 13px; font-weight: 650; }
@@ -346,7 +350,7 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .posting-closed-notice strong { font-size: 14px; }
 .posting-closed-notice p { margin: 4px 0 0; color: #a16207; font-size: 13px; }
 .posting-detail-card { overflow: hidden; box-shadow: none; }
-.posting-skill-list { margin-top: 12px; }
+.posting-skill-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .posting-detail-header { display: flex; align-items: center; gap: 20px; padding: 32px; }
 .company-placeholder-large { border-radius: 17px; }
 .posting-detail-title { min-width: 0; }
