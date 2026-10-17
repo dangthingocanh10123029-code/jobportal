@@ -322,7 +322,8 @@ Codex khai báo thành CSS variables, Antigravity vẽ ảnh theo đúng bảng 
 | `--color-text` | `#0F172A` | Chữ chính |
 | `--color-muted` | `#64748B` | Chữ phụ |
 | `--color-bg` | `#FFFFFF` | Nền trang |
-| `--color-surface` | `#F8FAFC` | Nền card |
+| `--color-surface` | `#FFFFFF` | Nền card (v4: trắng đồng bộ, tách lớp bằng viền + bóng) |
+| `--color-border` | `#E5E7EB` | Viền siêu mảnh của thẻ, ô nhập (v4) |
 | `--color-success` / `--color-danger` | `#16A34A` / `#DC2626` | Trạng thái HIRED / REJECTED, lỗi |
 
 Phong cách minh họa: phẳng (flat), nét tròn, tối đa 4 màu từ bảng trên, không chứa chữ (trừ logo và ảnh Open Graph).
