@@ -4,7 +4,7 @@
 
 **Blocked by:** 13
 
-**Status:** ready-for-agent
+**Status:** in-progress (A merged, B đang làm)
 
 - [ ] Migration `20261017000100_*`: cột mới + CHECK + giá trị mặc định cho tin cũ; cập nhật `job_postings_guard`, view `open_job_postings` (thêm cột tìm kỹ năng không dấu), index cho lọc/sắp xếp
 - [ ] `JobPostingService` + 2 adapter: trường mới, lọc industry/level/maxExperience/skill, sort 3 kiểu; InMemory khớp hành vi DB; test TDD (sort salary null ở cuối, skill không dấu, maxExperience)
