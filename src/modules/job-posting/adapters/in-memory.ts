@@ -6,10 +6,13 @@ import type { Clock, EmployerId, IJobPostingRepository, JobPostingId, SearchCrit
 export class InMemoryJobPostingRepository implements IJobPostingRepository {
   private readonly rows = new Map<JobPostingId, StoredJobPosting>();
   private nextId = 1;
+  readonly views = new Map<JobPostingId, number>();
 
   constructor(
     private readonly companyNames: Record<string, string> = {},
     private readonly now: Clock = () => new Date(),
+    /** Stands in for auth.uid() in recordView. */
+    private readonly viewerId: string | null = null,
   ) {}
 
   async insert(...[employerId, input]: Parameters<IJobPostingRepository['insert']>) {
@@ -44,6 +47,12 @@ export class InMemoryJobPostingRepository implements IJobPostingRepository {
   async listByEmployer(employerId: EmployerId) {
     // Insertion order stands in for created_at.
     return [...this.rows.values()].filter((r) => r.employerId === employerId).reverse().map((r) => ({ ...r }));
+  }
+
+  async recordView(id: JobPostingId) {
+    const row = this.rows.get(id);
+    if (!row || row.status === 'DRAFT' || row.employerId === this.viewerId) return;
+    this.views.set(id, (this.views.get(id) ?? 0) + 1);
   }
 
   async listOpen(

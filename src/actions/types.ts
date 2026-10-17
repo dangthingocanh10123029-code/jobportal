@@ -143,3 +143,22 @@ export type CandidateProfile = {
 export type CandidateProfileInput = { headline?: string; skills?: string[]; experience?: string; education?: string };
 
 export type SavedPostingSummary = PostingSummary & { isOpen: boolean; savedAt: string };
+
+export type NotificationType = 'APPLICATION_RECEIVED' | 'APPLICATION_STATUS_CHANGED' | 'APPLICATION_WITHDRAWN';
+
+export type AppNotification = {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  /** Internal path, e.g. '/candidate/applications/<id>'. */
+  link: string;
+  readAt: string | null;
+  createdAt: string;
+};
+
+export type EmployerDashboard = {
+  totals: { postings: number; open: number; applications: number; views: number };
+  byStatus: Record<ApplicationStatus, number>;
+  postings: { id: string; title: string; displayStatus: DisplayPostingStatus; views: number; applications: number }[];
+};

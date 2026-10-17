@@ -30,6 +30,8 @@ export interface IJobPostingRepository {
     criteria: SearchCriteria,
     range: { offset: number; limit: number },
   ): Promise<{ rows: StoredJobPosting[]; total: number }>;
+  /** Counts one view of a PUBLISHED/CLOSED posting by anyone but its Employer; a no-op otherwise. */
+  recordView(id: JobPostingId): Promise<void>;
 }
 
 export type Clock = () => Date;
