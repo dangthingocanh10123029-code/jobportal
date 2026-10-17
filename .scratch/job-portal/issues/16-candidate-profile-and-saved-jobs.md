@@ -4,7 +4,7 @@
 
 **Blocked by:** 15
 
-**Status:** in-progress (A merged + pushed, B đang làm)
+**Status:** resolved
 
 - [ ] Migration `20261017000300_*`: cột hồ sơ ứng viên (trên `profiles` hoặc bảng riêng) + RLS: chỉ chủ và Employer có đơn của họ đọc được; bảng `saved_postings` (candidate, posting, created_at, UNIQUE) + RLS
 - [ ] `@/actions/candidates` theo contract mục 16; `employer_application_summaries` thêm headline + skills; test

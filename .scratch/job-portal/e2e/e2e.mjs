@@ -140,6 +140,13 @@ await check('Khách xem chi tiết tin thấy nút "Đăng nhập để ứng tu
   await guest.getByText('Lương tháng 13, bảo hiểm đầy đủ').waitFor();
   await guest.getByText('MISA').first().waitFor();
 });
+await check('Tên công ty trên tin dẫn tới trang công ty', guest, async () => {
+  const back = guest.url();
+  await guest.getByRole('link', { name: 'Công ty E2E' }).first().click();
+  await guest.waitForURL(/\/companies\//);
+  await guest.getByRole('link', { name: TITLE }).first().waitFor();
+  await guest.goto(back);
+});
 const jobUrl = guest.url();
 
 // ---------- Candidate applies ----------
@@ -147,6 +154,22 @@ await check('Ứng viên đăng nhập', cand, () => login(cand, CANDIDATE));
 await check('Ứng viên vào /employer/postings bị chuyển về /', cand, async () => {
   await cand.goto(`${BASE}/employer/postings`);
   await cand.waitForURL(`${BASE}/`);
+});
+await check('Ứng viên cập nhật hồ sơ (headline)', cand, async () => {
+  await cand.goto(`${BASE}/candidate/profile`);
+  await cand.fill('input[name=headline]', 'Kế toán viên E2E 3 năm kinh nghiệm');
+  await cand.getByRole('button', { name: 'Lưu hồ sơ' }).click();
+  await cand.getByRole('button', { name: 'Lưu hồ sơ' }).waitFor();
+  await cand.waitForTimeout(1500);
+  await cand.reload();
+  if ((await cand.inputValue('input[name=headline]')) !== 'Kế toán viên E2E 3 năm kinh nghiệm') throw new Error('headline chưa lưu');
+});
+await check('Ứng viên lưu tin (♥) → có trong "Việc đã lưu"', cand, async () => {
+  await cand.goto(jobUrl);
+  await cand.getByRole('button', { name: 'Lưu việc làm' }).first().click();
+  await cand.getByRole('button', { name: 'Bỏ lưu' }).first().waitFor();
+  await cand.goto(`${BASE}/candidate/saved`);
+  await cand.getByRole('link', { name: TITLE }).first().waitFor();
 });
 await check('File không phải PDF bị chặn ở form', cand, async () => {
   await cand.goto(jobUrl);
@@ -174,6 +197,7 @@ await check('Nhà tuyển dụng thấy đơn: tên + trạng thái', emp, async
   await emp.goto(`${BASE}/employer/postings`);
   await emp.locator('article', { hasText: TITLE }).getByRole('link', { name: 'Xem hồ sơ' }).click();
   await emp.getByRole('heading', { name: 'Ứng viên E2E' }).waitFor();
+  await emp.getByText('Kế toán viên E2E 3 năm kinh nghiệm').first().waitFor();
 });
 await check('Tải CV: mở signed URL trả về PDF', emp, async () => {
   const [popup] = await Promise.all([emp.waitForEvent('popup'), emp.getByRole('button', { name: 'Tải CV' }).click()]);
