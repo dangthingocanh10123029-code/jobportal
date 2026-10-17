@@ -14,7 +14,10 @@ export class InMemoryApplicationRepository implements IApplicationRepository {
   constructor(
     private readonly postings: IJobPostingRepository,
     private readonly now: Clock = () => new Date(),
-    private readonly candidates: Record<string, { fullName: string; phone: string | null }> = {},
+    private readonly candidates: Record<
+      string,
+      { fullName: string; phone: string | null; headline?: string | null; skills?: string[] }
+    > = {},
   ) {}
 
   async submit(candidateId: CandidateId, jobPostingId: JobPostingId, resumePath: string) {
@@ -68,6 +71,8 @@ export class InMemoryApplicationRepository implements IApplicationRepository {
         ...toApplication(row),
         candidateName: this.candidates[row.candidateId]?.fullName ?? '',
         candidatePhone: this.candidates[row.candidateId]?.phone ?? null,
+        candidateHeadline: this.candidates[row.candidateId]?.headline ?? null,
+        candidateSkills: this.candidates[row.candidateId]?.skills ?? [],
       }));
   }
 

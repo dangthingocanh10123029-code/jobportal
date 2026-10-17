@@ -93,7 +93,12 @@ export type Application = {
 
 export type CandidateApplicationSummary = Application & { postingTitle: string; companyName: string };
 
-export type EmployerApplicationSummary = Application & { candidateName: string; candidatePhone: string | null };
+export type EmployerApplicationSummary = Application & {
+  candidateName: string;
+  candidatePhone: string | null;
+  candidateHeadline: string | null;
+  candidateSkills: string[];
+};
 
 export type StatusChange = {
   fromStatus: ApplicationStatus | null;
@@ -124,3 +129,17 @@ export type CompanyInput = {
 };
 
 export type CompaniesPage = { items: CompanySummary[]; total: number; page: number; pageSize: 20 };
+
+export type CandidateProfile = {
+  userId: string;
+  fullName: string;
+  phone: string | null;
+  headline: string | null;
+  skills: string[];
+  experience: string | null;
+  education: string | null;
+};
+
+export type CandidateProfileInput = { headline?: string; skills?: string[]; experience?: string; education?: string };
+
+export type SavedPostingSummary = PostingSummary & { isOpen: boolean; savedAt: string };
