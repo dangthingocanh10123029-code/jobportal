@@ -1,9 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type KeyboardEvent } from 'react';
 import { createPostingDraftAction, updatePostingAction } from '@/actions/postings';
-import type { EmploymentType, JobPosting, PostingInput } from '@/actions/types';
+import type { EmploymentType, Industry, JobLevel, JobPosting, PostingInput } from '@/actions/types';
+import { industryLabels, jobLevelLabels } from '@/components/format';
 
 const employmentTypes: { value: EmploymentType; label: string }[] = [
   { value: 'FULL_TIME', label: 'Toàn thời gian' },
@@ -11,6 +12,9 @@ const employmentTypes: { value: EmploymentType; label: string }[] = [
   { value: 'INTERNSHIP', label: 'Thực tập' },
   { value: 'CONTRACT', label: 'Hợp đồng' },
 ];
+
+const industries = Object.entries(industryLabels) as [Industry, string][];
+const jobLevels = Object.entries(jobLevelLabels) as [JobLevel, string][];
 
 function toLocalDateTime(isoDate: string) {
   const date = new Date(isoDate);
@@ -32,14 +36,13 @@ function readInput(form: HTMLFormElement): PostingInput {
     salaryMin: salaryMin ? Number(salaryMin) : null,
     salaryMax: salaryMax ? Number(salaryMax) : null,
     applicationDeadline: new Date(localDeadline).toISOString(),
-    // Tạm cho 14B: giá trị tin cũ trước v2, Codex thay bằng field thật.
-    industry: 'OTHER',
-    level: 'JUNIOR',
-    experienceYears: 0,
-    headcount: 1,
-    skills: [],
-    requirements: '',
-    benefits: '',
+    industry: String(values.get('industry') ?? 'OTHER') as Industry,
+    level: String(values.get('level') ?? 'JUNIOR') as JobLevel,
+    experienceYears: Number(values.get('experienceYears') ?? 0),
+    headcount: Number(values.get('headcount') ?? 1),
+    skills: values.getAll('skills').map(String),
+    requirements: String(values.get('requirements') ?? '').trim(),
+    benefits: String(values.get('benefits') ?? '').trim(),
   };
 }
 
@@ -48,6 +51,31 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const [salaryError, setSalaryError] = useState('');
+  const [skills, setSkills] = useState<string[]>(initialPosting?.skills ?? []);
+  const [skillDraft, setSkillDraft] = useState('');
+  const [skillError, setSkillError] = useState('');
+
+  function addSkill(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    const skill = skillDraft.trim();
+    if (!skill) return;
+    if (skill.length > 30) {
+      setSkillError('Mỗi kỹ năng tối đa 30 ký tự.');
+      return;
+    }
+    if (skills.some((existing) => existing.toLocaleLowerCase() === skill.toLocaleLowerCase())) {
+      setSkillError('Kỹ năng này đã được thêm.');
+      return;
+    }
+    if (skills.length >= 10) {
+      setSkillError('Bạn chỉ có thể thêm tối đa 10 kỹ năng.');
+      return;
+    }
+    setSkills([...skills, skill]);
+    setSkillDraft('');
+    setSkillError('');
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,6 +111,53 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
       <label className="field-label">
         Tiêu đề công việc <span className="required-mark">*</span>
         <input autoComplete="off" className="text-input" defaultValue={initialPosting?.title ?? ''} maxLength={150} minLength={5} name="title" placeholder="Ví dụ: Chuyên viên Marketing" required />
+      </label>
+      <div className="form-field-grid">
+        <label className="field-label">
+          Ngành nghề <span className="required-mark">*</span>
+          <select className="text-input select-input" defaultValue={initialPosting?.industry ?? 'OTHER'} name="industry" required>
+            {industries.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select>
+        </label>
+        <label className="field-label">
+          Cấp bậc <span className="required-mark">*</span>
+          <select className="text-input select-input" defaultValue={initialPosting?.level ?? 'JUNIOR'} name="level" required>
+            {jobLevels.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select>
+        </label>
+      </div>
+      <div className="form-field-grid">
+        <label className="field-label">
+          Số năm kinh nghiệm <span className="required-mark">*</span>
+          <span className="input-with-suffix"><input className="text-input" defaultValue={initialPosting?.experienceYears ?? 0} max="20" min="0" name="experienceYears" required type="number" /><span>năm</span></span>
+          <span className="field-hint">Chọn 0 nếu không yêu cầu kinh nghiệm.</span>
+        </label>
+        <label className="field-label">
+          Số lượng tuyển <span className="required-mark">*</span>
+          <span className="input-with-suffix"><input className="text-input" defaultValue={initialPosting?.headcount ?? 1} max="999" min="1" name="headcount" required type="number" /><span>người</span></span>
+        </label>
+      </div>
+      <div className="field-label skills-field">
+        Kỹ năng <span className="field-optional">(tối đa 10)</span>
+        <div className="skill-tag-list" aria-label="Kỹ năng đã thêm">
+          {skills.map((skill) => (
+            <span className="skill-tag" key={skill.toLocaleLowerCase()}>
+              {skill}
+              <button aria-label={`Xóa kỹ năng ${skill}`} onClick={() => setSkills(skills.filter((item) => item !== skill))} type="button">×</button>
+              <input name="skills" type="hidden" value={skill} />
+            </span>
+          ))}
+        </div>
+        <input className="text-input" disabled={skills.length >= 10} maxLength={30} onChange={(event) => { setSkillDraft(event.target.value); setSkillError(''); }} onKeyDown={addSkill} placeholder={skills.length >= 10 ? 'Đã đạt tối đa 10 kỹ năng' : 'Nhập kỹ năng rồi nhấn Enter'} value={skillDraft} />
+        {skillError ? <span className="form-error" role="alert">{skillError}</span> : null}
+      </div>
+      <label className="field-label">
+        Yêu cầu <span className="required-mark">*</span>
+        <textarea className="text-input textarea-input" defaultValue={initialPosting?.requirements ?? ''} maxLength={5000} minLength={10} name="requirements" placeholder="Kinh nghiệm, bằng cấp, kỹ năng hoặc tiêu chí cần có…" required rows={5} />
+      </label>
+      <label className="field-label">
+        Quyền lợi <span className="required-mark">*</span>
+        <textarea className="text-input textarea-input" defaultValue={initialPosting?.benefits ?? ''} maxLength={5000} minLength={10} name="benefits" placeholder="Lương thưởng, bảo hiểm, chế độ và môi trường làm việc…" required rows={5} />
       </label>
       <label className="field-label">
         Mô tả công việc <span className="required-mark">*</span>
