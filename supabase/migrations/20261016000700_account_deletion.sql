@@ -12,3 +12,7 @@ alter table public.applications
   drop constraint applications_job_posting_id_fkey,
   add constraint applications_job_posting_id_fkey
     foreign key (job_posting_id) references public.job_postings (id) on delete cascade;
+
+-- Security advisor: a security definer trigger function must not be callable via /rest/v1/rpc.
+-- Triggers still fire, they do not check the caller's EXECUTE privilege.
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
