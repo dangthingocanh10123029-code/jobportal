@@ -48,7 +48,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
             <div className="posting-detail-title">
               <span className="eyebrow">Cơ hội nghề nghiệp</span>
               <h1>{posting.title}</h1>
-              <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
+              <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
             </div>
             {profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}
           </header>
@@ -91,7 +91,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           </section>
           <section aria-label="Công ty tuyển dụng" className="surface-card posting-company-summary">
             <img alt="" height="52" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="52" />
-            <div><span className="eyebrow">Nhà tuyển dụng</span><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></div>
+            <div><span className="eyebrow">Nhà tuyển dụng</span><Link href={`/companies/${posting.employerId}`}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></div>
             <Link aria-label={`Xem công ty ${posting.companyName}`} className="company-summary-arrow" href={`/companies/${posting.employerId}`}>→</Link>
           </section>
 
@@ -122,7 +122,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
             {relatedPostings.map((related) => (
               <article className="surface-card related-posting-card" key={related.id}>
                 <div>
-                  <h3><Link href={`/jobs/${related.id}`}>{related.title}</Link></h3>
+                  <h3><Link href={`/jobs/${related.id}`}>{related.title}</Link>{related.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</h3>
                   <p><Link href={`/companies/${related.employerId}`}>{related.companyName}</Link> · {industryLabels[related.industry]} · {jobLevelLabels[related.level]}</p>
                 </div>
                 <div className="posting-card-actions">{profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(related.id)} postingId={related.id} /> : null}<Link aria-label={`Xem chi tiết: ${related.title}`} className="posting-arrow" href={`/jobs/${related.id}`}><span aria-hidden="true">→</span></Link></div>

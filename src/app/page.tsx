@@ -16,7 +16,7 @@ function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSumma
         <div className="public-posting-heading">
           <div>
             <h3><Link href={`/jobs/${posting.id}`}>{posting.title}</Link></h3>
-            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`}>{posting.companyName}</Link></p>
+            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
           </div>
           <span className="employment-badge">{employmentLabels[posting.employmentType]}</span>
         </div>

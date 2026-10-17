@@ -17,6 +17,7 @@ export async function SiteHeader() {
           <Link href="/companies">Công ty</Link>
           {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/saved">Việc đã lưu</Link></> : null}
           {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
+          {profile?.role === 'ADMIN' ? <Link href="/admin">Quản trị</Link> : null}
         </nav>
         <details className="mobile-menu">
           <summary aria-label="Mở menu"><span aria-hidden="true" className="mobile-menu-icon">☰</span><span className="mobile-menu-label">Menu</span></summary>
@@ -25,6 +26,7 @@ export async function SiteHeader() {
             <Link href="/companies">Công ty</Link>
             {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/saved">Việc đã lưu</Link></> : null}
             {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
+            {profile?.role === 'ADMIN' ? <><Link href="/admin">Quản trị</Link><Link href="/admin/users">Người dùng</Link><Link href="/admin/postings">Tin tuyển dụng</Link><Link href="/admin/companies">Công ty</Link><Link href="/admin/audit">Nhật ký thao tác</Link></> : null}
             {profile ? <Link href="/notifications">Thông báo ({unreadCount})</Link> : <><Link href="/login">Đăng nhập</Link><Link href="/signup">Tạo tài khoản</Link></>}
           </nav>
         </details>
