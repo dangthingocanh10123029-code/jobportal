@@ -114,10 +114,10 @@ function assertSalary({ salaryMin, salaryMax }: PostingInput) {
 
 function toSummary(p: StoredJobPosting): PostingSummary {
   const { id, title, companyName, companyLogoUrl, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt } = p;
-  const { industry, level, experienceYears, skills } = p;
+  const { industry, level, experienceYears, skills, employerId } = p;
   return {
     id, title, companyName, companyLogoUrl, location, employmentType, salaryMin, salaryMax, applicationDeadline, createdAt,
-    industry, level, experienceYears, skills,
+    industry, level, experienceYears, skills, employerId,
   };
 }
 

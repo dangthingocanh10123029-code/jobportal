@@ -74,7 +74,7 @@ export type SearchFilter = {
 export type PostingSummary = Pick<
   JobPosting,
   | 'id' | 'title' | 'companyName' | 'location' | 'employmentType' | 'salaryMin' | 'salaryMax' | 'applicationDeadline' | 'createdAt'
-  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl'
+  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl' | 'employerId'
 >;
 
 /** isOpen = PUBLISHED and not past the deadline (ADR-0001). */

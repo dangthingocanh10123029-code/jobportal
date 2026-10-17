@@ -208,6 +208,7 @@ describe('listOpen', () => {
       experienceYears: 1,
       skills: ['TypeScript', 'React'],
       companyLogoUrl: null,
+      employerId: newer.employerId,
     });
   });
 

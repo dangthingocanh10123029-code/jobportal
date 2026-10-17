@@ -169,7 +169,7 @@ benefits: string;          // 10–5000 ký tự
 // Tin cũ trước v2: industry 'OTHER', level 'JUNIOR', experienceYears 0, headcount 1, skills [], requirements/benefits ''
 
 // JobPosting, PostingDetail có đủ các trường trên + companyLogoUrl: string | null
-// PostingSummary bổ sung: industry, level, experienceYears, skills, companyLogoUrl
+// PostingSummary bổ sung: industry, level, experienceYears, skills, companyLogoUrl, employerId (link /companies/<employerId>)
 
 // SearchFilter bổ sung (URL: ?industry=&level=&exp=&skill=&sort=):
 industry?: Industry; level?: JobLevel;
