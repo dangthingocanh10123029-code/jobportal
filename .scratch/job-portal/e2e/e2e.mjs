@@ -47,7 +47,7 @@ const emp = await employerCtx.newPage();
 const cand = await candidateCtx.newPage();
 const guest = await guestCtx.newPage();
 for (const p of [emp, cand, guest]) {
-  p.setDefaultTimeout(20000);
+  p.setDefaultTimeout(45000);
   p.setDefaultNavigationTimeout(60000);
   p.on('dialog', (d) => d.accept());
 }

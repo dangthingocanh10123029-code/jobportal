@@ -7,7 +7,7 @@ Chạy trên dev server `http://localhost:3000` với `.env.local` trỏ tới S
 # Playwright cài ngoài repo (không thêm vào package.json), dùng Chrome có sẵn
 mkdir -p /tmp/e2e && cd /tmp/e2e && npm init -y && PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm i playwright@1.52.0
 cp <repo>/.scratch/job-portal/e2e/* /tmp/e2e/
-psql "<session pooler URL>" -f cleanup.sql && psql "<session pooler URL>" -f seed.sql
+zsh cleanup.sh "<session pooler URL>" && psql "<session pooler URL>" -f seed.sql
 node e2e.mjs            # 27 bước
-psql "<session pooler URL>" -f cleanup.sql
+zsh cleanup.sh "<session pooler URL>"   # xóa CV qua Storage API, không để file mồ côi
 ```
