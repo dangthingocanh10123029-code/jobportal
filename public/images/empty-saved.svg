@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
+  <!-- Pedestal -->
+  <ellipse cx="120" cy="152" rx="75" ry="14" fill="#DBEAFE"/>
+
+  <!-- Back Card Shadow / Stand -->
+  <rect x="68" y="56" width="94" height="92" rx="10" fill="#DBEAFE"/>
+
+  <!-- Main Card -->
+  <rect x="74" y="46" width="92" height="96" rx="8" fill="#FFFFFF" stroke="#DBEAFE" stroke-width="2"/>
+
+  <!-- Job Card Placeholder Lines -->
+  <rect x="86" y="58" width="34" height="6" rx="3" fill="#2563EB" opacity="0.3"/>
+  <rect x="86" y="70" width="52" height="4" rx="2" fill="#DBEAFE"/>
+  <rect x="86" y="78" width="40" height="4" rx="2" fill="#DBEAFE"/>
+
+  <!-- Dotted placeholder for job badge -->
+  <rect x="86" y="94" width="36" height="34" rx="5" fill="#F8FAFC" stroke="#DBEAFE" stroke-width="2" stroke-dasharray="3 3"/>
+  <!-- Outline Heart / Bookmark marker -->
+  <path d="M 104 106 C 102 103 98 103 96 106 C 94 109 96 112 104 118 C 112 112 114 109 112 106 C 110 103 106 103 104 106 Z" fill="#DBEAFE"/>
+
+  <!-- Prominent Bookmark Ribbon -->
+  <g>
+    <!-- Fold top -->
+    <path d="M 130 36 L 135 32 H 163 L 158 36 Z" fill="#1E40AF"/>
+    <!-- Hanging Ribbon -->
+    <path d="M 130 36 H 158 V 112 L 144 98 L 130 112 Z" fill="#2563EB"/>
+    <!-- Ribbon Golden Star Accent -->
+    <polygon points="144,56 146.5,62 153,62.5 148,67 149.5,73.5 144,70 138.5,73.5 140,67 135,62.5 141.5,62" fill="#F59E0B"/>
+  </g>
+
+  <!-- Sparkles & Accents -->
+  <polygon points="184,48 186.5,53.5 192,55.5 186.5,57.5 184,63 181.5,57.5 176,55.5 181.5,53.5" fill="#F59E0B"/>
+  <polygon points="56,72 58,76 62,78 58,80 56,84 54,80 50,78 54,76" fill="#F59E0B"/>
+  <circle cx="188" cy="88" r="3.5" fill="#F59E0B"/>
+  <circle cx="58" cy="118" r="3" fill="#DBEAFE"/>
+  <circle cx="180" cy="120" r="2.5" fill="#DBEAFE"/>
+</svg>

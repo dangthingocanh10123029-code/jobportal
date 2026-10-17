@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#EFF6FF"/>
+  <!-- Concentric interlocking orbit rings -->
+  <circle cx="64" cy="64" r="36" stroke="#DBEAFE" stroke-width="8"/>
+  <path d="M 64 28 C 83.88 28 100 44.12 100 64 C 100 78 92 90 80 96" stroke="#2563EB" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="48" cy="64" r="14" fill="#1D4ED8"/>
+  <circle cx="76" cy="54" r="8" fill="#F59E0B"/>
+</svg>
