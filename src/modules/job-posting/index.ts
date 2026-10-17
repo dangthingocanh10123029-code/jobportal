@@ -92,6 +92,11 @@ export class JobPostingService {
     return { ...this.view(posting), isOpen: isOpen(posting.status, posting.applicationDeadline, this.now()) };
   }
 
+  /** See IJobPostingRepository.recordView: the database decides whether the view counts. */
+  recordView(id: JobPostingId): Promise<void> {
+    return this.repo.recordView(id);
+  }
+
   private async owned(employerId: EmployerId, id: JobPostingId): Promise<StoredJobPosting> {
     const posting = await this.repo.findById(id);
     // Someone else's posting looks the same as a missing one.

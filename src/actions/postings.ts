@@ -86,12 +86,16 @@ export async function listOpenPostings(filter: SearchFilter): Promise<OpenPostin
   return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).listOpen(parsed);
 }
 
-/** Anyone. DRAFT and unknown ids → null (page shows 404). */
+/** Anyone. DRAFT and unknown ids → null (page shows 404). Counts a view unless the viewer owns the posting. */
 // cache(): generateMetadata and the page share one lookup per request.
 export const getPostingDetail = cache(async (id: string): Promise<PostingDetail | null> => {
   const parsed = postingIdSchema.safeParse(id);
   if (!parsed.success) return null;
-  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).getPublic(parsed.data as JobPostingId);
+  const service = new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient()));
+  const detail = await service.getPublic(parsed.data as JobPostingId);
+  // A lost view count must not break the page.
+  if (detail) await service.recordView(detail.id as JobPostingId).catch(console.error);
+  return detail;
 });
 
 /** Anyone. ≤ 6 open postings in the same industry, excluding this one; [] for DRAFT or unknown ids. */

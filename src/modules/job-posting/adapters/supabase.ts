@@ -177,6 +177,11 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
     return { rows: data.map(toPosting), total: count ?? 0 };
   }
 
+  async recordView(id: JobPostingId) {
+    const { error } = await this.supabase.rpc('record_posting_view', { p_posting_id: id });
+    if (error) throw new Error(`Không ghi được lượt xem: ${error.message}`);
+  }
+
   private async mustFind(id: JobPostingId) {
     const posting = await this.findById(id);
     if (!posting) throw new Error(`Không đọc lại được tin ${id}`);

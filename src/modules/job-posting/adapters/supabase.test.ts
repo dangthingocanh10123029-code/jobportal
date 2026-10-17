@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { describe, expect, it } from 'vitest';
+import type { JobPostingId } from '../domain/types';
 import { SupabaseJobPostingRepository } from './supabase';
 
 // What PostgREST answers for a page past the end, and for the follow-up count.
@@ -35,5 +36,26 @@ describe('SupabaseJobPostingRepository.listOpen — query', () => {
     await repo.listOpen({ skill: 'Kế "toán", C#', sort: 'salary_desc' }, { offset: 0, limit: 20 });
     expect(params.get('search_skills')).toBe('cs.{"ke \\"toan\\", c#"}');
     expect(params.get('order')).toBe('salary_max.desc.nullslast,created_at.desc,id.asc');
+  });
+});
+
+describe('SupabaseJobPostingRepository.recordView', () => {
+  it('gọi RPC record_posting_view với mã tin', async () => {
+    let call: { url: string; body: unknown } | undefined;
+    const repo = new SupabaseJobPostingRepository(
+      createClient('https://example.supabase.co', 'anon-key', {
+        global: {
+          fetch: async (input, init) => {
+            call = { url: String(input), body: JSON.parse(String(init?.body)) };
+            return new Response(null, { status: 204 });
+          },
+        },
+      }),
+    );
+    await repo.recordView('11111111-1111-1111-1111-111111111111' as JobPostingId);
+    expect(call).toEqual({
+      url: 'https://example.supabase.co/rest/v1/rpc/record_posting_view',
+      body: { p_posting_id: '11111111-1111-1111-1111-111111111111' },
+    });
   });
 });
