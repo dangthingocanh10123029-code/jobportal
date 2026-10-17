@@ -29,7 +29,7 @@ Bạn là Claude Coordinator của dự án jobportal.
 
 1. Chạy `orca status --json` và `orca worktree list --json`, lấy đúng ID của 4 worktree:
    agent-claude (bạn), agent-claude-logic, agent-codex, agent-antigravity. Dùng worktree có sẵn, không tạo worktree mới.
-2. Tạo Orca run với objective "Build VibeCoding Job Portal v1".
+2. Tạo Orca run với objective "Build Job Portal v1".
 3. Tạo Orca task theo mục "Phân công (Orca)" của từng ticket:
    - Phần A (logic) → agent-claude-logic (Claude Code): /tdd cho logic domain, /implement cho migration và actions.
    - Phần B (giao diện) → agent-codex (Codex): /implement, chỉ gọi hàm trong docs/api-contract.md, dùng ảnh theo mục Hình ảnh.

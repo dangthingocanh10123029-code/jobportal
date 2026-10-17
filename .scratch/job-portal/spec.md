@@ -1,4 +1,4 @@
-# Spec: VibeCoding Job Portal v1
+# Spec: Job Portal v1
 
 **Status:** ready-for-agent
 

@@ -1,4 +1,4 @@
-# VibeCoding Job Portal
+# Job Portal
 
 Hệ thống tìm việc online — Next.js 15 + Supabase + Vitest. Xem `MISSION.md`, `CONTEXT.md`, `.scratch/job-portal/map.md`.
 

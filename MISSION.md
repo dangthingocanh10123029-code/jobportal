@@ -1,4 +1,4 @@
-# Mission: Xây dựng VibeCoding Job Portal — Hệ thống tìm việc online
+# Mission: Xây dựng Job Portal — Hệ thống tìm việc online
 
 ## Why
 Tự tay ship một sản phẩm Full-stack thực tế (Next.js 15 App Router + Supabase + Vitest) bằng quy trình AI pair-programming theo bộ skills của Matt Pocock, đạt chuẩn kiến trúc Deep Modules, Seams và TDD.

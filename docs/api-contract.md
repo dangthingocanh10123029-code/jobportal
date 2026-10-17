@@ -1,4 +1,4 @@
-# API Contract — VibeCoding Job Portal v1
+# API Contract — Job Portal v1
 
 Hợp đồng giữa **Claude — logic (`agent-claude-logic`)** và **Codex — giao diện (`agent-codex`)**. Frontend chỉ gọi những hàm có trong file này, backend phải cung cấp đúng chữ ký này. Muốn đổi contract → hỏi Claude Coordinator, Claude sửa file này trước rồi mới dispatch.
 

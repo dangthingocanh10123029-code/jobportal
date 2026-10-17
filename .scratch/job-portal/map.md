@@ -1,4 +1,4 @@
-# Wayfinder Map: VibeCoding Job Portal (Next.js 15 + Supabase)
+# Wayfinder Map: Job Portal (Next.js 15 + Supabase)
 
 ## Destination
 Hệ thống tìm việc online gồm 3 domain liên kết — Job Posting, Job Search, Application — kèm trang ứng viên, trang nhà tuyển dụng và test tự động xanh.

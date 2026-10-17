@@ -1,4 +1,4 @@
-# Resources — VibeCoding Job Portal
+# Resources — Job Portal
 
 ## Knowledge
 
@@ -11,7 +11,7 @@
 - [Book: _Refactoring: Improving the Design of Existing Code_ — Martin Fowler](https://martinfowler.com/books/refactoring.html)
   Bảng phân loại Code Smells (Mysterious Name, Shotgun Surgery, Feature Envy, Primitive Obsession, Speculative Generality). Nguồn chuẩn mực cho trục Standards trong `/code-review`.
 - [Official Documentation: Next.js App Router (nextjs.org)](https://nextjs.org/docs/app)
-  Tài liệu chính thức về React Server Components, Server Actions, Route Handlers và kiến trúc tối ưu. Dùng cho: Xây dựng Backend & Frontend của VibeCoding Job Portal.
+  Tài liệu chính thức về React Server Components, Server Actions, Route Handlers và kiến trúc tối ưu. Dùng cho: Xây dựng Backend & Frontend của Job Portal.
 - [Official Documentation: Supabase (supabase.com/docs)](https://supabase.com/docs)
   Tài liệu chính thức về PostgreSQL database, Supabase Client JS, Row Level Security (RLS) và Database Functions/RPCs. Dùng cho: Lưu trữ dữ liệu và xử lý transactions.
 - [Official Documentation: Vitest (vitest.dev)](https://vitest.dev/)

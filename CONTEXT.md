@@ -1,4 +1,4 @@
-# VibeCoding Job Portal
+# Job Portal
 
 An online job portal connecting candidates with employers through job postings, search, and an application workflow.
 

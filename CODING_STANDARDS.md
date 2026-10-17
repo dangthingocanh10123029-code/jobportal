@@ -1,4 +1,4 @@
-# Coding Standards — VibeCoding Job Portal
+# Coding Standards — Job Portal
 
 Tiêu chuẩn bắt buộc cho toàn bộ mã nguồn (Next.js 15, Supabase PostgreSQL, TypeScript, Vitest).
 
