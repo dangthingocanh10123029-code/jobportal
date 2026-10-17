@@ -16,6 +16,8 @@ export type * from './domain/types';
 
 export const PAGE_SIZE = 20;
 const RELATED_LIMIT = 6;
+// ponytail: the company page shows at most this many open postings, unpaged; page it if an Employer outgrows it.
+const COMPANY_POSTINGS_LIMIT = 100;
 
 /** Posting lifecycle (DRAFT --publish--> PUBLISHED --close--> CLOSED) plus the public read side. */
 export class JobPostingService {
@@ -75,6 +77,12 @@ export class JobPostingService {
     if (!posting || posting.status === 'DRAFT') return [];
     const { rows } = await this.repo.listOpen({ industry: posting.industry }, { offset: 0, limit: RELATED_LIMIT + 1 });
     return rows.filter((r) => r.id !== id).slice(0, RELATED_LIMIT).map(toSummary);
+  }
+
+  /** Open postings of one Employer for their company page, newest first. */
+  async listOpenByEmployer(employerId: EmployerId): Promise<PostingSummary[]> {
+    const { rows } = await this.repo.listOpen({ employerId }, { offset: 0, limit: COMPANY_POSTINGS_LIMIT });
+    return rows.map(toSummary);
   }
 
   /** Public detail: CLOSED/EXPIRED still readable (isOpen = false); DRAFT looks missing. */

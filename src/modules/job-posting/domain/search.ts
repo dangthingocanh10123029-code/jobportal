@@ -1,7 +1,7 @@
 import type { SearchFilter } from '@/actions/types';
 
-/** Search Filter without paging; blank text fields already dropped. */
-export type SearchCriteria = Omit<SearchFilter, 'page'>;
+/** Search Filter without paging; blank text fields already dropped. employerId: the company page only. */
+export type SearchCriteria = Omit<SearchFilter, 'page'> & { employerId?: string };
 
 /**
  * Accent- and case-insensitive form of Vietnamese text ("Kế toán" → "ke toan", "Đ" → "d").

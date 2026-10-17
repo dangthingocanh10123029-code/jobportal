@@ -374,3 +374,14 @@ describe('listRelated', () => {
     expect(await service.listRelated('missing' as JobPostingId)).toEqual([]);
   });
 });
+
+describe('listOpenByEmployer', () => {
+  it('chỉ tin đang mở của Employer đó, mới nhất trước', async () => {
+    await published({ title: 'A cũ' });
+    await published({ title: 'A mới' });
+    await service.createDraft(A, input({ title: 'A nháp' }));
+    const b = await service.createDraft(B, input({ title: 'B đang mở' }));
+    await service.publish(B, b.id);
+    expect((await service.listOpenByEmployer(A)).map((p) => p.title)).toEqual(['A mới', 'A cũ']);
+  });
+});

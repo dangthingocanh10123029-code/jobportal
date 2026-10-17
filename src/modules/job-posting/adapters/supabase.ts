@@ -143,7 +143,7 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
   }
 
   async listOpen(
-    { q, location, employmentType, minSalary, industry, level, maxExperience, skill, sort = 'newest' }: SearchCriteria,
+    { q, location, employmentType, minSalary, industry, level, maxExperience, skill, employerId, sort = 'newest' }: SearchCriteria,
     { offset, limit }: { offset: number; limit: number },
   ) {
     const matching = (options: { count: 'exact'; head?: boolean }) => {
@@ -156,6 +156,7 @@ export class SupabaseJobPostingRepository implements IJobPostingRepository {
       if (industry !== undefined) query = query.eq('industry', industry);
       if (level !== undefined) query = query.eq('level', level);
       if (maxExperience !== undefined) query = query.lte('experience_years', maxExperience);
+      if (employerId !== undefined) query = query.eq('employer_id', employerId);
       if (skill !== undefined) query = query.filter('search_skills', 'cs', arrayOf(foldAccents(skill)));
       return query;
     };
