@@ -2,7 +2,7 @@
 
 import { cache } from 'react';
 import { apiFetch } from '@/lib/api';
-import { fail, toAction } from './_shared';
+import { fail, readOr, toAction } from './_shared';
 import { firstError } from './auth-schema';
 import { postingIdSchema, postingInputSchema, searchFilterSchema } from './postings-schema';
 import type {
@@ -41,15 +41,13 @@ export async function closePostingAction(input: { id: string }): Promise<ActionR
 }
 
 export async function listMyPostings(): Promise<JobPosting[]> {
-  const res = await apiFetch<JobPosting[]>('/me/postings');
-  return res.ok ? res.data : [];
+  return readOr(await apiFetch<JobPosting[]>('/me/postings'), []);
 }
 
 export async function getMyPosting(id: string): Promise<JobPosting | null> {
   const parsed = postingIdSchema.safeParse(id);
   if (!parsed.success) return null;
-  const res = await apiFetch<JobPosting>(`/me/postings/${parsed.data}`);
-  return res.ok ? res.data : null;
+  return readOr(await apiFetch<JobPosting>(`/me/postings/${parsed.data}`), null);
 }
 
 // SearchFilter field → query parameter of GET /postings (docs/api-contract.md v3).
@@ -93,6 +91,5 @@ export const getPostingDetail = cache(async (id: string): Promise<PostingDetail 
 export async function getRelatedPostings(postingId: string): Promise<PostingSummary[]> {
   const parsed = postingIdSchema.safeParse(postingId);
   if (!parsed.success) return [];
-  const res = await apiFetch<PostingSummary[]>(`/postings/${parsed.data}/related`);
-  return res.ok ? res.data : [];
+  return readOr(await apiFetch<PostingSummary[]>(`/postings/${parsed.data}/related`), []);
 }

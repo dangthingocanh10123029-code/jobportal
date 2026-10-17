@@ -1,6 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { getApplicantProfile, toggleSavedPostingAction, updateCandidateProfileAction } from './candidates';
+import { describe, expect, it, vi } from 'vitest';
+import { apiFetch } from '@/lib/api';
+import { getApplicantProfile, listSavedPostings, toggleSavedPostingAction, updateCandidateProfileAction } from './candidates';
 import { candidateProfileInputSchema } from './candidates-schema';
+
+vi.mock('@/lib/api', () => ({ apiFetch: vi.fn() }));
 
 // Invalid input is rejected before any API call, so no env/session is needed here.
 describe('updateCandidateProfileAction — input sai', () => {
@@ -31,5 +34,14 @@ describe('toggleSavedPostingAction / getApplicantProfile — mã sai', () => {
   it('postingId không phải uuid → lỗi; applicationId sai → null', async () => {
     expect(await toggleSavedPostingAction({ postingId: 'abc' })).toEqual({ success: false, error: 'Mã tin không hợp lệ' });
     expect(await getApplicantProfile('abc')).toBeNull();
+  });
+});
+
+describe('listSavedPostings — đọc không nuốt lỗi máy chủ', () => {
+  it('401/403 → [], 5xx → ném (Next hiện trang lỗi thay vì "0 tin")', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: false, status: 403, error: 'Không có quyền' });
+    expect(await listSavedPostings()).toEqual([]);
+    vi.mocked(apiFetch).mockResolvedValue({ ok: false, status: 500, error: 'Lỗi máy chủ (500)' });
+    await expect(listSavedPostings()).rejects.toThrow('Lỗi máy chủ (500)');
   });
 });

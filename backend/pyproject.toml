@@ -17,3 +17,6 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.17.1",
 ]
+
+[tool.pytest.ini_options]
+markers = ["integration: reads the real Postgres in a rolled-back transaction; needs RUN_INTEGRATION=1 and DATABASE_URL"]

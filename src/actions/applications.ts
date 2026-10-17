@@ -1,7 +1,7 @@
 'use server';
 
 import { apiFetch } from '@/lib/api';
-import { fail, toAction } from './_shared';
+import { fail, readOr, toAction } from './_shared';
 import {
   applicationIdSchema,
   changeApplicationStatusSchema,
@@ -35,14 +35,12 @@ export async function submitApplicationAction(formData: FormData): Promise<Actio
 export async function getMyApplicationForPosting(postingId: string): Promise<Application | null> {
   const parsed = postingIdSchema.safeParse(postingId);
   if (!parsed.success) return null;
-  const res = await apiFetch<Application | null>(`/postings/${parsed.data}/my-application`);
-  return res.ok ? res.data : null;
+  return readOr(await apiFetch<Application | null>(`/postings/${parsed.data}/my-application`), null);
 }
 
 /** The signed-in Candidate's Applications, newest first; empty when not a Candidate. */
 export async function listMyApplications(): Promise<CandidateApplicationSummary[]> {
-  const res = await apiFetch<CandidateApplicationSummary[]>('/me/applications');
-  return res.ok ? res.data : [];
+  return readOr(await apiFetch<CandidateApplicationSummary[]>('/me/applications'), []);
 }
 
 /** One of the signed-in Candidate's Applications with its Status Change history; null when not theirs. */
@@ -51,8 +49,7 @@ export async function getMyApplication(
 ): Promise<(CandidateApplicationSummary & { history: StatusChange[] }) | null> {
   const parsed = applicationIdSchema.safeParse(id);
   if (!parsed.success) return null;
-  const res = await apiFetch<CandidateApplicationSummary & { history: StatusChange[] }>(`/me/applications/${parsed.data}`);
-  return res.ok ? res.data : null;
+  return readOr(await apiFetch<CandidateApplicationSummary & { history: StatusChange[] }>(`/me/applications/${parsed.data}`), null);
 }
 
 /** Candidate withdraws their own Application unless it is already HIRED, REJECTED or WITHDRAWN. */
@@ -66,8 +63,7 @@ export async function withdrawApplicationAction(input: { applicationId: string }
 export async function listApplicationsForPosting(postingId: string): Promise<EmployerApplicationSummary[] | null> {
   const parsed = postingIdSchema.safeParse(postingId);
   if (!parsed.success) return null;
-  const res = await apiFetch<EmployerApplicationSummary[]>(`/me/postings/${parsed.data}/applications`);
-  return res.ok ? res.data : null;
+  return readOr(await apiFetch<EmployerApplicationSummary[]>(`/me/postings/${parsed.data}/applications`), null);
 }
 
 /** Employer moves an Application on their posting to a status allowedNextStatuses(status, 'EMPLOYER') lists. */

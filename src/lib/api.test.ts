@@ -70,6 +70,16 @@ describe('apiFetch', () => {
     expect(await apiFetch('/x')).toEqual({ ok: false, status: 500, error: 'Lỗi máy chủ (500)' });
   });
 
+  it('5xx → console.error(method, path, status); 4xx không log', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+    fetchMock.mockResolvedValue(json({ error: 'Không tìm thấy' }, 404));
+    await apiFetch('/me/x');
+    fetchMock.mockResolvedValue(new Response('oops', { status: 502 }));
+    await apiFetch('/me/saved-postings', { method: 'POST' });
+    expect(log.mock.calls).toEqual([['[api]', 'POST', '/me/saved-postings', 502]]);
+    log.mockRestore();
+  });
+
   it('lỗi mạng ném ra; thiếu API_URL ném ra', async () => {
     fetchMock.mockRejectedValue(new TypeError('fetch failed'));
     await expect(apiFetch('/health')).rejects.toThrow('fetch failed');

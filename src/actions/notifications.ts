@@ -1,21 +1,19 @@
 'use server';
 
 import { apiFetch } from '@/lib/api';
-import { fail } from './_shared';
+import { fail, readOr } from './_shared';
 import { firstError } from './auth-schema';
 import { markNotificationsReadSchema } from './notifications-schema';
 import type { ActionResult, AppNotification } from './types';
 
 /** 30 newest; [] when signed out. */
 export async function listMyNotifications(): Promise<AppNotification[]> {
-  const res = await apiFetch<AppNotification[]>('/me/notifications');
-  return res.ok ? res.data : [];
+  return readOr(await apiFetch<AppNotification[]>('/me/notifications'), []);
 }
 
 /** 0 when signed out. */
 export async function getUnreadNotificationCount(): Promise<number> {
-  const res = await apiFetch<number>('/me/notifications/unread-count');
-  return res.ok ? res.data : 0;
+  return readOr(await apiFetch<number>('/me/notifications/unread-count'), 0);
 }
 
 /** Empty or missing ids = mark every notification read. */
