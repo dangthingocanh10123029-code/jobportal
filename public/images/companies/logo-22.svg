@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#F0FDF4"/>
+  <!-- Hexagon cluster -->
+  <polygon points="64,28 88,42 88,70 64,84 40,70 40,42" stroke="#059669" stroke-width="7" stroke-linejoin="round"/>
+  <polygon points="64,44 76,51 76,65 64,72 52,65 52,51" fill="#10B981"/>
+  <circle cx="64" cy="58" r="4" fill="#F0FDF4"/>
+  <circle cx="64" cy="28" r="5" fill="#34D399"/>
+  <circle cx="88" cy="70" r="5" fill="#34D399"/>
+  <circle cx="40" cy="70" r="5" fill="#34D399"/>
+</svg>

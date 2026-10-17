@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#F0FDF4"/>
+  <!-- Pinwheel of 4 modern organic petals -->
+  <g transform="translate(64, 64)">
+    <path d="M 0 0 C 0 -18 12 -34 26 -34 C 26 -20 18 -8 0 0 Z" fill="#059669"/>
+    <path d="M 0 0 C 18 0 34 12 34 26 C 20 26 8 18 0 0 Z" fill="#10B981"/>
+    <path d="M 0 0 C 0 18 -12 34 -26 34 C -26 20 -18 8 0 0 Z" fill="#34D399"/>
+    <path d="M 0 0 C -18 0 -34 -12 -34 -26 C -20 -26 -8 -18 0 0 Z" fill="#047857"/>
+    <circle cx="0" cy="0" r="6" fill="#F8FAFC"/>
+  </g>
+</svg>

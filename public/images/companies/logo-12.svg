@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#FEF3C7"/>
+  <!-- 3 ascending chevron curves -->
+  <path d="M 32 44 L 64 30 L 96 44" stroke="#EA580C" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 32 64 L 64 50 L 96 64" stroke="#F59E0B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 32 84 L 64 70 L 96 84" stroke="#FBBF24" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

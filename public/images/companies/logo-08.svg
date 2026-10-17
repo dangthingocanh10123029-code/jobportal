@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#F5F3FF"/>
+  <!-- Layered geometric triangles -->
+  <polygon points="64,30 96,92 32,92" fill="#7C3AED" opacity="0.9"/>
+  <polygon points="46,50 82,92 32,92" fill="#5B21B6"/>
+  <polygon points="64,30 96,92 76,92" fill="#A78BFA"/>
+  <circle cx="88" cy="42" r="7" fill="#F59E0B"/>
+</svg>

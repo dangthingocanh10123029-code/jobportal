@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#FFF7ED"/>
+  <!-- 3 vertical rounded pillars -->
+  <rect x="34" y="52" width="16" height="42" rx="8" fill="#D97706"/>
+  <rect x="56" y="38" width="16" height="56" rx="8" fill="#EA580C"/>
+  <rect x="78" y="52" width="16" height="42" rx="8" fill="#F59E0B"/>
+  <!-- Zenith diamond star on top -->
+  <polygon points="64,20 68,28 76,32 68,36 64,44 60,36 52,32 60,28" fill="#FBBF24"/>
+</svg>
