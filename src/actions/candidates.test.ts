@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { getApplicantProfile, toggleSavedPostingAction, updateCandidateProfileAction } from './candidates';
 import { candidateProfileInputSchema } from './candidates-schema';
 
-// Invalid input is rejected before any Supabase call, so no env/session is needed here.
+// Invalid input is rejected before any API call, so no env/session is needed here.
 describe('updateCandidateProfileAction — input sai', () => {
   it.each([
     ['tiêu đề > 150 ký tự', { headline: 'x'.repeat(151) }, 'Tiêu đề hồ sơ tối đa 150 ký tự'],
@@ -18,10 +18,10 @@ describe('updateCandidateProfileAction — input sai', () => {
 });
 
 describe('candidateProfileInputSchema', () => {
-  it('chuỗi rỗng = xóa (null), trường bỏ trống giữ nguyên, cắt khoảng trắng', () => {
+  it('chuỗi rỗng (= xóa) giữ nguyên, trường bỏ trống giữ nguyên, cắt khoảng trắng', () => {
     expect(candidateProfileInputSchema.parse({ headline: ' Dev ', experience: '  ', skills: [' React '] })).toEqual({
       headline: 'Dev',
-      experience: null,
+      experience: '',
       skills: ['React'],
     });
   });

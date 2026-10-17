@@ -1,51 +1,22 @@
 'use server';
 
-import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { CompanyService, type CompanyId } from '@/modules/company';
-import { SupabaseCompanyRepository } from '@/modules/company/adapters/supabase';
-import { JobPostingService } from '@/modules/job-posting';
-import { SupabaseJobPostingRepository } from '@/modules/job-posting/adapters/supabase';
-import { fail, requireEmployer } from './_shared';
+import { apiFetch } from '@/lib/api';
+import { fail, toAction } from './_shared';
 import { firstError } from './auth-schema';
 import { companyFilterSchema, companyIdSchema, companyInputSchema, companyLogoSchema } from './companies-schema';
 import type { ActionResult, CompaniesPage, Company, CompanyInput, PostingSummary } from './types';
 
-const LOGO_BUCKET = 'company-logos';
-
-/** Service for the signed-in Employer's own Company, or null for anyone else. */
-async function employerContext() {
-  const ctx = await requireEmployer();
-  return ctx && {
-    supabase: ctx.supabase,
-    service: new CompanyService(new SupabaseCompanyRepository(ctx.supabase)),
-    companyId: ctx.employerId,
-  };
-}
-
-async function publicService() {
-  return new CompanyService(new SupabaseCompanyRepository(await createSupabaseServerClient()));
-}
-
 /** The signed-in Employer's Company; null for anyone else. */
 export async function getMyCompany(): Promise<Company | null> {
-  const ctx = await employerContext();
-  return ctx ? ctx.service.get(ctx.companyId) : null;
+  const res = await apiFetch<Company>('/me/company');
+  return res.ok ? res.data : null;
 }
 
 /** Omitted fields stay; an empty string clears about/address/website. The name is mirrored to profiles.company_name. */
 export async function updateMyCompanyAction(input: CompanyInput): Promise<ActionResult<Company>> {
   const parsed = companyInputSchema.safeParse(input);
   if (!parsed.success) return fail(firstError(parsed.error));
-
-  const ctx = await employerContext();
-  if (!ctx) return fail('Chỉ nhà tuyển dụng đã đăng nhập mới sửa được hồ sơ công ty');
-  try {
-    const company = await ctx.service.update(ctx.companyId, parsed.data);
-    return company ? { success: true, data: company } : fail('Không tìm thấy hồ sơ công ty');
-  } catch (error) {
-    console.error(error);
-    return fail('Có lỗi xảy ra, vui lòng thử lại');
-  }
+  return toAction(await apiFetch<Company>('/me/company', { method: 'PATCH', body: parsed.data }));
 }
 
 /** FormData field 'logo': PNG/JPEG/WebP ≤ 1 MB. Replaces the current logo. */
@@ -53,53 +24,25 @@ export async function uploadCompanyLogoAction(formData: FormData): Promise<Actio
   if (!(formData instanceof FormData)) return fail('Dữ liệu không hợp lệ');
   const parsed = await companyLogoSchema.safeParseAsync(formData.get('logo') ?? undefined);
   if (!parsed.success) return fail(firstError(parsed.error));
-
-  const ctx = await employerContext();
-  if (!ctx) return fail('Chỉ nhà tuyển dụng đã đăng nhập mới tải được logo');
-  const { supabase, service, companyId } = ctx;
-
-  // The folder must be the Employer's id (Storage policy, companies.logo_url CHECK). A fresh name per upload
-  // means the public URL changes, so no CDN cache serves the old logo.
-  const { file, ext } = parsed.data;
-  const path = `${companyId}/${crypto.randomUUID()}.${ext}`;
-  const logos = supabase.storage.from(LOGO_BUCKET);
-  const upload = await logos.upload(path, file, { contentType: file.type });
-  if (upload.error) {
-    console.error(upload.error);
-    return fail('Không tải được logo lên, vui lòng thử lại');
-  }
-
-  try {
-    const previous = (await service.get(companyId))?.logoUrl ?? null;
-    const company = await service.update(companyId, { logoUrl: logos.getPublicUrl(path).data.publicUrl });
-    if (!company) {
-      await logos.remove([path]);
-      return fail('Không tìm thấy hồ sơ công ty');
-    }
-    // Old logo is no longer referenced. Best effort.
-    const previousPath = previous?.split(`/${LOGO_BUCKET}/`)[1];
-    if (previousPath) await logos.remove([decodeURIComponent(previousPath)]);
-    return { success: true, data: company };
-  } catch (error) {
-    await logos.remove([path]);
-    console.error(error);
-    return fail('Có lỗi xảy ra, vui lòng thử lại');
-  }
+  return toAction(await apiFetch<Company>('/me/company/logo', { method: 'POST', formData }));
 }
 
 /** Anyone. Name search is accent- and case-insensitive; malformed fields are ignored. */
 export async function listCompanies(filter: { q?: string; page?: number }): Promise<CompaniesPage> {
   const parsed = companyFilterSchema.safeParse(filter);
-  return (await publicService()).list(parsed.success ? parsed.data : {});
+  const { q, page } = parsed.success ? parsed.data : { q: undefined, page: 1 };
+  const query = new URLSearchParams({ page: String(page), ...(q && { q }) });
+  const res = await apiFetch<CompaniesPage>(`/companies?${query}`);
+  if (!res.ok) throw new Error(`Không đọc được danh sách công ty: ${res.error}`);
+  return res.data;
 }
 
 /** Anyone. Company with its open postings (newest first); null for unknown ids. */
 export async function getCompany(id: string): Promise<(Company & { openPostings: PostingSummary[] }) | null> {
   const parsed = companyIdSchema.safeParse(id);
   if (!parsed.success) return null;
-  const companyId = parsed.data as CompanyId;
-  const company = await (await publicService()).get(companyId);
-  if (!company) return null;
-  const postings = new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient()));
-  return { ...company, openPostings: await postings.listOpenByEmployer(companyId) };
+  const res = await apiFetch<Company & { openPostings: PostingSummary[] }>(`/companies/${parsed.data}`);
+  if (res.ok) return res.data;
+  if (res.status === 404) return null;
+  throw new Error(`Không đọc được công ty: ${res.error}`);
 }

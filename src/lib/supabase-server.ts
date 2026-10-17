@@ -31,9 +31,9 @@ type ProfileRow = {
   company_name: string | null;
 };
 
-export const PROFILE_COLUMNS = 'id, role, full_name, phone, company_name';
+const PROFILE_COLUMNS = 'id, role, full_name, phone, company_name';
 
-export function toProfile(row: ProfileRow): Profile {
+function toProfile(row: ProfileRow): Profile {
   return {
     userId: row.id,
     role: row.role,

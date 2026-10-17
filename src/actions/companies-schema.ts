@@ -8,13 +8,12 @@ export const MAX_LOGO_BYTES = 1024 * 1024;
 
 const SIZES = ['S1_10', 'S11_50', 'S51_200', 'S201_500', 'S500_PLUS'] as const satisfies readonly CompanySize[];
 
-// Contract: an empty string clears the field.
+// Contract: an empty string clears the field (FastAPI stores null; it rejects null itself).
 const clearable = (label: string, max: number) =>
   z
     .string({ invalid_type_error: `${label} không hợp lệ` })
     .trim()
-    .max(max, `${label} tối đa ${max} ký tự`)
-    .transform((s) => s || null);
+    .max(max, `${label} tối đa ${max} ký tự`);
 
 const isHttpUrl = (s: string) => {
   if (!/^https?:\/\/[^\s/]/i.test(s)) return false;
@@ -36,7 +35,7 @@ export const companyInputSchema = z.object({
   size: z.enum(SIZES, { errorMap: () => ({ message: 'Quy mô công ty không hợp lệ' }) }).nullable().optional(),
   address: clearable('Địa chỉ', 300).optional(),
   website: clearable('Website', 300)
-    .refine((s) => s === null || isHttpUrl(s), 'Website phải bắt đầu bằng http:// hoặc https://')
+    .refine((s) => s === '' || isHttpUrl(s), 'Website phải bắt đầu bằng http:// hoặc https://')
     .optional(),
 });
 

@@ -1,7 +1,8 @@
 import { fromPartial } from '@total-typescript/shoehorn';
 import { describe, expect, it, vi } from 'vitest';
+import { apiFetch } from '@/lib/api';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { resendSignupOtpAction, signInAction, signUpAction, updateProfileAction, verifySignupOtpAction } from './auth';
+import { getCurrentProfile, resendSignupOtpAction, signInAction, signUpAction, updateProfileAction, verifySignupOtpAction } from './auth';
 import { signUpSchema, updateProfileSchema } from './auth-schema';
 
 // Invalid input is rejected before any Supabase call, so no env/session is needed here.
@@ -62,7 +63,7 @@ describe('schema — input hợp lệ', () => {
   });
 
   it('SĐT rỗng nghĩa là xoá số', () => {
-    expect(updateProfileSchema.parse({ phone: '' })).toEqual({ phone: null });
+    expect(updateProfileSchema.parse({ phone: '' })).toEqual({ phone: '' });
     expect(updateProfileSchema.parse({ phone: '0912 345 678' })).toEqual({ phone: '0912 345 678' });
   });
 });
@@ -71,6 +72,8 @@ vi.mock('@/lib/supabase-server', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/supabase-server')>()),
   createSupabaseServerClient: vi.fn(),
 }));
+
+vi.mock('@/lib/api', () => ({ apiFetch: vi.fn() }));
 
 vi.mock('next/headers', () => ({ headers: async () => new Headers({ origin: 'https://jobs.example' }) }));
 
@@ -171,5 +174,26 @@ describe('OTP — gọi Supabase', () => {
       email: 'a@example.com',
       options: { emailRedirectTo: 'https://jobs.example/auth/callback' },
     });
+  });
+});
+
+describe('getCurrentProfile', () => {
+  const withSession = (session: unknown) =>
+    vi.mocked(createSupabaseServerClient).mockResolvedValue(fromPartial({ auth: { getSession: async () => ({ data: { session } }) } }));
+
+  it('chưa đăng nhập → null, không gọi API', async () => {
+    withSession(null);
+    expect(await getCurrentProfile()).toBeNull();
+    expect(apiFetch).not.toHaveBeenCalled();
+  });
+
+  it('có session → profile từ GET /me/profile; 401/404 → null', async () => {
+    withSession({ access_token: 't' });
+    const profile = { userId: 'u1', role: 'CANDIDATE', fullName: 'An', phone: null, companyName: null };
+    vi.mocked(apiFetch).mockResolvedValueOnce({ ok: true, data: profile });
+    expect(await getCurrentProfile()).toEqual(profile);
+    expect(apiFetch).toHaveBeenCalledWith('/me/profile');
+    vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false, status: 401, error: 'x' });
+    expect(await getCurrentProfile()).toBeNull();
   });
 });
