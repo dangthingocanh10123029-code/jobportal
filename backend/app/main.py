@@ -12,6 +12,7 @@ from app.modules.companies.router import router as companies_router
 from app.modules.dashboard.router import router as dashboard_router
 from app.modules.health.router import router as health_router
 from app.modules.notifications.router import router as notifications_router
+from app.modules.postings.router import router as postings_router
 from app.modules.profiles.router import router as profiles_router
 
 
@@ -31,6 +32,7 @@ app.add_middleware(
 )
 install_error_handlers(app)
 app.include_router(health_router)
+app.include_router(postings_router)
 app.include_router(companies_router)
 app.include_router(candidates_router)
 app.include_router(notifications_router)
