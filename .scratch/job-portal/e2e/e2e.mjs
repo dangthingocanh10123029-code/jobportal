@@ -13,6 +13,9 @@ const TITLE = `Kế toán tổng hợp E2E ${Date.now() % 100000}`;
 const pdf = `${DIR}cv-e2e.pdf`;
 writeFileSync(pdf, '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[]/Count 0>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n');
 const notPdf = `${DIR}cv-e2e.txt`;
+const logoPng = `${DIR}logo-e2e.png`;
+writeFileSync(logoPng, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
+const noOverflow = async (page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
 writeFileSync(notPdf, 'not a pdf');
 
 const results = [];
@@ -69,6 +72,36 @@ await check('Đăng nhập sai mật khẩu báo lỗi', guest, async () => {
 await check('Nhà tuyển dụng đăng nhập', emp, () => login(emp, EMPLOYER));
 await check('Header hiện "Tin tuyển dụng" cho Nhà tuyển dụng', emp, async () => {
   await emp.getByRole('link', { name: 'Tin tuyển dụng' }).first().waitFor();
+});
+await check('Hồ sơ công ty: website javascript: bị chặn', emp, async () => {
+  await emp.goto(`${BASE}/employer/company`);
+  await emp.fill('#company-about', 'Công ty E2E chuyên dịch vụ kế toán cho doanh nghiệp vừa và nhỏ.');
+  await emp.selectOption('#company-size', { index: 2 });
+  await emp.fill('#company-address', '12 Bạch Đằng, Hải Châu, Đà Nẵng');
+  await emp.fill('#company-website', 'javascript:alert(1)');
+  await emp.getByRole('button', { name: 'Lưu hồ sơ' }).click();
+  await emp.getByText('Website phải bắt đầu bằng http:// hoặc https://').waitFor();
+  if (await emp.getByText('Đã lưu hồ sơ công ty.').count()) throw new Error('lưu được website javascript:');
+});
+await check('Hồ sơ công ty: lưu hợp lệ', emp, async () => {
+  await emp.fill('#company-website', 'https://e2e.example');
+  await emp.getByRole('button', { name: 'Lưu hồ sơ' }).click();
+  await emp.getByText('Đã lưu hồ sơ công ty.').waitFor();
+});
+await check('Logo: file không phải ảnh bị chặn ở form', emp, async () => {
+  await emp.setInputFiles('#company-logo', notPdf);
+  await emp.getByText('Logo phải là ảnh PNG, JPEG hoặc WebP.').waitFor();
+});
+await check('Logo: upload PNG → trang công ty công khai hiện logo + giới thiệu', emp, async () => {
+  await emp.setInputFiles('#company-logo', logoPng);
+  await emp.getByRole('button', { name: 'Tải logo lên' }).click();
+  await emp.getByText('Đã cập nhật logo công ty.').waitFor();
+  await guest.goto(`${BASE}/companies/e2e00000-0000-4000-8000-0000000000e1`);
+  await guest.getByText('Công ty E2E chuyên dịch vụ kế toán').waitFor();
+  const src = await guest.locator('img[src*="company-logos"]').first().getAttribute('src');
+  if (!src) throw new Error('không thấy logo từ bucket company-logos');
+  const res = await guest.request.get(src.startsWith('http') ? src : `${BASE}${src}`);
+  if (res.status() !== 200) throw new Error(`logo HTTP ${res.status()}`);
 });
 await check('Tạo tin: lương min > max bị chặn ở form', emp, async () => {
   await emp.goto(`${BASE}/employer/postings/new`);
@@ -162,6 +195,17 @@ await check('Ứng viên vào /employer/postings bị chuyển về /', cand, as
   await cand.goto(`${BASE}/employer/postings`);
   await cand.waitForURL(`${BASE}/`);
 });
+await check('/account: SĐT sai bị chặn, SĐT đúng lưu được và còn sau khi tải lại', cand, async () => {
+  await cand.goto(`${BASE}/account`);
+  await cand.fill('input[name=phone]', 'abc');
+  await cand.getByRole('button', { name: 'Lưu thay đổi' }).click();
+  await cand.getByRole('alert').first().waitFor();
+  await cand.fill('input[name=phone]', '0901 234 567');
+  await cand.getByRole('button', { name: 'Lưu thay đổi' }).click();
+  await cand.getByRole('status').first().waitFor();
+  await cand.reload();
+  if ((await cand.inputValue('input[name=phone]')) !== '0901 234 567') throw new Error('SĐT chưa lưu');
+});
 await check('Ứng viên cập nhật hồ sơ (headline)', cand, async () => {
   await cand.goto(`${BASE}/candidate/profile`);
   await cand.fill('input[name=headline]', 'Kế toán viên E2E 3 năm kinh nghiệm');
@@ -232,6 +276,15 @@ await check('Employer: chuông có thông báo đơn mới, dashboard đếm đ�
   await emp.goto(`${BASE}/employer/dashboard`);
   await emp.getByRole('link', { name: TITLE }).first().waitFor();
 });
+await check('Thông báo: chuông có số chưa đọc → "Đánh dấu tất cả đã đọc" → 0', emp, async () => {
+  const bell = emp.getByRole('link', { name: /^Thông báo, \d+ chưa đọc$/ });
+  const before = Number((await bell.getAttribute('aria-label')).match(/(\d+)/)[1]);
+  if (before < 1) throw new Error('chuông không có thông báo chưa đọc');
+  await emp.goto(`${BASE}/notifications`);
+  await emp.getByRole('button', { name: 'Đánh dấu tất cả đã đọc' }).click();
+  await emp.getByRole('link', { name: 'Thông báo, 0 chưa đọc' }).waitFor();
+  if (await emp.locator('.notification-unread').count()) throw new Error('vẫn còn thông báo chưa đọc');
+});
 // ---------- Candidate sees history + withdraws ----------
 await check('Ứng viên có thông báo đổi trạng thái', cand, async () => {
   await cand.goto(`${BASE}/notifications`);
@@ -263,6 +316,50 @@ await check('Đóng tin → trang chi tiết báo "không còn nhận hồ sơ"'
   await card.getByText('Đã đóng').waitFor();
   await guest.goto(jobUrl);
   await guest.getByText('Tin tuyển dụng này không còn nhận hồ sơ').waitFor();
+});
+
+// ---------- Pagination (dữ liệu demo > 20 tin / công ty) ----------
+await check('Phân trang trang chủ: Trang sau → page=2, giữ bộ lọc ngành', guest, async () => {
+  await guest.goto(`${BASE}/?industry=IT_SOFTWARE`);
+  const first = await guest.locator('[aria-label="Danh sách việc làm đang mở"] h3').first().innerText();
+  await guest.getByRole('link', { name: 'Trang sau →' }).click();
+  await guest.waitForURL(/page=2/);
+  if (!guest.url().includes('industry=IT_SOFTWARE')) throw new Error('mất bộ lọc khi chuyển trang');
+  const second = await guest.locator('[aria-label="Danh sách việc làm đang mở"] h3').first().innerText();
+  if (first === second) throw new Error('trang 2 trùng trang 1');
+  await guest.getByRole('link', { name: '← Trang trước' }).waitFor();
+});
+await check('Phân trang /companies: Trang sau → page=2', guest, async () => {
+  await guest.goto(`${BASE}/companies`);
+  await guest.getByRole('link', { name: 'Trang sau →' }).click();
+  await guest.waitForURL(/page=2/);
+  await guest.locator('[aria-label="Danh sách công ty"] a').first().waitFor();
+});
+
+// ---------- Mobile 360px ----------
+await check('Điện thoại 360px: trang chủ, tin, công ty, đăng nhập không tràn ngang', guest, async () => {
+  const mobile = await browser.newPage({ viewport: { width: 360, height: 740 } });
+  mobile.setDefaultTimeout(45000); mobile.setDefaultNavigationTimeout(60000);
+  try {
+    for (const path of ['/', jobUrl.replace(BASE, ''), '/companies', '/login', '/signup']) {
+      await mobile.goto(`${BASE}${path}`);
+      if (!(await noOverflow(mobile))) throw new Error(`tràn ngang ở ${path}`);
+    }
+    await mobile.getByRole('link', { name: 'Job Portal, trang chủ' }).waitFor();
+  } finally {
+    await mobile.close();
+  }
+});
+await check('Điện thoại 360px: trang Ứng viên đã đăng nhập không tràn ngang', cand, async () => {
+  await cand.setViewportSize({ width: 360, height: 740 });
+  try {
+    for (const path of ['/candidate/applications', '/candidate/saved', '/candidate/profile', '/notifications']) {
+      await cand.goto(`${BASE}${path}`);
+      if (!(await noOverflow(cand))) throw new Error(`tràn ngang ở ${path}`);
+    }
+  } finally {
+    await cand.setViewportSize({ width: 1280, height: 720 });
+  }
 });
 
 // ---------- Sign out ----------
