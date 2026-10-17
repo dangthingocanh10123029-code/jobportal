@@ -11,7 +11,7 @@ from app.config import get_settings
 from app.db import user_tx
 from app.errors import DomainError
 
-Role = Literal["CANDIDATE", "EMPLOYER"]
+Role = Literal["CANDIDATE", "EMPLOYER", "ADMIN"]
 
 
 @dataclass(frozen=True)
@@ -38,30 +38,38 @@ def verify_token(token: str, jwks: jwt.PyJWKClient) -> dict[str, Any]:
         raise DomainError(401, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn") from exc
 
 
-def fetch_role(claims: dict[str, Any]) -> Role | None:
+def fetch_account(claims: dict[str, Any]) -> tuple[Role, str | None] | None:
+    """(role, locked_reason) of the caller's profile; locked_reason is None unless an Admin locked the account."""
     with user_tx(claims) as conn:
-        row = conn.execute("select role from public.profiles where id = %s", (claims["sub"],)).fetchone()
-    return row[0] if row else None
+        row = conn.execute(
+            "select role, locked_reason from public.profiles where id = %s", (claims["sub"],)
+        ).fetchone()
+    return (row[0], row[1]) if row else None
 
 
-# A profile's role never changes (no column grant on profiles.role), so it is cached per user id.
-ROLE_TTL_SECONDS = 300
-ROLE_CACHE_MAX = 10_000
-_roles: dict[str, tuple[float, Role]] = {}
+# A role never changes (no column grant on profiles.role) but a lock may, so entries live briefly;
+# AdminService also drops the entry of the account it locks.
+ACCOUNT_TTL_SECONDS = 30
+ACCOUNT_CACHE_MAX = 10_000
+_accounts: dict[str, tuple[float, tuple[Role, str | None]]] = {}
 
 
-def cached_role(claims: dict[str, Any]) -> Role | None:
-    """fetch_role, remembered for ROLE_TTL_SECONDS. A missing profile is not cached (it may be created next)."""
+def cached_account(claims: dict[str, Any]) -> tuple[Role, str | None] | None:
+    """fetch_account, remembered for ACCOUNT_TTL_SECONDS. A missing profile is not cached (it may be created next)."""
     now = time.monotonic()
-    hit = _roles.get(claims["sub"])
+    hit = _accounts.get(claims["sub"])
     if hit and hit[0] > now:
         return hit[1]
-    role = fetch_role(claims)
-    if role is not None:
-        if len(_roles) >= ROLE_CACHE_MAX:
-            _roles.clear()  # ponytail: drop everything when full; switch to LRU if many active users thrash it
-        _roles[claims["sub"]] = (now + ROLE_TTL_SECONDS, role)
-    return role
+    account = fetch_account(claims)
+    if account is not None:
+        if len(_accounts) >= ACCOUNT_CACHE_MAX:
+            _accounts.clear()  # ponytail: drop everything when full; switch to LRU if many active users thrash it
+        _accounts[claims["sub"]] = (now + ACCOUNT_TTL_SECONDS, account)
+    return account
+
+
+def forget_account(user_id: str) -> None:
+    _accounts.pop(user_id, None)
 
 
 _bearer = HTTPBearer(auto_error=False)
@@ -74,9 +82,13 @@ def optional_user(
     if creds is None:
         return None
     claims = verify_token(creds.credentials, jwks)
-    role = cached_role(claims)
-    if role is None:
+    account = cached_account(claims)
+    if account is None:
         raise DomainError(401, "Tài khoản chưa có hồ sơ")
+    role, locked_reason = account
+    # Every API, public reads included: a locked account's still-valid token stops working (contract §32).
+    if locked_reason is not None:
+        raise DomainError(403, f"Tài khoản đã bị khóa: {locked_reason}")
     return Actor(user_id=claims["sub"], role=role, claims=claims, token=creds.credentials)
 
 
@@ -98,8 +110,15 @@ def require_candidate(actor: Annotated[Actor, Depends(current_user)]) -> Actor:
     return actor
 
 
+def require_admin(actor: Annotated[Actor, Depends(current_user)]) -> Actor:
+    if actor.role != "ADMIN":
+        raise DomainError(403, "Chỉ quản trị viên được thực hiện thao tác này")
+    return actor
+
+
 # Route parameter types, e.g. `def handler(actor: EmployerActor)`.
 OptionalUser = Annotated[Actor | None, Depends(optional_user)]
 CurrentUser = Annotated[Actor, Depends(current_user)]
 EmployerActor = Annotated[Actor, Depends(require_employer)]
 CandidateActor = Annotated[Actor, Depends(require_candidate)]
+AdminActor = Annotated[Actor, Depends(require_admin)]

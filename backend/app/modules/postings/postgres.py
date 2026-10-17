@@ -12,7 +12,7 @@ from app.modules.postings.schemas import PostingInput, SearchFilter, StoredPosti
 _COLUMNS = (
     "id, employer_id, company_name, title, description, location, employment_type, salary_min, salary_max, "
     "application_deadline, status, created_at, updated_at, industry, level, experience_years, headcount, skills, "
-    "requirements, benefits, company_logo_url"
+    "requirements, benefits, company_logo_url, company_verified, hidden_at, hidden_reason"
 )
 
 # Ties: newest first, then id, so pages stay stable. Mirrored by _SORT_KEYS in the InMemory adapter.

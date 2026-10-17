@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.db import close_pool
 from app.errors import install_error_handlers
+from app.modules.admin.router import router as admin_router
 from app.modules.applications.router import router as applications_router
 from app.modules.candidates.router import router as candidates_router
 from app.modules.companies.router import router as companies_router
@@ -40,3 +41,4 @@ app.include_router(candidates_router)
 app.include_router(notifications_router)
 app.include_router(dashboard_router)
 app.include_router(profiles_router)
+app.include_router(admin_router)

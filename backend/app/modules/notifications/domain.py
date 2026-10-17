@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 NotificationType = Literal[
-    "APPLICATION_RECEIVED", "APPLICATION_STATUS_CHANGED", "APPLICATION_WITHDRAWN"
+    "APPLICATION_RECEIVED", "APPLICATION_STATUS_CHANGED", "APPLICATION_WITHDRAWN", "POSTING_HIDDEN"
 ]
 
 

@@ -29,6 +29,7 @@ type ProfileRow = {
   full_name: string | null;
   phone: string | null;
   company_name: string | null;
+  locked_at?: string | null;
 };
 
 const PROFILE_COLUMNS = 'id, role, full_name, phone, company_name';
@@ -54,12 +55,18 @@ export async function fetchProfile(supabase: SupabaseClient, userId: string): Pr
   return data ? toProfile(data) : null;
 }
 
-/** Actor from the server session (getUser verifies the JWT with Supabase Auth); null when signed out. */
+/** Actor from the server session (getUser verifies the JWT with Supabase Auth); null when signed out.
+ *  `locked`: an Admin locked the account (its token may still be valid until it expires). */
 // cache(): layout and page share one lookup per request (keyed by the `supabase` argument).
-export const getCurrentActor = cache(async (supabase?: SupabaseClient): Promise<Actor | null> => {
+export const getCurrentActor = cache(async (supabase?: SupabaseClient): Promise<(Actor & { locked: boolean }) | null> => {
   const client = supabase ?? (await createSupabaseServerClient());
   const { data } = await client.auth.getUser();
   if (!data.user) return null;
-  const profile = await fetchProfile(client, data.user.id);
-  return profile ? { userId: profile.userId, role: profile.role } : null;
+  const { data: row, error } = await client
+    .from('profiles')
+    .select('role, locked_at')
+    .eq('id', data.user.id)
+    .maybeSingle<Pick<ProfileRow, 'role' | 'locked_at'>>();
+  if (error) throw new Error(`Không đọc được profile: ${error.message}`);
+  return row ? { userId: data.user.id, role: row.role, locked: row.locked_at != null } : null;
 });

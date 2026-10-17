@@ -154,9 +154,13 @@ class StoredPosting(PostingFields):
     employer_id: UUID
     company_name: str
     company_logo_url: str | None
+    company_verified: bool = False
     status: PostingStatus
     created_at: datetime
     updated_at: datetime
+    # Set by an Admin (contract §32); RLS shows a hidden posting only to its Employer and Admins.
+    hidden_at: datetime | None = None
+    hidden_reason: str | None = None
 
 
 class JobPosting(StoredPosting):
@@ -173,6 +177,7 @@ class PostingSummary(CamelModel):
     title: str
     company_name: str
     company_logo_url: str | None
+    company_verified: bool = False
     location: str
     employment_type: EmploymentType
     salary_min: int | None

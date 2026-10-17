@@ -2,7 +2,8 @@
 
 export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 
-export type Role = 'CANDIDATE' | 'EMPLOYER';
+/** ADMIN is granted only by supabase/seed/make-admin.sql; sign-up offers CANDIDATE or EMPLOYER. */
+export type Role = 'CANDIDATE' | 'EMPLOYER' | 'ADMIN';
 export type Actor = { userId: string; role: Role };
 export type PostingStatus = 'DRAFT' | 'PUBLISHED' | 'CLOSED';
 export type DisplayPostingStatus = PostingStatus | 'EXPIRED';
@@ -49,10 +50,15 @@ export type JobPosting = PostingInput & {
   employerId: string;
   companyName: string;
   companyLogoUrl: string | null;
+  /** Verified badge (✓) set by an Admin. */
+  companyVerified: boolean;
   status: PostingStatus;
   displayStatus: DisplayPostingStatus;
   createdAt: string;
   updatedAt: string;
+  /** Set when an Admin hid the posting (only its Employer and Admins see it then). */
+  hiddenAt: string | null;
+  hiddenReason: string | null;
 };
 
 export type SearchFilter = {
@@ -74,7 +80,7 @@ export type SearchFilter = {
 export type PostingSummary = Pick<
   JobPosting,
   | 'id' | 'title' | 'companyName' | 'location' | 'employmentType' | 'salaryMin' | 'salaryMax' | 'applicationDeadline' | 'createdAt'
-  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl' | 'employerId'
+  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl' | 'employerId' | 'companyVerified'
 >;
 
 /** isOpen = PUBLISHED and not past the deadline (ADR-0001). */
@@ -116,6 +122,7 @@ export type Company = {
   size: CompanySize | null;
   address: string | null;
   website: string | null;
+  companyVerified: boolean;
 };
 
 export type CompanySummary = Company & { openPostings: number };
@@ -144,7 +151,10 @@ export type CandidateProfileInput = { headline?: string; skills?: string[]; expe
 
 export type SavedPostingSummary = PostingSummary & { isOpen: boolean; savedAt: string };
 
-export type NotificationType = 'APPLICATION_RECEIVED' | 'APPLICATION_STATUS_CHANGED' | 'APPLICATION_WITHDRAWN';
+export type NotificationType =
+  | 'APPLICATION_RECEIVED' | 'APPLICATION_STATUS_CHANGED' | 'APPLICATION_WITHDRAWN'
+  /** To the Employer when an Admin hides their posting; the body carries the reason. */
+  | 'POSTING_HIDDEN';
 
 export type AppNotification = {
   id: string;
@@ -162,3 +172,54 @@ export type EmployerDashboard = {
   byStatus: Record<ApplicationStatus, number>;
   postings: { id: string; title: string; displayStatus: DisplayPostingStatus; views: number; applications: number }[];
 };
+
+export type AdminStats = {
+  users: { CANDIDATE: number; EMPLOYER: number; ADMIN: number; locked: number };
+  postings: { DRAFT: number; PUBLISHED: number; CLOSED: number; EXPIRED: number; hidden: number };
+  applications: Record<ApplicationStatus, number>;
+  /** Last 30 days (Asia/Ho_Chi_Minh), oldest first, always 30 entries; date = 'YYYY-MM-DD'. */
+  daily: { date: string; signups: number; applications: number; postings: number }[];
+  topCompanies: { id: string; name: string; openPostings: number; applications: number }[];
+  topIndustries: { industry: Industry; openPostings: number }[];
+};
+
+export type AdminUser = {
+  userId: string;
+  email: string;
+  role: Role;
+  /** fullName or companyName. */
+  displayName: string;
+  createdAt: string;
+  lastSignInAt: string | null;
+  lockedAt: string | null;
+  lockedReason: string | null;
+};
+
+export type AdminUserDetail = AdminUser & { phone: string | null; postings: number; applications: number };
+
+export type AdminPosting = PostingSummary & {
+  status: PostingStatus;
+  displayStatus: DisplayPostingStatus;
+  applications: number;
+  hiddenAt: string | null;
+  hiddenReason: string | null;
+};
+
+export type AdminCompany = CompanySummary & { verifiedAt: string | null; employerEmail: string };
+
+export type AuditAction =
+  | 'USER_LOCKED' | 'USER_UNLOCKED' | 'POSTING_HIDDEN' | 'POSTING_UNHIDDEN' | 'COMPANY_VERIFIED' | 'COMPANY_UNVERIFIED';
+
+export type AuditEntry = {
+  id: string;
+  actorId: string;
+  actorEmail: string;
+  action: AuditAction;
+  targetType: 'USER' | 'POSTING' | 'COMPANY';
+  targetId: string;
+  targetLabel: string;
+  details: Record<string, string>;
+  createdAt: string;
+};
+
+export type Page<T> = { items: T[]; total: number; page: number; pageSize: 20 };

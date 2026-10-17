@@ -12,6 +12,7 @@ from app.auth import (
     CurrentUser,
     OptionalUser,
     get_jwks_client,
+    require_admin,
     require_candidate,
     require_employer,
 )
@@ -39,13 +40,18 @@ def token(sub="u1", key=KEY, kid="k1", **overrides):
     return jwt.encode(claims, key, algorithm="ES256", headers={"kid": kid})
 
 
-ROLES = {"emp": "EMPLOYER", "cand": "CANDIDATE"}
+ACCOUNTS = {
+    "emp": ("EMPLOYER", None),
+    "cand": ("CANDIDATE", None),
+    "adm": ("ADMIN", None),
+    "locked": ("CANDIDATE", "Spam tin nhắn"),
+}
 
 
 @pytest.fixture
 def client(monkeypatch):
-    monkeypatch.setattr(auth, "fetch_role", lambda claims: ROLES.get(claims["sub"]))
-    monkeypatch.setattr(auth, "_roles", {})
+    monkeypatch.setattr(auth, "fetch_account", lambda claims: ACCOUNTS.get(claims["sub"]))
+    monkeypatch.setattr(auth, "_accounts", {})
     app = FastAPI()
     install_error_handlers(app)
     app.dependency_overrides[get_jwks_client] = FakeJwks
@@ -64,6 +70,10 @@ def client(monkeypatch):
 
     @app.get("/cand", dependencies=[Depends(require_candidate)])
     def cand():
+        return {}
+
+    @app.get("/adm", dependencies=[Depends(require_admin)])
+    def adm():
         return {}
 
     return TestClient(app)
@@ -118,17 +128,30 @@ def test_role_guards(client):
     res = client.get("/emp", headers=bearer(token("cand")))
     assert res.status_code == 403 and "error" in res.json()
     assert client.get("/cand", headers=bearer(token("emp"))).status_code == 403
+    assert client.get("/adm", headers=bearer(token("adm"))).status_code == 200
+    for other in ("emp", "cand"):
+        res = client.get("/adm", headers=bearer(token(other)))
+        assert res.status_code == 403 and res.json() == {"error": "Chỉ quản trị viên được thực hiện thao tác này"}
 
 
-def test_role_is_cached_per_user_but_missing_profile_is_not(monkeypatch):
+def test_locked_account_is_403_with_reason_everywhere(client):
+    for path in ("/me", "/maybe", "/cand"):
+        res = client.get(path, headers=bearer(token("locked")))
+        assert res.status_code == 403 and res.json() == {"error": "Tài khoản đã bị khóa: Spam tin nhắn"}
+
+
+def test_account_is_cached_briefly_and_forgotten_on_lock(monkeypatch):
     calls = []
-    roles = {"emp": "EMPLOYER"}
-    monkeypatch.setattr(auth, "fetch_role", lambda claims: calls.append(claims["sub"]) or roles.get(claims["sub"]))
-    monkeypatch.setattr(auth, "_roles", {})
-    assert [auth.cached_role({"sub": "emp"}) for _ in range(2)] == ["EMPLOYER", "EMPLOYER"]
-    assert [auth.cached_role({"sub": "new"}) for _ in range(2)] == [None, None]
+    accounts = {"emp": ("EMPLOYER", None)}
+    monkeypatch.setattr(auth, "fetch_account", lambda claims: calls.append(claims["sub"]) or accounts.get(claims["sub"]))
+    monkeypatch.setattr(auth, "_accounts", {})
+    assert [auth.cached_account({"sub": "emp"}) for _ in range(2)] == [("EMPLOYER", None)] * 2
+    assert [auth.cached_account({"sub": "new"}) for _ in range(2)] == [None, None]
     assert calls == ["emp", "new", "new"]
-    later = time.monotonic() + auth.ROLE_TTL_SECONDS + 1
+    accounts["emp"] = ("EMPLOYER", "Vi phạm")
+    auth.forget_account("emp")
+    assert auth.cached_account({"sub": "emp"}) == ("EMPLOYER", "Vi phạm")
+    later = time.monotonic() + auth.ACCOUNT_TTL_SECONDS + 1
     monkeypatch.setattr(auth.time, "monotonic", lambda: later)
-    auth.cached_role({"sub": "emp"})
-    assert calls[-1] == "emp"
+    auth.cached_account({"sub": "emp"})
+    assert calls[-1] == "emp" and len(calls) == 5

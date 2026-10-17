@@ -3,15 +3,15 @@ from typing import Any
 from app.db import user_tx
 from app.modules.companies.domain import Company, CompanySummary
 
-COLS = "id,name,logo_url,about,size,address,website"
+COLS = "id,name,logo_url,about,size,address,website,verified_at is not null"
 
 
 def company(row):
-    return Company(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+    return Company(*row[:8])
 
 
 def summary(row):
-    return CompanySummary(company(row[:7]), row[7])
+    return CompanySummary(company(row[:8]), row[8])
 
 
 def camel_posting(r):
@@ -31,6 +31,7 @@ def camel_posting(r):
         "level": r[12],
         "experienceYears": r[13],
         "skills": r[14],
+        "companyVerified": r[15],
     }
 
 
@@ -74,7 +75,7 @@ class PostgresCompanyRepository:
         with user_tx(self.claims) as conn:
             rows = conn.execute(
                 """select id,employer_id,title,company_name,company_logo_url,location,employment_type,salary_min,salary_max,
-                application_deadline,created_at,industry,level,experience_years,skills from public.open_job_postings
+                application_deadline,created_at,industry,level,experience_years,skills,company_verified from public.open_job_postings
                 where employer_id=%s order by created_at desc""",
                 (company_id,),
             ).fetchall()
