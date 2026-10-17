@@ -12,9 +12,8 @@ import {
   updateProfileSchema,
   verifySignupOtpSchema,
 } from './auth-schema';
+import { fail } from './_shared';
 import type { ActionResult, Profile, Role } from './types';
-
-const fail = (error: string) => ({ success: false, error }) as const;
 
 const AUTH_ERRORS: Record<string, string> = {
   user_already_exists: 'Email này đã được đăng ký',

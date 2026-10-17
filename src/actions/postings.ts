@@ -1,9 +1,10 @@
 'use server';
 
 import { cache } from 'react';
-import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
-import { JobPostingError, JobPostingService, type EmployerId, type JobPostingId } from '@/modules/job-posting';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { JobPostingError, JobPostingService, type JobPostingId } from '@/modules/job-posting';
 import { SupabaseJobPostingRepository } from '@/modules/job-posting/adapters/supabase';
+import { fail, requireEmployer } from './_shared';
 import { firstError } from './auth-schema';
 import { postingIdSchema, postingInputSchema, searchFilterSchema } from './postings-schema';
 import type {
@@ -16,17 +17,14 @@ import type {
   SearchFilter,
 } from './types';
 
-const fail = (error: string) => ({ success: false, error }) as const;
-
 /** Service for the signed-in Employer, or null for anyone else. */
 async function employerContext() {
-  const supabase = await createSupabaseServerClient();
-  const actor = await getCurrentActor(supabase);
-  if (actor?.role !== 'EMPLOYER') return null;
-  return {
-    service: new JobPostingService(new SupabaseJobPostingRepository(supabase)),
-    employerId: actor.userId as EmployerId,
-  };
+  const ctx = await requireEmployer();
+  return ctx && { service: new JobPostingService(new SupabaseJobPostingRepository(ctx.supabase)), employerId: ctx.employerId };
+}
+
+async function publicService() {
+  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient()));
 }
 
 async function run(
@@ -82,8 +80,8 @@ export async function getMyPosting(id: string): Promise<JobPosting | null> {
 
 /** Anyone, signed in or not. Malformed or blank filter fields are ignored; invalid page falls back to 1. */
 export async function listOpenPostings(filter: SearchFilter): Promise<OpenPostingsPage> {
-  const parsed = searchFilterSchema.parse(filter);
-  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).listOpen(parsed);
+  const parsed = searchFilterSchema.safeParse(filter);
+  return (await publicService()).listOpen(parsed.success ? parsed.data : {});
 }
 
 /** Anyone. DRAFT and unknown ids → null (page shows 404). Counts a view unless the viewer owns the posting. */
@@ -91,7 +89,7 @@ export async function listOpenPostings(filter: SearchFilter): Promise<OpenPostin
 export const getPostingDetail = cache(async (id: string): Promise<PostingDetail | null> => {
   const parsed = postingIdSchema.safeParse(id);
   if (!parsed.success) return null;
-  const service = new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient()));
+  const service = await publicService();
   const detail = await service.getPublic(parsed.data as JobPostingId);
   // A lost view count must not break the page.
   if (detail) await service.recordView(detail.id as JobPostingId).catch(console.error);
@@ -102,5 +100,5 @@ export const getPostingDetail = cache(async (id: string): Promise<PostingDetail 
 export async function getRelatedPostings(postingId: string): Promise<PostingSummary[]> {
   const parsed = postingIdSchema.safeParse(postingId);
   if (!parsed.success) return [];
-  return new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient())).listRelated(parsed.data as JobPostingId);
+  return (await publicService()).listRelated(parsed.data as JobPostingId);
 }

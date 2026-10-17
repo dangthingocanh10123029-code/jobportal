@@ -1,4 +1,4 @@
-import type { PostingSort } from '@/actions/types';
+import type { PostingSort } from '@/modules/shared/types';
 import { foldAccents, meetsMinSalary } from '../domain/search';
 import { isOpen } from '../domain/status';
 import type { Clock, EmployerId, IJobPostingRepository, JobPostingId, SearchCriteria, StoredJobPosting } from '../domain/types';

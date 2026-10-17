@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { CompanySize } from '@/actions/types';
+import type { CompanySize } from '@/modules/shared/types';
 import { foldAccents } from '@/modules/job-posting/domain/search';
 import type { Company, CompanyChanges, CompanyId, ICompanyRepository } from '../domain/types';
 

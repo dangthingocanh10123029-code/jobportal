@@ -1,27 +1,24 @@
 'use server';
 
-import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { CompanyService, type CompanyId } from '@/modules/company';
 import { SupabaseCompanyRepository } from '@/modules/company/adapters/supabase';
-import { JobPostingService, type EmployerId } from '@/modules/job-posting';
+import { JobPostingService } from '@/modules/job-posting';
 import { SupabaseJobPostingRepository } from '@/modules/job-posting/adapters/supabase';
+import { fail, requireEmployer } from './_shared';
 import { firstError } from './auth-schema';
 import { companyFilterSchema, companyIdSchema, companyInputSchema, companyLogoSchema } from './companies-schema';
 import type { ActionResult, CompaniesPage, Company, CompanyInput, PostingSummary } from './types';
-
-const fail = (error: string) => ({ success: false, error }) as const;
 
 const LOGO_BUCKET = 'company-logos';
 
 /** Service for the signed-in Employer's own Company, or null for anyone else. */
 async function employerContext() {
-  const supabase = await createSupabaseServerClient();
-  const actor = await getCurrentActor(supabase);
-  if (actor?.role !== 'EMPLOYER') return null;
-  return {
-    supabase,
-    service: new CompanyService(new SupabaseCompanyRepository(supabase)),
-    companyId: actor.userId as CompanyId,
+  const ctx = await requireEmployer();
+  return ctx && {
+    supabase: ctx.supabase,
+    service: new CompanyService(new SupabaseCompanyRepository(ctx.supabase)),
+    companyId: ctx.employerId,
   };
 }
 
@@ -92,16 +89,17 @@ export async function uploadCompanyLogoAction(formData: FormData): Promise<Actio
 
 /** Anyone. Name search is accent- and case-insensitive; malformed fields are ignored. */
 export async function listCompanies(filter: { q?: string; page?: number }): Promise<CompaniesPage> {
-  return (await publicService()).list(companyFilterSchema.parse(filter));
+  const parsed = companyFilterSchema.safeParse(filter);
+  return (await publicService()).list(parsed.success ? parsed.data : {});
 }
 
 /** Anyone. Company with its open postings (newest first); null for unknown ids. */
 export async function getCompany(id: string): Promise<(Company & { openPostings: PostingSummary[] }) | null> {
   const parsed = companyIdSchema.safeParse(id);
   if (!parsed.success) return null;
-  const supabase = await createSupabaseServerClient();
-  const company = await new CompanyService(new SupabaseCompanyRepository(supabase)).get(parsed.data as CompanyId);
+  const companyId = parsed.data as CompanyId;
+  const company = await (await publicService()).get(companyId);
   if (!company) return null;
-  const postings = new JobPostingService(new SupabaseJobPostingRepository(supabase));
-  return { ...company, openPostings: await postings.listOpenByEmployer(company.id as EmployerId) };
+  const postings = new JobPostingService(new SupabaseJobPostingRepository(await createSupabaseServerClient()));
+  return { ...company, openPostings: await postings.listOpenByEmployer(companyId) };
 }

@@ -1,28 +1,22 @@
 'use server';
 
-import { createSupabaseServerClient, getCurrentActor } from '@/lib/supabase-server';
-import { CandidateService, type CandidateId } from '@/modules/candidate';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { ApplicationId } from '@/modules/application';
+import { CandidateService } from '@/modules/candidate';
 import { SupabaseCandidateRepository } from '@/modules/candidate/adapters/supabase';
-import type { EmployerId, JobPostingId } from '@/modules/job-posting';
+import type { JobPostingId } from '@/modules/job-posting';
+import { fail, requireCandidate, requireEmployer } from './_shared';
 import { applicationIdSchema } from './applications-schema';
 import { firstError } from './auth-schema';
 import { candidateProfileInputSchema, toggleSavedPostingSchema } from './candidates-schema';
 import type { ActionResult, CandidateProfile, CandidateProfileInput, SavedPostingSummary } from './types';
 
-const fail = (error: string) => ({ success: false, error }) as const;
-
-/** Service plus the signed-in user's id when they have `role`, or null for anyone else. */
-async function context(role: 'CANDIDATE' | 'EMPLOYER') {
-  const supabase = await createSupabaseServerClient();
-  const actor = await getCurrentActor(supabase);
-  if (actor?.role !== role) return null;
-  return { service: new CandidateService(new SupabaseCandidateRepository(supabase)), userId: actor.userId };
-}
+const service = (supabase: SupabaseClient) => new CandidateService(new SupabaseCandidateRepository(supabase));
 
 /** The signed-in Candidate's profile; null for anyone else. */
 export async function getMyCandidateProfile(): Promise<CandidateProfile | null> {
-  const ctx = await context('CANDIDATE');
-  return ctx ? ctx.service.getProfile(ctx.userId as CandidateId) : null;
+  const ctx = await requireCandidate();
+  return ctx ? service(ctx.supabase).getProfile(ctx.candidateId) : null;
 }
 
 /** Omitted fields stay; an empty string clears headline/experience/education. */
@@ -30,10 +24,10 @@ export async function updateCandidateProfileAction(input: CandidateProfileInput)
   const parsed = candidateProfileInputSchema.safeParse(input);
   if (!parsed.success) return fail(firstError(parsed.error));
 
-  const ctx = await context('CANDIDATE');
+  const ctx = await requireCandidate();
   if (!ctx) return fail('Chỉ ứng viên đã đăng nhập mới sửa được hồ sơ');
   try {
-    const profile = await ctx.service.updateProfile(ctx.userId as CandidateId, parsed.data);
+    const profile = await service(ctx.supabase).updateProfile(ctx.candidateId, parsed.data);
     return profile ? { success: true, data: profile } : fail('Không tìm thấy hồ sơ ứng viên');
   } catch (error) {
     console.error(error);
@@ -45,8 +39,8 @@ export async function updateCandidateProfileAction(input: CandidateProfileInput)
 export async function getApplicantProfile(applicationId: string): Promise<CandidateProfile | null> {
   const parsed = applicationIdSchema.safeParse(applicationId);
   if (!parsed.success) return null;
-  const ctx = await context('EMPLOYER');
-  return ctx ? ctx.service.getApplicantProfile(ctx.userId as EmployerId, parsed.data) : null;
+  const ctx = await requireEmployer();
+  return ctx ? service(ctx.supabase).getApplicantProfile(ctx.employerId, parsed.data as ApplicationId) : null;
 }
 
 /** Saved → unsaved, otherwise saved. Only PUBLISHED/CLOSED postings can be saved. */
@@ -54,10 +48,10 @@ export async function toggleSavedPostingAction(input: { postingId: string }): Pr
   const parsed = toggleSavedPostingSchema.safeParse(input);
   if (!parsed.success) return fail(firstError(parsed.error));
 
-  const ctx = await context('CANDIDATE');
+  const ctx = await requireCandidate();
   if (!ctx) return fail('Chỉ ứng viên đã đăng nhập mới lưu được tin');
   try {
-    const result = await ctx.service.toggleSaved(ctx.userId as CandidateId, parsed.data.postingId as JobPostingId);
+    const result = await service(ctx.supabase).toggleSaved(ctx.candidateId, parsed.data.postingId as JobPostingId);
     return result ? { success: true, data: result } : fail('Không tìm thấy tin tuyển dụng');
   } catch (error) {
     console.error(error);
@@ -67,12 +61,12 @@ export async function toggleSavedPostingAction(input: { postingId: string }): Pr
 
 /** Most recently saved first; [] for anyone but a Candidate. */
 export async function listSavedPostings(): Promise<SavedPostingSummary[]> {
-  const ctx = await context('CANDIDATE');
-  return ctx ? ctx.service.listSaved(ctx.userId as CandidateId) : [];
+  const ctx = await requireCandidate();
+  return ctx ? service(ctx.supabase).listSaved(ctx.candidateId) : [];
 }
 
 /** [] for anyone but a Candidate. */
 export async function getSavedPostingIds(): Promise<string[]> {
-  const ctx = await context('CANDIDATE');
-  return ctx ? ctx.service.listSavedIds(ctx.userId as CandidateId) : [];
+  const ctx = await requireCandidate();
+  return ctx ? service(ctx.supabase).listSavedIds(ctx.candidateId) : [];
 }

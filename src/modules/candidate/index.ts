@@ -1,5 +1,6 @@
 import { isOpen } from '@/modules/job-posting/domain/status';
 import type { Clock, EmployerId, JobPostingId } from '@/modules/job-posting';
+import type { ApplicationId } from '@/modules/application';
 import type {
   CandidateId,
   CandidateProfile,
@@ -25,7 +26,7 @@ export class CandidateService {
     return this.repo.updateProfile(id, changes);
   }
 
-  getApplicantProfile(employerId: EmployerId, applicationId: string): Promise<CandidateProfile | null> {
+  getApplicantProfile(employerId: EmployerId, applicationId: ApplicationId): Promise<CandidateProfile | null> {
     return this.repo.findApplicantProfile(employerId, applicationId);
   }
 
@@ -42,7 +43,7 @@ export class CandidateService {
     }));
   }
 
-  listSavedIds(candidateId: CandidateId): Promise<string[]> {
+  listSavedIds(candidateId: CandidateId): Promise<JobPostingId[]> {
     return this.repo.listSavedIds(candidateId);
   }
 }

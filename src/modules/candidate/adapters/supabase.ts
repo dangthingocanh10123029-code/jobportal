@@ -1,6 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { EmploymentType, Industry, JobLevel, PostingStatus } from '@/actions/types';
+import type { ApplicationId } from '@/modules/application';
 import type { EmployerId, JobPostingId } from '@/modules/job-posting';
+import { SUMMARY_COLUMNS, toPostingSummary, type PostingSummaryRow } from '@/modules/job-posting/adapters/supabase';
+import type { PostingStatus } from '@/modules/shared/types';
 import type { CandidateId, CandidateProfile, CandidateProfileChanges, ICandidateRepository, SavedPostingRow } from '../domain/types';
 
 type ProfileRow = {
@@ -23,32 +25,12 @@ type ApplicantRow = {
   candidate_education: string | null;
 };
 
-type SavedRow = {
-  id: string;
-  employer_id: string;
-  title: string;
-  company_name: string;
-  company_logo_url: string | null;
-  location: string;
-  employment_type: EmploymentType;
-  salary_min: number | null;
-  salary_max: number | null;
-  application_deadline: string;
-  created_at: string;
-  industry: Industry;
-  level: JobLevel;
-  experience_years: number;
-  skills: string[];
-  status: PostingStatus;
-  saved_at: string;
-};
+type SavedRow = PostingSummaryRow & { status: PostingStatus; saved_at: string };
 
 const COLUMNS = 'id,full_name,phone,headline,skills,experience,education';
 const APPLICANT_COLUMNS =
   'candidate_id,candidate_name,candidate_phone,candidate_headline,candidate_skills,candidate_experience,candidate_education';
-const SAVED_COLUMNS =
-  'id,employer_id,title,company_name,company_logo_url,location,employment_type,salary_min,salary_max,application_deadline,created_at,' +
-  'industry,level,experience_years,skills,status,saved_at';
+const SAVED_COLUMNS = `${SUMMARY_COLUMNS},status,saved_at`;
 
 // Postgres: RLS with check failed (posting DRAFT / not a Candidate) or the posting does not exist.
 const NOT_SAVABLE = ['42501', '23503'];
@@ -94,7 +76,7 @@ export class SupabaseCandidateRepository implements ICandidateRepository {
     return data ? toProfile(data) : null;
   }
 
-  async findApplicantProfile(employerId: EmployerId, applicationId: string) {
+  async findApplicantProfile(employerId: EmployerId, applicationId: ApplicationId) {
     const { data, error } = await this.supabase
       .from('employer_application_summaries')
       .select(APPLICANT_COLUMNS)
@@ -144,25 +126,7 @@ export class SupabaseCandidateRepository implements ICandidateRepository {
       .returns<SavedRow[]>();
     if (error) throw new Error(`Không đọc được danh sách tin đã lưu: ${error.message}`);
     return data.map(
-      (row): SavedPostingRow => ({
-        id: row.id,
-        employerId: row.employer_id,
-        title: row.title,
-        companyName: row.company_name,
-        companyLogoUrl: row.company_logo_url,
-        location: row.location,
-        employmentType: row.employment_type,
-        salaryMin: row.salary_min,
-        salaryMax: row.salary_max,
-        applicationDeadline: new Date(row.application_deadline).toISOString(),
-        createdAt: new Date(row.created_at).toISOString(),
-        industry: row.industry,
-        level: row.level,
-        experienceYears: row.experience_years,
-        skills: row.skills,
-        status: row.status,
-        savedAt: new Date(row.saved_at).toISOString(),
-      }),
+      (row): SavedPostingRow => ({ ...toPostingSummary(row), status: row.status, savedAt: new Date(row.saved_at).toISOString() }),
     );
   }
 
@@ -172,7 +136,7 @@ export class SupabaseCandidateRepository implements ICandidateRepository {
       .select('posting_id')
       .eq('candidate_id', candidateId)
       .order('created_at', { ascending: false })
-      .returns<{ posting_id: string }[]>();
+      .returns<{ posting_id: JobPostingId }[]>();
     if (error) throw new Error(`Không đọc được danh sách tin đã lưu: ${error.message}`);
     return data.map((r) => r.posting_id);
   }

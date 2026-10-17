@@ -1,5 +1,5 @@
 import { JobPostingError } from './domain/errors';
-import type { OpenPostingsPage, PostingDetail, PostingSummary, SearchFilter } from '@/actions/types';
+import type { OpenPostingsPage, PostingDetail, PostingSummary, SearchFilter } from '@/modules/shared/types';
 import { displayStatus, EDITABLE, isOpen, TRANSITIONS } from './domain/status';
 import type {
   Clock,

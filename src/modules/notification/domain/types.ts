@@ -1,4 +1,4 @@
-import type { AppNotification, NotificationType } from '@/actions/types';
+import type { AppNotification, NotificationType } from '@/modules/shared/types';
 
 export type { AppNotification, NotificationType };
 

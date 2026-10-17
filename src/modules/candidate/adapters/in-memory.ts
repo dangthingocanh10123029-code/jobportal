@@ -1,4 +1,5 @@
 import { toSummary, type Clock, type IJobPostingRepository, type JobPostingId, type EmployerId } from '@/modules/job-posting';
+import type { ApplicationId } from '@/modules/application';
 import type { CandidateId, CandidateProfile, CandidateProfileChanges, ICandidateRepository, SavedPostingRow } from '../domain/types';
 
 /** Mimics the profiles column grants, employer_application_summaries and the saved_postings RLS. */
@@ -33,7 +34,7 @@ export class InMemoryCandidateRepository implements ICandidateRepository {
     return this.findProfile(id);
   }
 
-  async findApplicantProfile(employerId: EmployerId, applicationId: string) {
+  async findApplicantProfile(employerId: EmployerId, applicationId: ApplicationId) {
     const application = this.applications.find((a) => a.id === applicationId);
     const posting = application && (await this.postings.findById(application.jobPostingId as JobPostingId));
     return application && posting?.employerId === employerId ? this.findProfile(application.candidateId as CandidateId) : null;
