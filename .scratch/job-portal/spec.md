@@ -51,6 +51,18 @@ A web app with two roles. An Employer creates Job Postings, publishes them immed
 29. As an Employer, I want invalid transitions refused, so that the history stays consistent.
 30. As an Employer, I want never to see Applications or Resumes for other Employers' postings, so that candidate data stays private.
 
+### v2 (2026-10-17)
+31. As an Employer, I want to set industry, level, required years of experience, headcount, skills, requirements and benefits on a posting, so that Candidates understand the job.
+32. As a Candidate, I want to filter by industry, level, maximum required experience and skill, and sort by newest, highest salary or closest deadline, so that I find relevant jobs faster.
+33. As a Candidate, I want to see related open postings on a posting page, so that I can keep browsing.
+34. As an Employer, I want a company profile (logo, about, size, address, website), so that Candidates trust my postings.
+35. As a visitor, I want a company list and a company page with its open postings, so that I can explore employers.
+36. As a Candidate, I want a profile (headline, skills, experience, education) that Employers see on my Applications, so that I stand out.
+37. As a Candidate, I want to save postings and see my saved list, so that I can apply later.
+38. As a user, I want in-app notifications when an Application I care about is created or changes status, so that I react quickly.
+39. As an Employer, I want a dashboard with posting views and Applications by status, so that I track hiring.
+40. As a presenter, I want realistic demo data (fictional companies, postings, candidates, applications) that I can seed and wipe, so that the portal looks alive.
+
 ## Implementation Decisions
 
 ### Modules (Deep Modules, one seam each)
@@ -107,7 +119,9 @@ The transition table lives in the domain and is mirrored by a database function 
 - Admin role and posting moderation.
 - Payments, VIP postings.
 - Email or push notifications.
-- Saved Jobs, AI recommendations, chat.
+- AI recommendations, chat.
+- Email notifications (in-app notifications only, v2).
+- Scraping third-party job boards (TopCV ToS forbids reuse of its content); demo data is generated.
 - Multi-member Employer accounts, one account with both roles.
 - Re-applying to the same posting, replacing a submitted Resume.
 

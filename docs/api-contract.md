@@ -143,6 +143,118 @@ allowedNextStatuses(status: ApplicationStatus, role: Role): ApplicationStatus[]
   // hàm thuần (không 'use server'), export từ '@/modules/application' để UI chỉ hiện nút hợp lệ
 ```
 
+## v2 — Kiểu dùng chung mới (`src/actions/types.ts`)
+
+```ts
+type Industry =
+  | 'IT_SOFTWARE' | 'SALES' | 'MARKETING' | 'ACCOUNTING_FINANCE' | 'HR' | 'ADMIN'
+  | 'CUSTOMER_SERVICE' | 'EDUCATION' | 'HEALTHCARE' | 'CONSTRUCTION' | 'MANUFACTURING'
+  | 'LOGISTICS' | 'HOSPITALITY' | 'DESIGN' | 'LEGAL' | 'OTHER';
+type JobLevel = 'INTERN' | 'FRESHER' | 'JUNIOR' | 'MIDDLE' | 'SENIOR' | 'LEAD' | 'MANAGER';
+type CompanySize = 'S1_10' | 'S11_50' | 'S51_200' | 'S201_500' | 'S500_PLUS';
+type PostingSort = 'newest' | 'salary_desc' | 'deadline_asc';
+```
+Nhãn tiếng Việt của các enum do Codex đặt trong `src/components/format.ts`.
+
+## 14 — Tin chi tiết + bộ lọc mới (`@/actions/postings`)
+
+```ts
+// PostingInput bổ sung (bắt buộc khi tạo/sửa):
+industry: Industry; level: JobLevel;
+experienceYears: number;   // 0–20, 0 = không yêu cầu kinh nghiệm
+headcount: number;         // 1–999
+skills: string[];          // 0–10 kỹ năng, mỗi kỹ năng 1–30 ký tự, không trùng (không phân biệt hoa thường)
+requirements: string;      // 10–5000 ký tự
+benefits: string;          // 10–5000 ký tự
+// Tin cũ trước v2: industry 'OTHER', level 'JUNIOR', experienceYears 0, headcount 1, skills [], requirements/benefits ''
+
+// JobPosting, PostingDetail có đủ các trường trên + companyLogoUrl: string | null
+// PostingSummary bổ sung: industry, level, experienceYears, skills, companyLogoUrl
+
+// SearchFilter bổ sung (URL: ?industry=&level=&exp=&skill=&sort=):
+industry?: Industry; level?: JobLevel;
+maxExperience?: number;    // tin yêu cầu kinh nghiệm ≤ giá trị này
+skill?: string;            // khớp không dấu, không phân biệt hoa thường với một kỹ năng của tin
+sort?: PostingSort;        // mặc định 'newest'; 'salary_desc' xếp theo salary_max (null = thỏa thuận ở cuối)
+
+getRelatedPostings(postingId: string): Promise<PostingSummary[]>   // ≤ 6 tin đang mở cùng ngành, trừ chính nó
+```
+
+## 15 — Trang công ty (`@/actions/companies`)
+
+```ts
+type Company = {
+  id: string;               // = user id của Employer
+  name: string; logoUrl: string | null; about: string | null;
+  size: CompanySize | null; address: string | null; website: string | null;
+};
+type CompanySummary = Company & { openPostings: number };
+
+getMyCompany(): Promise<Company | null>                                     // Employer đang đăng nhập
+updateMyCompanyAction(input: { name?: string; about?: string; size?: CompanySize | null; address?: string; website?: string }): Promise<ActionResult<Company>>
+  // name 1–150; about ≤ 5000; address ≤ 300; website URL http(s) ≤ 300; chuỗi rỗng = xóa
+uploadCompanyLogoAction(formData: FormData): Promise<ActionResult<Company>>
+  // field 'logo': PNG/JPEG/WebP ≤ 1 MB (không nhận SVG). Bucket public 'company-logos', thư mục = user id
+listCompanies(filter: { q?: string; page?: number }): Promise<{ items: CompanySummary[]; total: number; page: number; pageSize: 20 }>
+getCompany(id: string): Promise<(Company & { openPostings: PostingSummary[] }) | null>
+```
+Tên công ty hiển thị trên tin lấy từ Company. `profiles.company_name` được đồng bộ để không phá chữ ký ticket 01.
+
+## 16 — Hồ sơ ứng viên + lưu việc (`@/actions/candidates`)
+
+```ts
+type CandidateProfile = {
+  userId: string; fullName: string; phone: string | null;
+  headline: string | null;  // ≤ 150
+  skills: string[];         // ≤ 20, mỗi kỹ năng 1–30 ký tự
+  experience: string | null; education: string | null;   // ≤ 5000 mỗi trường
+};
+getMyCandidateProfile(): Promise<CandidateProfile | null>
+updateCandidateProfileAction(input: { headline?: string; skills?: string[]; experience?: string; education?: string }): Promise<ActionResult<CandidateProfile>>
+getApplicantProfile(applicationId: string): Promise<CandidateProfile | null>   // chỉ Employer chủ tin của đơn
+
+toggleSavedPostingAction(input: { postingId: string }): Promise<ActionResult<{ saved: boolean }>>   // chỉ Candidate
+listSavedPostings(): Promise<(PostingSummary & { isOpen: boolean; savedAt: string })[]>
+getSavedPostingIds(): Promise<string[]>   // [] khi không phải Candidate
+```
+`EmployerApplicationSummary` bổ sung `candidateHeadline: string | null; candidateSkills: string[]`.
+
+## 17 — Thông báo + dashboard (`@/actions/notifications`, `@/actions/dashboard`)
+
+```ts
+type NotificationType = 'APPLICATION_RECEIVED' | 'APPLICATION_STATUS_CHANGED' | 'APPLICATION_WITHDRAWN';
+type AppNotification = {
+  id: string; type: NotificationType; title: string; body: string;
+  link: string;              // đường dẫn nội bộ, vd '/candidate/applications/<id>'
+  readAt: string | null; createdAt: string;
+};
+listMyNotifications(): Promise<AppNotification[]>          // 30 mới nhất
+getUnreadNotificationCount(): Promise<number>               // 0 khi chưa đăng nhập
+markNotificationsReadAction(input: { ids?: string[] }): Promise<ActionResult<null>>   // ids rỗng/thiếu = đánh dấu tất cả
+
+type EmployerDashboard = {
+  totals: { postings: number; open: number; applications: number; views: number };
+  byStatus: Record<ApplicationStatus, number>;
+  postings: { id: string; title: string; displayStatus: DisplayPostingStatus; views: number; applications: number }[];
+};
+getEmployerDashboard(): Promise<EmployerDashboard | null>   // null khi không phải Employer
+```
+Thông báo do database tạo (trigger): đơn mới → Employer; Employer đổi trạng thái → Candidate; Candidate rút đơn → Employer.
+Lượt xem tin tăng khi `getPostingDetail` được gọi cho tin không phải của người xem.
+
+## 18 — Dữ liệu mẫu (Claude logic, không có UI)
+`supabase/seed/seed-demo.sql` + `supabase/seed/wipe-demo.sql`. Mọi user mẫu có email `*@demo.jobportal.test`, mật khẩu chung ghi trong `supabase/seed/README.md`.
+
+## Routes v2 (Codex)
+
+| Route | Ai vào được | Ticket |
+|---|---|---|
+| `/companies`, `/companies/[id]` | mọi người | 15 |
+| `/employer/company` | Employer | 15 |
+| `/candidate/profile`, `/candidate/saved` | Candidate | 16 |
+| `/notifications` | đã đăng nhập | 17 |
+| `/employer/dashboard` | Employer | 17 |
+
 ## Hình ảnh (Antigravity → Codex)
 
 Antigravity giao đúng tên file và đường dẫn dưới đây (ticket 08). Codex tham chiếu theo đường dẫn này ngay từ đầu, kể cả khi file chưa merge (ảnh tạm thời không hiện là chấp nhận được, không tự tạo ảnh thay thế).
@@ -179,3 +291,12 @@ Codex khai báo thành CSS variables, Antigravity vẽ ảnh theo đúng bảng 
 | `--color-success` / `--color-danger` | `#16A34A` / `#DC2626` | Trạng thái HIRED / REJECTED, lỗi |
 
 Phong cách minh họa: phẳng (flat), nét tròn, tối đa 4 màu từ bảng trên, không chứa chữ (trừ logo và ảnh Open Graph).
+
+### Hình ảnh v2 (ticket 19)
+
+| File | Dùng ở | Định dạng |
+|---|---|---|
+| `public/images/companies/logo-01.svg` … `logo-24.svg` | Logo công ty hư cấu cho dữ liệu mẫu | SVG vuông 128×128, mỗi logo một biểu tượng trừu tượng + nền màu, KHÔNG chữ, KHÔNG giống thương hiệu có thật |
+| `public/images/industries/<industry>.svg` (16 file, tên = giá trị `Industry` viết thường, vd `it_software.svg`) | Chip ngành nghề trên trang chủ, bộ lọc | SVG 48×48, nét đơn sắc dùng `currentColor` |
+| `public/images/empty-notifications.svg`, `public/images/empty-saved.svg` | Trạng thái rỗng | SVG 240×180, cùng phong cách |
+
