@@ -4,9 +4,8 @@ import { getMyCompany } from '@/actions/companies';
 import { CompanyProfileForm } from '@/components/companies/company-profile-form';
 
 export default async function EmployerCompanyPage() {
-  const profile = await getCurrentProfile();
+  const [profile, company] = await Promise.all([getCurrentProfile(), getMyCompany()]);
   if (profile?.role !== 'EMPLOYER') redirect('/account');
-  const company = await getMyCompany();
   if (!company) notFound();
 
   return (
