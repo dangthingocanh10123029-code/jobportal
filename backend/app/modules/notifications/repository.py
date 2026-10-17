@@ -1,0 +1,9 @@
+from typing import Protocol
+
+from app.modules.notifications.domain import AppNotification
+
+
+class NotificationRepository(Protocol):
+    def recent(self, recipient_id: str, limit: int) -> list[AppNotification]: ...
+    def unread_count(self, recipient_id: str) -> int: ...
+    def mark_read(self, recipient_id: str, ids: list[str] | None) -> None: ...
