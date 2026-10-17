@@ -17,8 +17,12 @@ Chạy lại: `psql "<session pooler URL>" -q -At -f .scratch/job-portal/rls_che
 
 ## Chưa kiểm tra — cần chạy app thật với tài khoản thật
 - [x] Đăng ký → mã OTP qua email (SMTP Gmail) → xác nhận + đăng nhập → `/account` → cập nhật hồ sơ (2026-10-16 17:20)
-- [ ] Đăng xuất / đăng nhập lại, refresh session cookie qua middleware
-- [ ] Upload CV thật qua Storage API, file mồ côi bị dọn khi nộp lỗi (policy `resumes_delete_unused` — Supabase chặn DELETE storage bằng SQL nên chỉ thử được qua API)
-- [ ] `createSignedUrl` 60s cho Employer tải CV
+- [x] Đăng xuất / đăng nhập, chặn route theo role (E2E 2026-10-17)
+- [x] Upload CV thật qua Storage API (E2E)
+- [ ] File mồ côi bị dọn khi nộp lỗi (policy `resumes_delete_unused` — Supabase chặn DELETE storage bằng SQL nên chỉ thử được qua API)
+- [x] `createSignedUrl` 60s cho Employer tải CV — trả về PDF (E2E)
 - [ ] Hai request rút/đổi trạng thái đồng thời (`FOR UPDATE`) chỉ tạo 1 Status Change
 - [ ] Supabase advisor cảnh báo security-definer view `employer_application_summaries` / `employer_companies` — đúng thiết kế
+
+## E2E Playwright — 27/27 PASS (2026-10-17)
+Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp CV → tải CV → đổi trạng thái → lịch sử → rút đơn → đóng tin → đăng xuất. DB khớp: tin CLOSED, đơn WITHDRAWN, 3 Status Change, CV `application/pdf` trong bucket `resumes`.
