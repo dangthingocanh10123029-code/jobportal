@@ -303,8 +303,8 @@ await check('Rút hồ sơ có bước xác nhận → "Đã rút hồ sơ"', ca
   await cand.getByRole('button', { name: 'Rút hồ sơ' }).click();
   await cand.getByRole('button', { name: 'Xác nhận rút' }).click();
   await cand.getByText('Đã rút hồ sơ').first().waitFor();
-  await cand.waitForTimeout(500);
-  if (await cand.getByRole('button', { name: 'Rút hồ sơ' }).count()) throw new Error('nút rút vẫn còn');
+  // the button disappears after router.refresh(); wait for it instead of a fixed delay
+  await cand.getByRole('button', { name: 'Rút hồ sơ' }).waitFor({ state: 'detached' });
 });
 await check('Nhà tuyển dụng thấy "Đã rút hồ sơ", không còn nút chuyển trạng thái', emp, async () => {
   await emp.goto(`${BASE}/employer/postings`);
