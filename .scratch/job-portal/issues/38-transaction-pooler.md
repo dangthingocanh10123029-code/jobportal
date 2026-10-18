@@ -4,7 +4,7 @@
 
 **Blocked by:** 37
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `DATABASE_URL` của app trỏ transaction pooler (6543); giữ một biến riêng (vd `DATABASE_URL_SESSION`) cho việc cần session (test tích hợp dùng savepoint/ROLLBACK dài, migration) nếu thật sự cần — ghi rõ trong `backend/.env.example` + README
 - [ ] psycopg tương thích transaction mode: `prepare_threshold=None` (không prepared statement), không dùng `SET` cấp session (mọi thiết lập đã là `set_config(..., true)` trong transaction — giữ nguyên), `statement_timeout` qua `set_config` trong transaction

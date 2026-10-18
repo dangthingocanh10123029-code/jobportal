@@ -14,7 +14,7 @@ Cần Node 20+, [uv](https://docs.astral.sh/uv/) và một project Supabase đã
 ```bash
 npm install
 cp .env.example .env.local                 # Supabase URL + anon key, API_URL=http://127.0.0.1:8000
-cp backend/.env.example backend/.env       # DATABASE_URL (session pooler), SUPABASE_URL, SUPABASE_ANON_KEY
+cp backend/.env.example backend/.env       # DATABASE_URL (transaction pooler, cổng 6543), SUPABASE_URL, SUPABASE_ANON_KEY
 (cd backend && uv sync)
 
 npm run dev:api                            # FastAPI  → http://127.0.0.1:8000 (Swagger /docs)
