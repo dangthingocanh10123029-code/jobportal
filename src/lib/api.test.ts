@@ -5,10 +5,14 @@ import { apiFetch } from './api';
 
 vi.mock('./supabase-server', () => ({ createSupabaseServerClient: vi.fn() }));
 
-function withSession(accessToken: string | null) {
+function withSession(accessToken: string | null, expiresAt?: number) {
   vi.mocked(createSupabaseServerClient).mockResolvedValue(
     fromPartial({
-      auth: { getSession: async () => ({ data: { session: accessToken ? { access_token: accessToken } : null } }) },
+      auth: {
+        getSession: async () => ({
+          data: { session: accessToken ? { access_token: accessToken, expires_at: expiresAt } : null },
+        }),
+      },
     }),
   );
 }
@@ -61,6 +65,16 @@ describe('apiFetch', () => {
     withSession(null);
     await apiFetch('/postings');
     expect(fetchMock.mock.calls.map(([, init]) => init?.headers)).toEqual([{}, {}]);
+  });
+
+  it('token đã hết hạn → không gửi Authorization; còn hạn → gửi', async () => {
+    fetchMock.mockResolvedValue(json([]));
+    const now = Math.floor(Date.now() / 1000);
+    withSession('old', now - 5);
+    await apiFetch('/postings');
+    withSession('fresh', now + 600);
+    await apiFetch('/postings');
+    expect(fetchMock.mock.calls.map(([, init]) => init?.headers)).toEqual([{}, { Authorization: 'Bearer fresh' }]);
   });
 
   it('lỗi HTTP → { ok:false, status, error }', async () => {
