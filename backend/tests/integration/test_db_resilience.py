@@ -5,6 +5,7 @@ Run: RUN_INTEGRATION=1 uv run pytest -m integration
 """
 
 import os
+from contextlib import suppress
 
 import psycopg
 import pytest
@@ -35,7 +36,8 @@ def _pid(pool) -> int:
 
 
 def _kill(pid: int) -> None:
-    with psycopg.connect(DATABASE_URL, autocommit=True) as admin:
+    # Transaction pooler: the admin connection may be handed that very backend, which then terminates itself.
+    with suppress(psycopg.errors.AdminShutdown), psycopg.connect(DATABASE_URL, autocommit=True) as admin:
         assert admin.execute("select pg_terminate_backend(%s)", (pid,)).fetchone() == (True,)
 
 

@@ -11,7 +11,7 @@ import psycopg
 import pytest
 from psycopg_pool import ConnectionPool
 
-from app.db import user_tx
+from app.db import CONNECT_KWARGS, user_tx
 
 DATABASE_URL = os.environ.get("INTEGRATION_DATABASE_URL")
 pytestmark = [
@@ -25,7 +25,7 @@ WHO = "select current_user, current_setting('request.jwt.claims', true), auth.ui
 @pytest.fixture
 def pool():
     # One connection: every user_tx reuses the one the previous caller returned.
-    with ConnectionPool(DATABASE_URL, min_size=1, max_size=1) as p:
+    with ConnectionPool(DATABASE_URL, kwargs=CONNECT_KWARGS, min_size=1, max_size=1) as p:
         yield p
 
 

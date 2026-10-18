@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parent.parent / ".env", extra="ignore")
 
     database_url: str
+    db_pool_max_size: int = 10
     supabase_url: str
     supabase_anon_key: str = ""
     allowed_origins: str = "http://localhost:3000"

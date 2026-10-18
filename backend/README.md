@@ -5,7 +5,7 @@ Backend nghiệp vụ theo `docs/adr/0003-fastapi-backend.md`; endpoint ở `doc
 ## Chạy
 
 ```sh
-cp backend/.env.example backend/.env   # điền DATABASE_URL (session pooler), SUPABASE_URL — không commit
+cp backend/.env.example backend/.env   # điền DATABASE_URL (transaction pooler, cổng 6543), SUPABASE_URL — không commit
 cd backend && uv sync
 npm run dev:api                        # từ thư mục gốc: http://127.0.0.1:8000, Swagger ở /docs
 curl http://127.0.0.1:8000/health      # {"status":"ok","db":true,"jwks":true}; 503 nếu DB/JWKS lỗi
@@ -24,7 +24,7 @@ Test không chạm DB/JWKS thật: auth dùng khóa EC sinh trong test + JWKS gi
 ## Cấu trúc
 
 - `app/main.py` — FastAPI, CORS (`ALLOWED_ORIGINS`), handler lỗi, router.
-- `app/db.py` — pool psycopg; `user_tx(claims)` mở transaction với `set local role authenticated|anon` + `request.jwt.claims` → RLS/RPC của Supabase giữ hiệu lực. Mọi truy vấn người dùng đi qua `user_tx`.
+- `app/db.py` — pool psycopg qua transaction pooler (không prepared statement, `DB_POOL_MAX_SIZE` mặc định 10); `user_tx(claims)` mở transaction với `set local role authenticated|anon` + `request.jwt.claims` → RLS/RPC của Supabase giữ hiệu lực. Mọi truy vấn người dùng đi qua `user_tx`.
 - `app/auth.py` — xác minh Bearer (ES256, JWKS, aud `authenticated`); kiểu tham số route `CurrentUser`, `OptionalUser`, `EmployerActor`, `CandidateActor`.
 - `app/errors.py` — `DomainError(status, message)` → `{ "error": message }`; lỗi 422 → câu tiếng Việt đầu tiên.
 - `app/schemas.py` — `CamelModel` (JSON camelCase).
