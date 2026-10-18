@@ -13,8 +13,11 @@ from app.config import get_settings
 # autocommit: user_tx sends BEGIN/COMMIT itself so they share round trips with the queries.
 # Keepalives stop the pooler path from dropping idle connections silently; tcp_user_timeout (Linux) bounds a send
 # into a dead socket. The pooler ignores startup `options`, so statement_timeout is set per transaction in user_tx.
+# Transaction pooler (6543): consecutive transactions may land on different server connections, so no prepared
+# statements (prepare_threshold=None) and no session-level SET — everything per transaction via set_config(…, true).
 CONNECT_KWARGS = {
     "autocommit": True,
+    "prepare_threshold": None,
     "connect_timeout": 5,
     "keepalives": 1,
     "keepalives_idle": 30,
@@ -32,7 +35,7 @@ def get_pool() -> ConnectionPool:
         get_settings().database_url,
         kwargs=CONNECT_KWARGS,
         min_size=1,
-        max_size=10,
+        max_size=get_settings().db_pool_max_size,
         timeout=10,
         check=ConnectionPool.check_connection,
         max_idle=120,
