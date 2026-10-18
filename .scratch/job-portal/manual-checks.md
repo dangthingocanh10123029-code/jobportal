@@ -62,3 +62,15 @@ Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp C
 - [x] Giao diện Layered & Depth; không tràn ngang ở 360px
 - [x] E2E 45/45 (44 chức năng + 0 lỗi console/hydration); integration 10/10; rls 55/55; v2 23/23
 - Còn có thể: chạy bản production (`next build && next start`) khi demo; chuyển Supabase sang region Singapore (RTT ~30 ms)
+
+## v4 — Admin + redesign + production (tickets 32–38, 2026-10-18)
+- [x] E2E 51 bước trên BẢN PRODUCTION (`next build && next start`): 51/51 chức năng PASS (gồm 7 bước admin: truy cập, xác minh công ty, ẩn/bỏ ẩn tin, khóa/mở khóa, nhật ký)
+- [x] rls_checks 56/56 (thêm: tự đăng ký role ADMIN/role lạ bị chặn); integration 27/27 trên transaction pooler
+- Lỗi thật tìm ra nhờ chạy production + E2E, đã sửa:
+  - route `src/app/admin/users/'[id]'` (dấu nháy thừa) làm `next build` hỏng
+  - `src/app/loading.tsx` gốc làm treo điều hướng chỉ đổi searchParams (phân trang, lọc)
+  - `loading.tsx` ở `/jobs/[id]`, `/companies/[id]` → tin ẩn/không tồn tại trả HTTP 200 (soft 404; nội dung không lộ)
+  - prefetch ~40 link/trang → quá tải API + lượt xem giả (ticket 36)
+  - đồng hồ Supabase nhanh ~2 s → token mới bị 401 (`leeway=30`, ticket 37); endpoint công khai không sập vì token
+  - kết nối pool đứt ngầm → API treo (ticket 35); session pooler chạm 15 client → chuyển transaction pooler 6543 (ticket 38)
+- [ ] Cảnh báo hydration React #418 xuất hiện 1 lần ở `/jobs/[id]` trong E2E production, không tái hiện được trong 32 lượt tải thủ công — theo dõi tiếp
