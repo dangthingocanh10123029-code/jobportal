@@ -4,7 +4,7 @@
 
 **Blocked by:** 29
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `ConnectionPool(check=ConnectionPool.check_connection, max_idle=…, max_lifetime=…)` nhỏ hơn timeout idle của pooler; `reconnect_timeout` hợp lý
 - [ ] Tham số kết nối: `connect_timeout`, TCP keepalives (`keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=3`), `options=-c statement_timeout=…` (vd 10 s) để không truy vấn nào treo vô hạn

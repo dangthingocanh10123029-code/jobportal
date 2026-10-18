@@ -334,7 +334,7 @@ listAuditLog(filter: { action?: AuditEntry['action']; actorId?: string; page?: n
 ```
 `Company`, `PostingSummary`, `PostingDetail` bổ sung `companyVerified: boolean` (huy hiệu ✓).
 `JobPosting` (của Employer) bổ sung `hiddenAt: string | null; hiddenReason: string | null` — trang `/employer/postings` hiện nhãn "Bị ẩn" + lý do.
-Tài khoản bị khóa: `signInAction` trả 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.' (KHÔNG kèm lý do — tránh dò email/lộ lý do cho người chưa đăng nhập); API với token còn hạn trả 403 'Tài khoản đã bị khóa: <lý do>'; middleware đăng xuất + chuyển `/login?error=locked`.
+Tài khoản bị khóa: `signInAction` trả 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.' (KHÔNG kèm lý do — tránh dò email/lộ lý do cho người chưa đăng nhập); endpoint cần đăng nhập với token còn hạn trả 403 'Tài khoản đã bị khóa: <lý do>', endpoint công khai coi như khách; middleware đăng xuất + chuyển `/login?error=locked`.
 
 REST (FastAPI, require_admin): `GET /admin/stats` · `GET /admin/users` · `GET /admin/users/{id}` · `POST /admin/users/{id}/lock` (`{ locked, reason? }`) · `GET /admin/postings` · `POST /admin/postings/{id}/hidden` (`{ hidden, reason? }`) · `GET /admin/companies` · `POST /admin/companies/{id}/verified` (`{ verified }`) · `GET /admin/audit`.
 

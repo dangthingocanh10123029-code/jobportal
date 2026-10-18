@@ -4,7 +4,7 @@
 
 **Blocked by:** 31
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions + middleware)
 - [ ] Migration `20261017000500_admin.sql`:

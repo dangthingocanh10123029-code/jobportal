@@ -4,7 +4,7 @@
 
 **Blocked by:** 35
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `optional_user`: token không xác minh được (chữ ký/hết hạn/JWKS lỗi) → coi như khách (log warning), KHÔNG 401; `current_user`/`require_*` giữ nguyên 401/403. Tài khoản bị khóa ở endpoint công khai → khách (không lộ dữ liệu riêng)
 - [ ] JWKS: giữ bộ khóa tốt gần nhất khi lần tải lại thất bại (không từ chối mọi token vì một lần mạng chập chờn); `lifespan` dài hơn (vd 6 h) + tải lại khi gặp `kid` lạ; timeout tải ngắn
