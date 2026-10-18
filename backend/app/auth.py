@@ -51,7 +51,12 @@ def verify_token(token: str, jwks: jwt.PyJWKClient) -> dict[str, Any]:
     try:
         key = jwks.get_signing_key_from_jwt(token).key
         return jwt.decode(
-            token, key, algorithms=["ES256"], audience="authenticated", options={"require": ["exp", "sub"]}
+            token,
+            key,
+            algorithms=["ES256"],
+            audience="authenticated",
+            options={"require": ["exp", "sub"]},
+            leeway=30,  # Supabase's clock runs ahead of ours: a fresh token's `iat` can be seconds in the future
         )
     except jwt.PyJWTError as exc:
         raise DomainError(401, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn") from exc

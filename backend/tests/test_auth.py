@@ -98,13 +98,14 @@ def test_missing_token(client):
 @pytest.mark.parametrize(
     "bad",
     [
-        token("emp", exp=int(time.time()) - 10),
+        token("emp", exp=int(time.time()) - 60),
+        token("emp", iat=int(time.time()) + 120),
         token("emp", aud="other"),
         token("emp", key=OTHER_KEY),
         token("emp", kid="unknown"),
         "not-a-jwt",
     ],
-    ids=["expired", "wrong-aud", "bad-signature", "unknown-kid", "garbage"],
+    ids=["expired", "issued-in-future", "wrong-aud", "bad-signature", "unknown-kid", "garbage"],
 )
 def test_invalid_tokens_are_401_but_guest_on_public_reads(client, bad):
     res = client.get("/me", headers=bearer(bad))
@@ -112,6 +113,10 @@ def test_invalid_tokens_are_401_but_guest_on_public_reads(client, bad):
     assert res.json() == {"error": "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"}
     res = client.get("/maybe", headers=bearer(bad))
     assert res.status_code == 200 and res.json() == {"userId": None}
+
+
+def test_small_clock_skew_is_tolerated(client):
+    assert client.get("/me", headers=bearer(token("emp", iat=int(time.time()) + 5))).status_code == 200
 
 
 def test_hs256_token_is_rejected(client):
