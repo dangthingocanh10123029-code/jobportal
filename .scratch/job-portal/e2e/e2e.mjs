@@ -425,7 +425,7 @@ console.log(`${consoleErrors.length ? 'FAIL' : 'PASS'} Không có lỗi console/
 for (const line of consoleErrors.slice(0, 8)) console.log('     ' + line);
 await check('Admin: khóa Ứng viên → đăng nhập bị từ chối "đã bị khóa"', adm, async () => {
   await adm.goto(`${BASE}/admin/users?q=e2e.candidate`);
-  await adm.getByRole('link', { name: /Chi tiết/ }).first().click();
+  await adm.getByRole('link', { name: `Xem ${CANDIDATE}` }).click();
   await adm.waitForURL(/\/admin\/users\/[0-9a-f-]{36}/);
   await adm.locator('textarea[name=reason]').fill('Vi phạm điều khoản (kiểm thử E2E)');
   await adm.getByRole('button', { name: 'Khóa tài khoản' }).click();
