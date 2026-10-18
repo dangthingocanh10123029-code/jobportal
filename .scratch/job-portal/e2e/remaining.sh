@@ -4,8 +4,11 @@
 set -u
 E=${0:a:h}
 PG="$1"
-U=https://boncnxhjkbqxlcebzcyc.supabase.co
-K=sb_publishable_2cwu-aclstmPDlmU0JaZqA_nqCWaEYK
+# Project URL + publishable key from the repo's .env.local (works for whichever Supabase project is configured).
+ENVF="${ENV_FILE:-/Users/ccm/Documents/Đồ án của Ánh/jobportal/.env.local}"
+U=$(grep '^NEXT_PUBLIC_SUPABASE_URL=' "$ENVF" | cut -d= -f2-)
+K=$(grep '^NEXT_PUBLIC_SUPABASE_ANON_KEY=' "$ENVF" | cut -d= -f2-)
+REF=${U#https://}; REF=${REF%%.*}
 C=e2e00000-0000-4000-8000-0000000000c1
 EMP=e2e00000-0000-4000-8000-0000000000e1
 P=e2e00000-0000-4000-8000-0000000000a1
@@ -43,7 +46,7 @@ q "select '   còn trong bucket: ' || count(*) from storage.objects where name =
 
 echo "== 3. Supabase security advisor"
 AT=$(security find-generic-password -s "Supabase CLI" -w 2>/dev/null); case "$AT" in go-keyring-base64:*) AT=$(echo "${AT#go-keyring-base64:}" | base64 -d);; esac
-curl -s "https://api.supabase.com/v1/projects/boncnxhjkbqxlcebzcyc/advisors/security" -H "Authorization: Bearer $AT" | python3 -c '
+curl -s "https://api.supabase.com/v1/projects/$REF/advisors/security" -H "Authorization: Bearer $AT" | python3 -c '
 import json,sys
 d=json.load(sys.stdin); lints=d.get("lints",d if isinstance(d,list) else [])
 if not lints: print("   ", str(d)[:300])

@@ -4,8 +4,11 @@
 # usage: cleanup.sh "<session pooler URL>"
 set -u
 PG="$1"
-U=https://boncnxhjkbqxlcebzcyc.supabase.co
-K=sb_publishable_2cwu-aclstmPDlmU0JaZqA_nqCWaEYK
+# Project URL + publishable key from the repo's .env.local (works for whichever Supabase project is configured).
+ENVF="${ENV_FILE:-/Users/ccm/Documents/Đồ án của Ánh/jobportal/.env.local}"
+U=$(grep '^NEXT_PUBLIC_SUPABASE_URL=' "$ENVF" | cut -d= -f2-)
+K=$(grep '^NEXT_PUBLIC_SUPABASE_ANON_KEY=' "$ENVF" | cut -d= -f2-)
+REF=${U#https://}; REF=${REF%%.*}
 C=e2e00000-0000-4000-8000-0000000000c1
 q() { PGCONNECT_TIMEOUT=15 psql "$PG" -q -At -c "$1"; }
 
