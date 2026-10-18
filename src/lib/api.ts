@@ -19,9 +19,10 @@ export async function apiFetch<T>(path: string, { method = 'GET', body, formData
 
   const headers: Record<string, string> = {};
   if (auth) {
-    // getSession reads the cookie without re-verifying: middleware already verified it, and FastAPI checks the JWT.
-    const { data } = await (await createSupabaseServerClient()).auth.getSession();
-    if (data.session) headers.Authorization = `Bearer ${data.session.access_token}`;
+    // getSession reads the cookie without re-verifying: middleware already verified (and refreshed) it, and FastAPI checks the JWT.
+    // A token already expired (refresh failed) is not sent: the request goes out as a guest instead of failing.
+    const { session } = (await (await createSupabaseServerClient()).auth.getSession()).data;
+    if (session && (session.expires_at ?? Infinity) * 1000 > Date.now()) headers.Authorization = `Bearer ${session.access_token}`;
   }
   let payload: BodyInit | undefined = formData;
   if (!formData && body !== undefined) {

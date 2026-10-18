@@ -1,3 +1,4 @@
+import logging
 import time
 from dataclasses import dataclass
 from functools import lru_cache
@@ -11,6 +12,8 @@ from app.config import get_settings
 from app.db import user_tx
 from app.errors import DomainError
 
+log = logging.getLogger(__name__)
+
 Role = Literal["CANDIDATE", "EMPLOYER", "ADMIN"]
 
 
@@ -22,9 +25,25 @@ class Actor:
     token: str  # forwarded to Supabase Storage so storage policies apply
 
 
+class ResilientJwksClient(jwt.PyJWKClient):
+    """PyJWKClient that keeps serving the last good key set when a reload fails (a network blip must not reject every token)."""
+
+    _last_good: jwt.PyJWKSet | None = None
+
+    def get_jwk_set(self, refresh: bool = False) -> jwt.PyJWKSet:
+        try:
+            self._last_good = super().get_jwk_set(refresh)
+        except jwt.PyJWKClientConnectionError:
+            if self._last_good is None:
+                raise
+            log.warning("JWKS reload failed; using the last good key set", exc_info=True)
+        return self._last_good
+
+
 @lru_cache
 def get_jwks_client() -> jwt.PyJWKClient:
-    return jwt.PyJWKClient(get_settings().jwks_url, cache_keys=True)
+    # Supabase rotates keys rarely; an unknown `kid` forces a reload anyway (after PyJWT's 30 s cooldown).
+    return ResilientJwksClient(get_settings().jwks_url, cache_keys=True, lifespan=6 * 3600, timeout=5)
 
 
 def verify_token(token: str, jwks: jwt.PyJWKClient) -> dict[str, Any]:
@@ -32,7 +51,12 @@ def verify_token(token: str, jwks: jwt.PyJWKClient) -> dict[str, Any]:
     try:
         key = jwks.get_signing_key_from_jwt(token).key
         return jwt.decode(
-            token, key, algorithms=["ES256"], audience="authenticated", options={"require": ["exp", "sub"]}
+            token,
+            key,
+            algorithms=["ES256"],
+            audience="authenticated",
+            options={"require": ["exp", "sub"]},
+            leeway=30,  # Supabase's clock runs ahead of ours: a fresh token's `iat` can be seconds in the future
         )
     except jwt.PyJWTError as exc:
         raise DomainError(401, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn") from exc
@@ -75,27 +99,43 @@ def forget_account(user_id: str) -> None:
 _bearer = HTTPBearer(auto_error=False)
 
 
-def optional_user(
-    creds: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)],
-    jwks: Annotated[jwt.PyJWKClient, Depends(get_jwks_client)],
-) -> Actor | None:
-    if creds is None:
-        return None
-    claims = verify_token(creds.credentials, jwks)
+def authenticate(token: str, jwks: jwt.PyJWKClient) -> Actor:
+    """Bearer token → Actor; 401 for a bad token or missing profile, 403 for a locked account."""
+    claims = verify_token(token, jwks)
     account = cached_account(claims)
     if account is None:
         raise DomainError(401, "Tài khoản chưa có hồ sơ")
     role, locked_reason = account
-    # Every API, public reads included: a locked account's still-valid token stops working (contract §32).
     if locked_reason is not None:
         raise DomainError(403, f"Tài khoản đã bị khóa: {locked_reason}")
-    return Actor(user_id=claims["sub"], role=role, claims=claims, token=creds.credentials)
+    return Actor(user_id=claims["sub"], role=role, claims=claims, token=token)
 
 
-def current_user(actor: Annotated[Actor | None, Depends(optional_user)]) -> Actor:
-    if actor is None:
+def optional_user(
+    creds: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)],
+    jwks: Annotated[jwt.PyJWKClient, Depends(get_jwks_client)],
+) -> Actor | None:
+    """The caller, or None (guest). A token that fails `authenticate` also means guest: public reads never 401 on it."""
+    if creds is None:
+        return None
+    try:
+        return authenticate(creds.credentials, jwks)
+    except DomainError as exc:
+        log.warning("Bearer token rejected on a public read, serving as guest: %s", exc.message)
+        return None
+
+
+def current_user(
+    actor: Annotated[Actor | None, Depends(optional_user)],
+    creds: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)],
+    jwks: Annotated[jwt.PyJWKClient, Depends(get_jwks_client)],
+) -> Actor:
+    if actor is not None:
+        return actor
+    if creds is None:
         raise DomainError(401, "Vui lòng đăng nhập")
-    return actor
+    # optional_user fell back to guest: re-run to raise the precise 401/403 (locked: contract §32).
+    return authenticate(creds.credentials, jwks)
 
 
 def require_employer(actor: Annotated[Actor, Depends(current_user)]) -> Actor:

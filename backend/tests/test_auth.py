@@ -98,18 +98,25 @@ def test_missing_token(client):
 @pytest.mark.parametrize(
     "bad",
     [
-        token("emp", exp=int(time.time()) - 10),
+        token("emp", exp=int(time.time()) - 60),
+        token("emp", iat=int(time.time()) + 120),
         token("emp", aud="other"),
         token("emp", key=OTHER_KEY),
         token("emp", kid="unknown"),
         "not-a-jwt",
     ],
-    ids=["expired", "wrong-aud", "bad-signature", "unknown-kid", "garbage"],
+    ids=["expired", "issued-in-future", "wrong-aud", "bad-signature", "unknown-kid", "garbage"],
 )
-def test_invalid_tokens_are_401(client, bad):
-    res = client.get("/maybe", headers=bearer(bad))
+def test_invalid_tokens_are_401_but_guest_on_public_reads(client, bad):
+    res = client.get("/me", headers=bearer(bad))
     assert res.status_code == 401
     assert res.json() == {"error": "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"}
+    res = client.get("/maybe", headers=bearer(bad))
+    assert res.status_code == 200 and res.json() == {"userId": None}
+
+
+def test_small_clock_skew_is_tolerated(client):
+    assert client.get("/me", headers=bearer(token("emp", iat=int(time.time()) + 5))).status_code == 200
 
 
 def test_hs256_token_is_rejected(client):
@@ -120,6 +127,7 @@ def test_hs256_token_is_rejected(client):
 
 def test_user_without_profile_is_401(client):
     assert client.get("/me", headers=bearer(token("nobody"))).status_code == 401
+    assert client.get("/maybe", headers=bearer(token("nobody"))).json() == {"userId": None}
 
 
 def test_role_guards(client):
@@ -134,10 +142,40 @@ def test_role_guards(client):
         assert res.status_code == 403 and res.json() == {"error": "Chỉ quản trị viên được thực hiện thao tác này"}
 
 
-def test_locked_account_is_403_with_reason_everywhere(client):
-    for path in ("/me", "/maybe", "/cand"):
+def test_locked_account_is_403_with_reason_but_guest_on_public_reads(client):
+    for path in ("/me", "/cand"):
         res = client.get(path, headers=bearer(token("locked")))
         assert res.status_code == 403 and res.json() == {"error": "Tài khoản đã bị khóa: Spam tin nhắn"}
+    res = client.get("/maybe", headers=bearer(token("locked")))
+    assert res.status_code == 200 and res.json() == {"userId": None}
+
+
+def test_jwks_reload_failure_keeps_last_good_keys(monkeypatch):
+    jwk = {**json.loads(jwt.algorithms.ECAlgorithm.to_jwk(KEY.public_key())), "kid": "k1", "alg": "ES256"}
+    responses = [{"keys": [jwk]}]
+
+    def fetch_data(self):
+        if not responses:
+            raise jwt.PyJWKClientConnectionError("network down")
+        return responses.pop()
+
+    monkeypatch.setattr(auth.ResilientJwksClient, "fetch_data", fetch_data)
+    jwks = auth.ResilientJwksClient("https://example.test/jwks.json", lifespan=60)
+    assert auth.verify_token(token("emp"), jwks)["sub"] == "emp"
+    later = time.monotonic() + 120  # cached set expired, reload fails
+    monkeypatch.setattr(time, "monotonic", lambda: later)
+    assert auth.verify_token(token("emp"), jwks)["sub"] == "emp"
+    with pytest.raises(auth.DomainError):
+        auth.verify_token(token("emp", kid="k2"), jwks)  # unknown kid: forced reload fails, still 401
+
+
+def test_jwks_failure_without_any_keys_is_401(monkeypatch):
+    def fetch_data(self):
+        raise jwt.PyJWKClientConnectionError("network down")
+
+    monkeypatch.setattr(auth.ResilientJwksClient, "fetch_data", fetch_data)
+    with pytest.raises(auth.DomainError):
+        auth.verify_token(token("emp"), auth.ResilientJwksClient("https://example.test/jwks.json"))
 
 
 def test_account_is_cached_briefly_and_forgotten_on_lock(monkeypatch):
