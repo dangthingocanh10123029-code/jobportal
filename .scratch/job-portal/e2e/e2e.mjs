@@ -2,7 +2,7 @@
 import { chromium } from 'playwright';
 import { writeFileSync } from 'node:fs';
 
-const BASE = 'http://localhost:3000';
+const BASE = process.env.E2E_BASE ?? 'http://localhost:3000';
 const DIR = new URL('.', import.meta.url).pathname;
 const PASSWORD = 'E2eTest!2026';
 const EMPLOYER = 'e2e.employer@jobportal.test';
@@ -34,10 +34,10 @@ async function check(name, page, fn) {
   }
 }
 
-async function login(page, email) {
+async function login(page, email, password = PASSWORD) {
   await page.goto(`${BASE}/login`);
   await page.fill('input[name=email]', email);
-  await page.fill('input[name=password]', PASSWORD);
+  await page.fill('input[name=password]', password);
   await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
   await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 20000 });
 }
@@ -50,8 +50,9 @@ const emp = await employerCtx.newPage();
 const cand = await candidateCtx.newPage();
 const guest = await guestCtx.newPage();
 const consoleErrors = [];
+let expect404 = false; // a guest opening a hidden posting must get 404: not a console error
 for (const p of [emp, cand, guest]) {
-  p.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(`${p === emp ? 'emp' : p === cand ? 'cand' : 'guest'} ${p.url()}: ${m.text().slice(0, 200)}`); });
+  p.on('console', (m) => { if (m.type() === 'error' && !(expect404 && m.text().includes('404'))) consoleErrors.push(`${p === emp ? 'emp' : p === cand ? 'cand' : 'guest'} ${p.url()}: ${m.text().slice(0, 200)}`); });
   p.on('pageerror', (e) => consoleErrors.push(`pageerror ${p.url()}: ${e.message.slice(0, 200)}`));
   p.setDefaultTimeout(45000);
   p.setDefaultNavigationTimeout(60000);
@@ -312,6 +313,50 @@ await check('Nhà tuyển dụng thấy "Đã rút hồ sơ", không còn nút c
   if (await emp.getByRole('button', { name: 'Mời phỏng vấn' }).count()) throw new Error('vẫn còn nút');
 });
 
+// ---------- Admin ----------
+const adminCtx = await browser.newContext();
+const adm = await adminCtx.newPage();
+adm.setDefaultTimeout(45000); adm.setDefaultNavigationTimeout(60000); adm.on('dialog', (d) => d.accept());
+adm.on('pageerror', (e) => consoleErrors.push(`pageerror adm ${adm.url()}: ${e.message.slice(0, 200)}`));
+const postingRow = () => adm.locator('tr, article', { hasText: TITLE }).first();
+await check('Admin: đăng nhập, vào /admin thấy Tổng quan; Ứng viên vào /admin bị chặn', adm, async () => {
+  await login(adm, 'admin@demo.jobportal.test', 'DemoJob!2026');
+  await adm.goto(`${BASE}/admin`);
+  await adm.getByRole('heading', { name: 'Tổng quan' }).waitFor();
+  await cand.goto(`${BASE}/admin`);
+  if (new URL(cand.url()).pathname.startsWith('/admin')) throw new Error('Ứng viên vào được /admin');
+});
+await check('Admin: xác minh công ty → huy hiệu ✓ trên trang công ty', adm, async () => {
+  await adm.goto(`${BASE}/admin/companies?q=${encodeURIComponent('Công ty E2E')}`);
+  const row = adm.locator('tr, article', { hasText: 'Công ty E2E' }).first();
+  await row.getByRole('button', { name: 'Xác minh' }).click();
+  await row.getByRole('button', { name: /Bỏ xác minh/ }).waitFor();
+  await guest.goto(`${BASE}/companies/e2e00000-0000-4000-8000-0000000000e1`);
+  await guest.getByLabel('Công ty đã xác minh').first().waitFor();
+});
+await check('Admin: ẩn tin → khách nhận 404, không lộ nội dung; Employer thấy nhãn bị ẩn', adm, async () => {
+  await adm.goto(`${BASE}/admin/postings?q=${encodeURIComponent(TITLE)}`);
+  await postingRow().getByText('Kiểm duyệt').click();
+  await postingRow().locator('textarea[name=reason]').fill('Nội dung vi phạm quy định đăng tin (E2E)');
+  await postingRow().getByRole('button', { name: 'Ẩn tin' }).click();
+  await postingRow().getByRole('button', { name: 'Bỏ ẩn tin' }).waitFor();
+  expect404 = true;
+  const res = await guest.goto(jobUrl);
+  const leaked = (await guest.content()).includes(TITLE);
+  expect404 = false;
+  if (leaked) throw new Error('LỘ nội dung tin bị ẩn cho khách');
+  if (res.status() !== 404) throw new Error(`tin ẩn trả HTTP ${res.status()} thay vì 404`);
+  await emp.goto(`${BASE}/employer/postings`);
+  await emp.getByText('Tin đã bị ẩn bởi quản trị viên').waitFor();
+});
+await check('Admin: bỏ ẩn tin → khách xem lại được', adm, async () => {
+  if (!(await postingRow().getByRole('button', { name: 'Bỏ ẩn tin' }).isVisible())) await postingRow().getByText('Kiểm duyệt').click();
+  await postingRow().getByRole('button', { name: 'Bỏ ẩn tin' }).click();
+  await postingRow().getByRole('button', { name: 'Ẩn tin' }).waitFor();
+  const res = await guest.goto(jobUrl);
+  if (res.status() !== 200) throw new Error(`HTTP ${res.status()}`);
+});
+
 // ---------- Close posting ----------
 await check('Đóng tin → trang chi tiết báo "không còn nhận hồ sơ"', emp, async () => {
   await emp.goto(`${BASE}/employer/postings`);
@@ -378,6 +423,29 @@ await check('Đăng xuất → về /login, header có "Đăng nhập"', cand, a
 results.push([consoleErrors.length ? 'FAIL' : 'PASS', `Không có lỗi console/hydration (${consoleErrors.length})`]);
 console.log(`${consoleErrors.length ? 'FAIL' : 'PASS'} Không có lỗi console/hydration (${consoleErrors.length})`);
 for (const line of consoleErrors.slice(0, 8)) console.log('     ' + line);
+await check('Admin: khóa Ứng viên → đăng nhập bị từ chối "đã bị khóa"', adm, async () => {
+  await adm.goto(`${BASE}/admin/users?q=e2e.candidate`);
+  await adm.getByRole('link', { name: /Chi tiết/ }).first().click();
+  await adm.waitForURL(/\/admin\/users\/[0-9a-f-]{36}/);
+  await adm.locator('textarea[name=reason]').fill('Vi phạm điều khoản (kiểm thử E2E)');
+  await adm.getByRole('button', { name: 'Khóa tài khoản' }).click();
+  await adm.getByRole('button', { name: 'Mở khóa tài khoản' }).waitFor();
+  await cand.goto(`${BASE}/login`);
+  await cand.fill('input[name=email]', CANDIDATE);
+  await cand.fill('input[name=password]', PASSWORD);
+  await cand.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
+  await cand.getByText(/đã bị khóa|đang bị khóa/).first().waitFor();
+});
+await check('Admin: mở khóa → Ứng viên đăng nhập lại được', adm, async () => {
+  await adm.getByRole('button', { name: 'Mở khóa tài khoản' }).click();
+  await adm.getByRole('button', { name: 'Khóa tài khoản' }).waitFor();
+  await login(cand, CANDIDATE);
+});
+await check('Admin: nhật ký có đủ các thao tác vừa làm', adm, async () => {
+  await adm.goto(`${BASE}/admin/audit`);
+  for (const text of ['Công ty E2E', TITLE, 'e2e.candidate@jobportal.test']) await adm.getByText(text).first().waitFor();
+});
+
 await browser.close();
 const failed = results.filter(([s]) => s === 'FAIL').length;
 console.log(`\n${results.length - failed}/${results.length} PASS`);
