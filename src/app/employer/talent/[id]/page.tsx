@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { listMyPostings } from '@/actions/postings';
 import { getTalent } from '@/actions/talent';
 import { CvDocument } from '@/components/cv/cv-document';
+import { avatarFor } from '@/components/avatar';
 import { InviteTalentForm, SaveTalentForm } from '@/components/talent/talent-actions';
 
 export const metadata = { title: 'Hồ sơ ứng viên — Job Portal' };
@@ -21,7 +22,7 @@ export default async function TalentDetailPage({ params }: { params: Promise<{ i
         <div className="talent-detail-main">
           <section aria-label="Hồ sơ ứng viên" className="surface-card talent-profile-card">
             <div className="talent-card-head">
-              <span aria-hidden="true" className="talent-avatar">{talent.fullName.trim().charAt(0).toUpperCase() || '?'}</span>
+              <img alt="" className="talent-avatar" height="46" src={avatarFor(talent.candidateId)} width="46" />
               <div><h1>{talent.fullName}</h1><p>{talent.headline || 'Chưa có tiêu đề hồ sơ'}</p></div>
             </div>
             <div className="posting-meta">

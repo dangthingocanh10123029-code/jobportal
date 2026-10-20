@@ -62,7 +62,7 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.04em; line
 .surface-card { border: 1px solid var(--color-border); border-radius: 18px; background: var(--color-surface); box-shadow: var(--shadow-card); }
 .account-card { padding: 30px; }
 .account-summary { display: flex; align-items: center; gap: 16px; }
-.avatar-mark { display: grid; width: 56px; height: 56px; flex: 0 0 auto; place-items: center; border-radius: 17px; color: var(--color-primary-ink); background: var(--color-primary-soft); font-size: 22px; font-weight: 800; }
+.avatar-mark { display: block; width: 56px; height: 56px; flex: 0 0 auto; border-radius: 50%; background: var(--color-primary-soft); }
 .account-name { margin: 0 0 7px; font-size: 17px; font-weight: 700; }
 .role-badge { display: inline-flex; padding: 5px 9px; border-radius: 999px; color: var(--color-primary-ink); background: var(--color-primary-soft); font-size: 11px; font-weight: 700; }
 .card-divider { height: 1px; margin: 26px 0 22px; background: var(--color-border); }
@@ -1373,7 +1373,7 @@ html, body { background: #fff; }
 .talent-card-head h1 { font-size: 22px; }
 .talent-card-head h2 a:hover { color: var(--color-primary-ink); }
 .talent-card-head p { margin: 4px 0 0; color: var(--color-muted); font-size: 13px; overflow-wrap: anywhere; }
-.talent-avatar { display: grid; flex: 0 0 auto; width: 46px; height: 46px; place-items: center; border-radius: 50%; color: var(--color-primary-ink); background: var(--color-primary-soft); font-size: 18px; font-weight: 750; }
+.talent-avatar { display: block; flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%; background: var(--color-primary-soft); }
 .talent-skills { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
 .talent-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; gap: 20px; }
 .talent-detail-main { display: flex; min-width: 0; flex-direction: column; gap: 20px; }
