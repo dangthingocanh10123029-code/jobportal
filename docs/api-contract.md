@@ -475,7 +475,7 @@ type TalentSummary = {
   candidateId: string; fullName: string; headline: string | null; skills: string[];
   location: string | null; experienceYears: number | null; hasOnlineCv: boolean; updatedAt: string; saved: boolean;
 };
-type TalentDetail = TalentSummary & { profile: CandidateProfile; cv: OnlineCv | null };   // KHÔNG có email/phone
+type TalentDetail = TalentSummary & { profile: Omit<CandidateProfile, 'phone'>; cv: Omit<OnlineCv, 'email' | 'phone'> | null };   // view + API bỏ hẳn email/phone (không trả key)
 setOpenToWorkAction(input: { openToWork: boolean; location?: string; experienceYears?: number }): Promise<ActionResult<{ openToWork: boolean }>>   // Candidate; mặc định false
 searchTalent(filter: { q?: string; skill?: string; location?: string; minExperience?: number; page?: number }): Promise<Page<TalentSummary> | null>   // Employer; chỉ ứng viên openToWork, tài khoản không bị khóa
 getTalent(candidateId: string): Promise<TalentDetail | null>   // Employer; null nếu ứng viên tắt openToWork
@@ -485,6 +485,7 @@ inviteTalentAction(input: { candidateId: string; postingId: string; message?: st
   // tin PUBLISHED của chính Employer; mỗi cặp (ứng viên, tin) mời 1 lần; ≤ 20 lời mời/ngày/Employer → notification TALENT_INVITED (link /jobs/<postingId>)
 ```
 `CandidateProfile` bổ sung `openToWork: boolean; location: string | null; experienceYears: number | null`.
+Giới hạn: location 1–150; note lưu ứng viên ≤ 500; lời nhắn mời ≤ 1000; 20 lời mời / 24 giờ trượt → quá thì 429; mời trùng (ứng viên, tin) → 409; phân trang 20.
 
 ### 44 — Gợi ý việc + job alert (`@/actions/alerts`)
 ```ts
