@@ -362,6 +362,8 @@ Alt text tiếng Việt do Codex viết khi dùng ảnh; ảnh trang trí dùng 
 
 ### Bảng màu chung
 
+> **v6 (ticket 50, Soft Minimalism — `docs/design/soft-minimalism-brief.md`) thay bảng dưới:** primary #06B6D4 (nền nút, logo, chấm nhấn), chữ màu cyan #0E7490, tint #CFFAFE / #E6E6FA / #E8EFE8 / #EFEDF4, dark stone #292524, chữ #0B0F19 / #111827 / #4B5563 / #6B7280, viền #E7E5E4 / #F5F5F4, nền trắng. Ảnh mới (ticket 39, 48) vẽ theo bảng v6.
+
 Codex khai báo thành CSS variables, Antigravity vẽ ảnh theo đúng bảng này. Nền sáng (Light Mode, xem `NOTES.md`).
 
 | Token | Màu | Dùng cho |
