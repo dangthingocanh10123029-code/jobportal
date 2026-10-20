@@ -208,18 +208,37 @@ export type AdminPosting = PostingSummary & {
 export type AdminCompany = CompanySummary & { verifiedAt: string | null; employerEmail: string };
 
 export type AuditAction =
-  | 'USER_LOCKED' | 'USER_UNLOCKED' | 'POSTING_HIDDEN' | 'POSTING_UNHIDDEN' | 'COMPANY_VERIFIED' | 'COMPANY_UNVERIFIED';
+  | 'USER_LOCKED' | 'USER_UNLOCKED' | 'POSTING_HIDDEN' | 'POSTING_UNHIDDEN' | 'COMPANY_VERIFIED' | 'COMPANY_UNVERIFIED'
+  | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED';
 
 export type AuditEntry = {
   id: string;
   actorId: string;
   actorEmail: string;
   action: AuditAction;
-  targetType: 'USER' | 'POSTING' | 'COMPANY';
+  targetType: 'USER' | 'POSTING' | 'COMPANY' | 'ARTICLE';
   targetId: string;
   targetLabel: string;
   details: Record<string, string>;
   createdAt: string;
 };
 
-export type Page<T> = { items: T[]; total: number; page: number; pageSize: 20 };
+export type Page<T, Size extends number = 20> = { items: T[]; total: number; page: number; pageSize: Size };
+
+// v5 §46 — career guide.
+export type ArticleCategory = 'CV' | 'INTERVIEW' | 'SALARY' | 'CAREER' | 'WORKPLACE';
+export type ArticleStatus = 'DRAFT' | 'PUBLISHED';
+export type ArticleSummary = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: ArticleCategory;
+  coverImage: string; // '/images/articles/<category lowercase>.svg'
+  readingMinutes: number;
+  publishedAt: string; // null only on an Admin's draft
+  views: number;
+};
+export type Article = ArticleSummary & { content: string };
+export type AdminArticleSummary = ArticleSummary & { status: ArticleStatus };
+export type AdminArticle = Article & { status: ArticleStatus };

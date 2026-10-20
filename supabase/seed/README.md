@@ -76,3 +76,11 @@ psql "$DATABASE_URL" -v email=ten@congty.vn -f supabase/seed/make-admin.sql
 - Tài khoản phải tồn tại sẵn (đăng ký dạng Ứng viên trước). Script từ chối tài khoản Nhà tuyển dụng (Admin không được kiểm duyệt chính công ty/tin của mình) và xóa các trường hồ sơ ứng viên (headline, kỹ năng, kinh nghiệm, học vấn).
 - Seed demo tự tạo sẵn `admin@demo.jobportal.test` (cùng mật khẩu chung) theo đúng cách này.
 - Thu hồi quyền: không có script, cập nhật tay `update public.profiles set role = 'CANDIDATE' where id = …`.
+
+## Cẩm nang (ticket 46)
+
+15 bài viết tự viết cho dự án (3 bài mỗi chủ đề CV, Phỏng vấn, Lương, Sự nghiệp, Môi trường làm việc), đã đăng sẵn. Chạy sau migration `20261020000700_articles.sql`; chạy lại chỉ cập nhật nội dung theo `slug`, giữ lượt xem.
+
+```sh
+psql "$DATABASE_URL" -f supabase/seed/articles.sql
+```
