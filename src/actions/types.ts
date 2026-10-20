@@ -59,6 +59,9 @@ export type JobPosting = PostingInput & {
   /** Set when an Admin hid the posting (only its Employer and Admins see it then). */
   hiddenAt: string | null;
   hiddenReason: string | null;
+  /** Simulated paid featuring (§47); featured = featuredUntil > now. */
+  featuredUntil: string | null;
+  featured: boolean;
 };
 
 export type SearchFilter = {
@@ -80,7 +83,7 @@ export type SearchFilter = {
 export type PostingSummary = Pick<
   JobPosting,
   | 'id' | 'title' | 'companyName' | 'location' | 'employmentType' | 'salaryMin' | 'salaryMax' | 'applicationDeadline' | 'createdAt'
-  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl' | 'employerId' | 'companyVerified'
+  | 'industry' | 'level' | 'experienceYears' | 'skills' | 'companyLogoUrl' | 'employerId' | 'companyVerified' | 'featured'
 >;
 
 /** isOpen = PUBLISHED and not past the deadline (ADR-0001). */
@@ -196,6 +199,8 @@ export type AdminStats = {
   daily: { date: string; signups: number; applications: number; postings: number }[];
   topCompanies: { id: string; name: string; openPostings: number; applications: number }[];
   topIndustries: { industry: Industry; openPostings: number }[];
+  /** PAID orders of the simulated payment (§47); last 30 days by paidAt. */
+  revenue: { paidOrders: number; totalVnd: number; last30DaysVnd: number };
 };
 
 export type AdminUser = {
@@ -224,14 +229,14 @@ export type AdminCompany = CompanySummary & { verifiedAt: string | null; employe
 
 export type AuditAction =
   | 'USER_LOCKED' | 'USER_UNLOCKED' | 'POSTING_HIDDEN' | 'POSTING_UNHIDDEN' | 'COMPANY_VERIFIED' | 'COMPANY_UNVERIFIED'
-  | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED' | 'REVIEW_APPROVED' | 'REVIEW_REJECTED';
+  | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED' | 'REVIEW_APPROVED' | 'REVIEW_REJECTED' | 'PACKAGE_UPDATED';
 
 export type AuditEntry = {
   id: string;
   actorId: string;
   actorEmail: string;
   action: AuditAction;
-  targetType: 'USER' | 'POSTING' | 'COMPANY' | 'ARTICLE' | 'REVIEW';
+  targetType: 'USER' | 'POSTING' | 'COMPANY' | 'ARTICLE' | 'REVIEW' | 'PACKAGE';
   targetId: string;
   targetLabel: string;
   details: Record<string, string>;
@@ -403,3 +408,33 @@ export type JobAlert = {
 };
 /** matchReasons in Vietnamese, e.g. 'Khớp kỹ năng: Excel, MISA'. */
 export type RecommendedPosting = PostingSummary & { matchReasons: string[] };
+// v5 §47 — service packages / featured postings. PAYMENT IS SIMULATED: no money is taken.
+export type ServicePackage = {
+  id: string;
+  /** A–Z, 0–9, _; 2–30; unique. */
+  code: string;
+  /** 2–100 */
+  name: string;
+  /** ≤ 500, may be ''. */
+  description: string;
+  /** 0–100.000.000 */
+  priceVnd: number;
+  /** 1–90 */
+  durationDays: number;
+  active: boolean;
+};
+export type OrderStatus = 'PENDING' | 'PAID' | 'CANCELLED';
+export type Order = {
+  id: string;
+  packageName: string;
+  postingId: string;
+  postingTitle: string;
+  /** The package price when ordered. */
+  amountVnd: number;
+  status: OrderStatus;
+  createdAt: string;
+  paidAt: string | null;
+  /** The posting's featured_until right after this payment. */
+  featuredUntil: string | null;
+};
+export type AdminOrder = Order & { employerEmail: string; companyName: string };

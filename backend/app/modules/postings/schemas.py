@@ -161,10 +161,13 @@ class StoredPosting(PostingFields):
     # Set by an Admin (contract §32); RLS shows a hidden posting only to its Employer and Admins.
     hidden_at: datetime | None = None
     hidden_reason: str | None = None
+    # Paid simulated featuring (ticket 47); only pay_order sets it.
+    featured_until: datetime | None = None
 
 
 class JobPosting(StoredPosting):
     display_status: DisplayStatus
+    featured: bool = False
 
 
 class PostingDetail(JobPosting):
@@ -188,6 +191,7 @@ class PostingSummary(CamelModel):
     level: JobLevel
     experience_years: int
     skills: list[str]
+    featured: bool = False
 
 
 class OpenPostingsPage(CamelModel):

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getAdminStats } from '@/actions/admin';
 import { AdminBadge, AdminHeading, AdminPanel, formatAdminDate, industryLabels } from '@/components/admin/admin-common';
+import { formatVnd } from '@/components/billing/labels';
 import { StatCard } from '@/components/ui/primitives';
 
 function chartPath(values: number[], max: number) {
@@ -19,6 +20,7 @@ export default async function AdminDashboardPage() {
       <StatCard detail={`${stats.postings.PUBLISHED} đang tuyển · ${stats.postings.hidden} bị ẩn`} icon="▤" label="Tin tuyển dụng" value={stats.postings.DRAFT + stats.postings.PUBLISHED + stats.postings.CLOSED + stats.postings.EXPIRED} />
       <StatCard detail={`${stats.applications.SUBMITTED} hồ sơ mới`} icon="▣" label="Đơn ứng tuyển" value={Object.values(stats.applications).reduce((sum, count) => sum + count, 0)} />
       <StatCard detail={stats.users.locked ? `${stats.users.locked} tài khoản đang khóa` : 'Tất cả tài khoản đều hoạt động'} icon="⌑" label="Tài khoản bị khóa" value={stats.users.locked} />
+      {stats.revenue ? <StatCard detail={`${stats.revenue.paidOrders} đơn đã thanh toán · 30 ngày: ${formatVnd(stats.revenue.last30DaysVnd)} (giả lập)`} icon="₫" label="Doanh thu gói dịch vụ" value={formatVnd(stats.revenue.totalVnd)} /> : null}
     </section>
     <AdminPanel className="admin-chart-panel" title="Hoạt động 30 ngày">
       <div aria-label="Biểu đồ số lượt đăng ký, ứng tuyển và đăng tin mỗi ngày trong 30 ngày gần nhất" className="admin-chart-wrap" role="img">

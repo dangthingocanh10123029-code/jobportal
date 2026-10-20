@@ -50,7 +50,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
             <img alt="" className="company-placeholder company-placeholder-large" height="64" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="64" />
             <div className="posting-detail-title">
               <span className="eyebrow">Cơ hội nghề nghiệp</span>
-              <h1>{posting.title}</h1>
+              <h1>{posting.title}{posting.featured ? <> <span className="featured-badge">Nổi bật</span></> : null}</h1>
               <p><Link href={`/companies/${posting.employerId}`}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
             </div>
             {profile?.role === 'CANDIDATE' ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}

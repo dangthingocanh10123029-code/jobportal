@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/47-a-billing-featured`
 - [ ] Migration `supabase/migrations/20261020000800_billing.sql`:

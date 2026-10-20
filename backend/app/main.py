@@ -11,6 +11,7 @@ from app.modules.admin.router import router as admin_router
 from app.modules.alerts.router import router as alerts_router
 from app.modules.applications.router import router as applications_router
 from app.modules.articles.router import router as articles_router
+from app.modules.billing.router import router as billing_router
 from app.modules.candidates.router import router as candidates_router
 from app.modules.companies.router import router as companies_router
 from app.modules.cv.router import router as cv_router
@@ -56,3 +57,4 @@ app.include_router(cv_router)
 app.include_router(reviews_router)
 app.include_router(talent_router)
 app.include_router(alerts_router)
+app.include_router(billing_router)

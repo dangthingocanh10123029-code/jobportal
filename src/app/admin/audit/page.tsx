@@ -3,8 +3,8 @@ import type { AuditAction } from '@/actions/types';
 import { AdminBadge, AdminEmpty, AdminHeading, AdminPager, AdminPanel, AdminTable, formatAdminDate } from '@/components/admin/admin-common';
 
 type Params = { action?: string; page?: string };
-const actions: AuditAction[] = ['USER_LOCKED', 'USER_UNLOCKED', 'POSTING_HIDDEN', 'POSTING_UNHIDDEN', 'COMPANY_VERIFIED', 'COMPANY_UNVERIFIED', 'ARTICLE_PUBLISHED', 'ARTICLE_UNPUBLISHED', 'REVIEW_APPROVED', 'REVIEW_REJECTED'];
-const labels: Record<AuditAction, string> = { USER_LOCKED: 'Khóa tài khoản', USER_UNLOCKED: 'Mở khóa tài khoản', POSTING_HIDDEN: 'Ẩn tin', POSTING_UNHIDDEN: 'Bỏ ẩn tin', COMPANY_VERIFIED: 'Xác minh công ty', COMPANY_UNVERIFIED: 'Bỏ xác minh', ARTICLE_PUBLISHED: 'Đăng bài cẩm nang', ARTICLE_UNPUBLISHED: 'Gỡ bài cẩm nang', REVIEW_APPROVED: 'Duyệt đánh giá', REVIEW_REJECTED: 'Từ chối đánh giá' };
+const actions: AuditAction[] = ['USER_LOCKED', 'USER_UNLOCKED', 'POSTING_HIDDEN', 'POSTING_UNHIDDEN', 'COMPANY_VERIFIED', 'COMPANY_UNVERIFIED', 'ARTICLE_PUBLISHED', 'ARTICLE_UNPUBLISHED', 'REVIEW_APPROVED', 'REVIEW_REJECTED', 'PACKAGE_UPDATED'];
+const labels: Record<AuditAction, string> = { USER_LOCKED: 'Khóa tài khoản', USER_UNLOCKED: 'Mở khóa tài khoản', POSTING_HIDDEN: 'Ẩn tin', POSTING_UNHIDDEN: 'Bỏ ẩn tin', COMPANY_VERIFIED: 'Xác minh công ty', COMPANY_UNVERIFIED: 'Bỏ xác minh', ARTICLE_PUBLISHED: 'Đăng bài cẩm nang', ARTICLE_UNPUBLISHED: 'Gỡ bài cẩm nang', REVIEW_APPROVED: 'Duyệt đánh giá', REVIEW_REJECTED: 'Từ chối đánh giá', PACKAGE_UPDATED: 'Cập nhật gói dịch vụ' };
 
 export default async function AdminAuditPage({ searchParams }: { searchParams: Promise<Params> }) {
   const params = await searchParams;

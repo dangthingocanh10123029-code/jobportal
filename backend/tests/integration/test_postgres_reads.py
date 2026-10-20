@@ -27,6 +27,7 @@ from app.modules.postings.schemas import SearchFilter
 from app.modules.profiles.postgres import PostgresProfileRepository
 from tests.integration.conftest import (
     apply_admin_migration,
+    apply_billing_migration,
     apply_online_cv_migration,
     apply_reviews_migration,
     apply_talent_migration,
@@ -70,6 +71,7 @@ def seed():
         apply_online_cv_migration(conn)
         apply_reviews_migration(conn)  # company_summaries.rating (45)
         apply_talent_migration(conn)
+        apply_billing_migration(conn)  # job_postings.featured_until (47)
         employer, candidate = uuid4(), uuid4()
         for user_id, meta in [
             (employer, '{"role": "EMPLOYER", "company_name": "Cty Tích Hợp"}'),

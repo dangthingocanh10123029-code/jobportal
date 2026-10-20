@@ -32,6 +32,7 @@ def camel_posting(r):
         "experienceYears": r[13],
         "skills": r[14],
         "companyVerified": r[15],
+        "featured": bool(r[16]),
     }
 
 
@@ -75,7 +76,8 @@ class PostgresCompanyRepository:
         with user_tx(self.claims) as conn:
             rows = conn.execute(
                 """select id,employer_id,title,company_name,company_logo_url,location,employment_type,salary_min,salary_max,
-                application_deadline,created_at,industry,level,experience_years,skills,company_verified from public.open_job_postings
+                application_deadline,created_at,industry,level,experience_years,skills,company_verified,
+                featured_until > now() from public.open_job_postings
                 where employer_id=%s order by created_at desc""",
                 (company_id,),
             ).fetchall()

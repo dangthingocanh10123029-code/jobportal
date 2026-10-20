@@ -13,7 +13,7 @@ const ROLES = ['CANDIDATE', 'EMPLOYER', 'ADMIN'] as const satisfies readonly Rol
 const STATUSES = ['DRAFT', 'PUBLISHED', 'CLOSED', 'EXPIRED'] as const satisfies readonly DisplayPostingStatus[];
 const ACTIONS = [
   'USER_LOCKED', 'USER_UNLOCKED', 'POSTING_HIDDEN', 'POSTING_UNHIDDEN', 'COMPANY_VERIFIED', 'COMPANY_UNVERIFIED',
-  'ARTICLE_PUBLISHED', 'ARTICLE_UNPUBLISHED', 'REVIEW_APPROVED', 'REVIEW_REJECTED',
+  'ARTICLE_PUBLISHED', 'ARTICLE_UNPUBLISHED', 'REVIEW_APPROVED', 'REVIEW_REJECTED', 'PACKAGE_UPDATED',
 ] as const satisfies readonly AuditAction[];
 
 // Locking/hiding needs a reason; undoing it does not (any reason sent is dropped).

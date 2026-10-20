@@ -25,6 +25,11 @@ def is_open(status: PostingStatus, deadline: datetime, now: datetime) -> bool:
     return display_status(status, deadline, now) == "PUBLISHED"
 
 
+def is_featured(featured_until: datetime | None, now: datetime) -> bool:
+    """Ticket 47: a paid (simulated) featuring still running. Mirrored by the 'newest' ORDER BY in postgres.py."""
+    return featured_until is not None and featured_until > now
+
+
 def fold_accents(text: str) -> str:
     """Accent- and case-insensitive form ("Kế toán" → "ke toan", "Đ" → "d"); mirrors public.f_unaccent."""
     stripped = "".join(c for c in unicodedata.normalize("NFD", text) if not unicodedata.category(c).startswith("M"))

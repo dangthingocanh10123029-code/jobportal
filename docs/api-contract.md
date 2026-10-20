@@ -559,6 +559,7 @@ savePackageAction(input: { id?: string; code: string; name: string; description:
   // code A–Z0–9_ 2–30 duy nhất; priceVnd 0–100.000.000; durationDays 1–90; ghi audit
 listAdminOrders(filter: { status?: OrderStatus; page?: number }): Promise<Page<Order & { employerEmail: string; companyName: string }> | null>
 ```
+Giới hạn chốt khi làm 47: tên gói 2–100, mô tả ≤ 500; mỗi tin tối đa 1 đơn PENDING.
 `PostingSummary`/`PostingDetail` bổ sung `featured: boolean` (featured_until > now). Danh sách công khai: tin nổi bật lên đầu khi sort = 'newest'; trang chủ có khối "Việc làm nổi bật" (≤ 6). `AdminStats` bổ sung `revenue: { paidOrders: number; totalVnd: number; last30DaysVnd: number }`. Trang thanh toán ghi rõ "Thanh toán giả lập — không thu tiền thật".
 
 ### Routes v5 (Codex)
