@@ -11,3 +11,9 @@ def apply_admin_migration(conn) -> None:
         "where table_name = 'admin_audit_log' and column_name = 'seq')"
     if conn.execute(seq_missing).fetchone()[0]:
         conn.execute((MIGRATIONS / "20261017000600_audit_order.sql").read_text())
+
+
+def apply_interviews_migration(conn) -> None:
+    """Until the Coordinator pushes ticket 40, run its migration inside the (rolled-back) test transaction."""
+    if conn.execute("select to_regclass('public.interviews') is null").fetchone()[0]:
+        conn.execute((MIGRATIONS / "20261020000100_interviews.sql").read_text())

@@ -154,7 +154,9 @@ export type SavedPostingSummary = PostingSummary & { isOpen: boolean; savedAt: s
 export type NotificationType =
   | 'APPLICATION_RECEIVED' | 'APPLICATION_STATUS_CHANGED' | 'APPLICATION_WITHDRAWN'
   /** To the Employer when an Admin hides their posting; the body carries the reason. */
-  | 'POSTING_HIDDEN';
+  | 'POSTING_HIDDEN'
+  | 'INTERVIEW_SCHEDULED' | 'INTERVIEW_RESPONDED' | 'INTERVIEW_CANCELLED'
+  | 'TALENT_INVITED' | 'JOB_ALERT' | 'REVIEW_MODERATED' | 'ORDER_PAID';
 
 export type AppNotification = {
   id: string;
@@ -223,3 +225,27 @@ export type AuditEntry = {
 };
 
 export type Page<T> = { items: T[]; total: number; page: number; pageSize: 20 };
+
+export type InterviewMode = 'ONLINE' | 'ONSITE';
+export type InterviewStatus = 'PROPOSED' | 'CONFIRMED' | 'DECLINED' | 'RESCHEDULE_REQUESTED' | 'CANCELLED' | 'DONE';
+export type Interview = {
+  id: string;
+  applicationId: string;
+  postingId: string;
+  postingTitle: string;
+  companyName: string;
+  candidateName: string;
+  scheduledAt: string;
+  /** 15–240 */
+  durationMinutes: number;
+  mode: InterviewMode;
+  /** ONLINE: http(s) URL; ONSITE: address, 5–300 characters. */
+  location: string;
+  /** The Employer's, ≤ 1000. */
+  note: string | null;
+  status: InterviewStatus;
+  /** ≤ 500; always set when RESCHEDULE_REQUESTED. */
+  candidateNote: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
