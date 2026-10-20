@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from app.auth import Role
-from app.modules.applications.domain import ApplicationStatus
+from app.modules.applications.domain import ApplicationStatus, CvSource
 from app.schemas import CamelModel
 
 
@@ -11,6 +11,7 @@ class Application(CamelModel):
     job_posting_id: UUID
     candidate_id: UUID
     status: ApplicationStatus
+    cv_source: CvSource
     created_at: datetime
     updated_at: datetime
 

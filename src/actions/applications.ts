@@ -20,10 +20,12 @@ import type {
   StatusChange,
 } from './types';
 
-/** FormData fields: postingId, resume (PDF ≤ 5 MB). FastAPI uploads the Resume, then submits atomically. */
+/** FormData fields: postingId, cvSource ('FILE' default | 'ONLINE'), resume (PDF ≤ 5 MB, FILE only).
+ * FastAPI uploads the Resume (or snapshots the online CV), then submits atomically. */
 export async function submitApplicationAction(formData: FormData): Promise<ActionResult<Application>> {
   if (!(formData instanceof FormData)) return fail('Dữ liệu không hợp lệ');
   const parsed = await submitApplicationSchema.safeParseAsync({
+    cvSource: formData.get('cvSource') ?? 'FILE',
     postingId: formData.get('postingId') ?? '',
     resume: formData.get('resume') ?? undefined,
   });

@@ -20,11 +20,14 @@ class InMemoryApplicationRepository:
 
     def __init__(self, postings: dict[UUID, tuple[UUID, str, bool]] | None = None):
         self.postings = postings or {}
-        self.rows: dict[UUID, tuple[Application, str]] = {}  # insertion order stands in for created_at
+        self.rows: dict[UUID, tuple[Application, str | None]] = {}  # insertion order stands in for created_at
         self.changes: dict[UUID, list[StatusChange]] = {}
+        self.cvs: set[UUID] = set()  # Candidates who have an online CV
 
-    def submit(self, candidate_id: UUID, posting_id: UUID, resume_path: str) -> Application:
-        if not resume_path.startswith(f"{candidate_id}/"):
+    def submit(self, candidate_id: UUID, posting_id: UUID, resume_path: str | None) -> Application:
+        if resume_path is None and candidate_id not in self.cvs:
+            raise ApplicationError("CV_NOT_FOUND")
+        if resume_path is not None and not resume_path.startswith(f"{candidate_id}/"):
             raise ApplicationError("INVALID_RESUME")
         posting = self.postings.get(posting_id)
         if posting is None or not posting[2]:
@@ -34,7 +37,7 @@ class InMemoryApplicationRepository:
         at = datetime.now(UTC)
         app = Application(
             id=uuid4(), job_posting_id=posting_id, candidate_id=candidate_id, status="SUBMITTED",
-            created_at=at, updated_at=at,
+            cv_source="FILE" if resume_path else "ONLINE", created_at=at, updated_at=at,
         )
         self.rows[app.id] = (app, resume_path)
         self.changes[app.id] = [

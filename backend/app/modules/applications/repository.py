@@ -12,8 +12,8 @@ from app.modules.applications.schemas import (
 
 
 class ApplicationRepository(Protocol):
-    def submit(self, candidate_id: UUID, posting_id: UUID, resume_path: str) -> Application:
-        """Atomically: POSTING_NOT_OPEN unless the posting is open, ALREADY_APPLIED on a second try (ADR-0002);
+    def submit(self, candidate_id: UUID, posting_id: UUID, resume_path: str | None) -> Application:
+        """`resume_path` None = apply with the online CV (CV_NOT_FOUND without one), snapshotted in. Atomically: POSTING_NOT_OPEN unless the posting is open, ALREADY_APPLIED on a second try (ADR-0002);
         otherwise writes the SUBMITTED Application and its first Status Change together."""
         ...
     def find_by_posting(self, candidate_id: UUID, posting_id: UUID) -> Application | None: ...

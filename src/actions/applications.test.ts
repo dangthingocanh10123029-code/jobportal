@@ -41,6 +41,22 @@ describe('submitApplicationAction — input sai', () => {
     expect(await submitApplicationAction(data)).toEqual({ success: false, error });
   });
 
+  it.each([
+    ['nguồn CV lạ', form({ postingId: POSTING_ID, cvSource: 'LINK' }), 'Nguồn CV không hợp lệ'],
+    ['ONLINE nhưng mã tin sai', form({ postingId: '1', cvSource: 'ONLINE' }), 'Mã tin không hợp lệ'],
+    ['FILE tường minh vẫn cần file', form({ postingId: POSTING_ID, cvSource: 'FILE' }), 'Vui lòng chọn file CV'],
+  ])('cvSource: %s', async (_, data, error) => {
+    expect(await submitApplicationAction(data)).toEqual({ success: false, error });
+    expect(apiFetch).not.toHaveBeenCalled();
+  });
+
+  it('cvSource ONLINE: không cần file, gửi form lên API', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: true, data: { cvSource: 'ONLINE' } } as never);
+    const data = form({ postingId: POSTING_ID, cvSource: 'ONLINE' });
+    expect(await submitApplicationAction(data)).toEqual({ success: true, data: { cvSource: 'ONLINE' } });
+    expect(apiFetch).toHaveBeenCalledWith('/applications', { method: 'POST', formData: data });
+  });
+
   it('không phải FormData', async () => {
     expect(await submitApplicationAction({ postingId: POSTING_ID } as never)).toEqual({
       success: false,

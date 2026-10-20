@@ -93,6 +93,8 @@ export type Application = {
   jobPostingId: string;
   candidateId: string;
   status: ApplicationStatus;
+  /** ONLINE: applied with the online CV (snapshot, no resume file). */
+  cvSource: 'FILE' | 'ONLINE';
   createdAt: string;
   updatedAt: string;
 };
@@ -292,4 +294,44 @@ export type Conversation = {
   unread: number;
   /** false once the Application is WITHDRAWN, REJECTED or HIRED. */
   canSend: boolean;
+};
+
+export type CvTemplate = 'CLASSIC' | 'MODERN';
+
+export type CvItem = {
+  /** 1–150. */
+  title: string;
+  /** 1–150. */
+  organization: string;
+  /** 'YYYY-MM'. */
+  startDate: string;
+  /** 'YYYY-MM'; null = hiện tại. */
+  endDate: string | null;
+  /** ≤ 2000, may be ''. */
+  description: string;
+};
+
+export type OnlineCv = {
+  candidateId: string;
+  template: CvTemplate;
+  /** 1–100. */
+  fullName: string;
+  /** ≤ 150. */
+  headline: string | null;
+  email: string;
+  phone: string | null;
+  /** ≤ 150. */
+  location: string | null;
+  /** ≤ 2000. */
+  summary: string | null;
+  /** ≤ 15 each. */
+  experiences: CvItem[];
+  educations: CvItem[];
+  /** ≤ 30, each 1–30. */
+  skills: string[];
+  /** ≤ 10, each 1–30. */
+  languages: string[];
+  /** ≤ 15; name/issuer ≤ 150; year 1950–2100. */
+  certifications: { name: string; issuer: string | null; year: number | null }[];
+  updatedAt: string;
 };

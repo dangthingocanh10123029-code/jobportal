@@ -265,4 +265,35 @@ select pg_temp.fails($$select count(*) from messages$$, 'permission denied', '41
 select pg_temp.fails($$select send_message(gen_random_uuid(), 'x')$$, 'permission denied', '41 anon không gọi được send_message');
 reset role;
 
+-- ===== 42: online CV (cần migration 20261020000300_online_cv.sql; c1 nộp ONLINE vào p_open sau khi đơn cũ bị xóa) =====
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.fails(format($$select submit_application('%s', null, 'ONLINE')$$, (select p_open from ids)), 'CV_NOT_FOUND', '42 chưa có CV online thì không nộp ONLINE được');
+insert into candidate_cvs (candidate_id, template, full_name, email, experiences)
+  values (auth.uid(), 'CLASSIC', 'Ứng viên Một', 'c1@example.vn', '[{"title":"Kế toán","organization":"ACME","start_date":"2020-01","end_date":null,"description":""}]');
+select pg_temp.ok((select count(*) from candidate_cvs) = 1, '42 Candidate tạo và đọc CV của mình');
+select pg_temp.fails($$insert into candidate_cvs (candidate_id, template, full_name, email, skills) values (auth.uid(), 'CLASSIC', 'A', 'a@b.vn', array_fill('x'::text, array[31]))$$, 'check|duplicate', '42 CHECK giới hạn (hoặc trùng 1 CV/người)');
+select pg_temp.fails($$update candidate_cvs set experiences = (select jsonb_agg(e) from generate_series(1, 16) e)$$, 'check', '42 CHECK tối đa 15 kinh nghiệm');
+reset role;
+delete from applications where id in (select id from app);
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.ok((select (submit_application((select p_open from ids), null, 'ONLINE')).cv_source) = 'ONLINE', '42 nộp đơn bằng CV online');
+update candidate_cvs set full_name = 'Tên Mới';
+reset role;
+select pg_temp.as_user((select c2 from ids));
+select pg_temp.ok((select count(*) from candidate_cvs) = 0, '42 RLS: Candidate khác không thấy CV');
+with u as (update candidate_cvs set full_name = 'x' returning 1) select pg_temp.ok((select count(*) from u) = 0, '42 RLS: Candidate khác không sửa được CV');
+reset role;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.ok((select count(*) from candidate_cvs) = 0, '42 Employer không đọc bảng candidate_cvs');
+select pg_temp.fails($$insert into candidate_cvs (candidate_id, template, full_name, email) values (auth.uid(), 'CLASSIC', 'A', 'a@b.vn')$$, 'row-level security', '42 Employer không tạo CV');
+select pg_temp.ok((select online_cv ->> 'full_name' from employer_application_summaries where candidate_id = (select c1 from ids)) = 'Ứng viên Một', '42 Employer chủ tin thấy bản chụp lúc nộp (không đổi khi sửa CV)');
+reset role;
+select pg_temp.as_user((select e2 from ids));
+select pg_temp.ok((select count(*) from employer_application_summaries where cv_source = 'ONLINE') = 0, '42 Employer khác không thấy bản chụp');
+reset role;
+select pg_temp.fails($$update applications set online_cv = '{}' where cv_source = 'ONLINE'$$, 'fixed', '42 bản chụp CV không sửa được');
+select pg_temp.as_anon();
+select pg_temp.fails($$select count(*) from candidate_cvs$$, 'permission denied', '42 anon không đọc candidate_cvs');
+reset role;
+
 rollback;

@@ -22,7 +22,8 @@ export const resumeUrlSchema = z.object({ applicationId: applicationIdSchema });
 
 const PDF_MAGIC = '%PDF-';
 
-export const submitApplicationSchema = z.object({
+const fileApplication = z.object({
+  cvSource: z.literal('FILE'),
   postingId: postingIdSchema,
   resume: z
     .instanceof(File, { message: 'Vui lòng chọn file CV' })
@@ -32,3 +33,10 @@ export const submitApplicationSchema = z.object({
     // The declared type comes from the client; the first bytes do not lie.
     .refine(async (file) => (await file.slice(0, PDF_MAGIC.length).text()) === PDF_MAGIC, 'CV phải là file PDF'),
 });
+
+/** FILE (default): upload `resume`. ONLINE: the online CV is snapshotted into the Application, no file. */
+export const submitApplicationSchema = z.discriminatedUnion(
+  'cvSource',
+  [fileApplication, z.object({ cvSource: z.literal('ONLINE'), postingId: postingIdSchema })],
+  { errorMap: (issue, ctx) => ({ message: issue.code === 'invalid_union_discriminator' ? 'Nguồn CV không hợp lệ' : ctx.defaultError }) },
+);
