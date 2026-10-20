@@ -25,7 +25,7 @@ from app.modules.notifications.postgres import PostgresNotificationRepository
 from app.modules.postings.postgres import PostgresPostingRepository
 from app.modules.postings.schemas import SearchFilter
 from app.modules.profiles.postgres import PostgresProfileRepository
-from tests.integration.conftest import apply_admin_migration, apply_online_cv_migration
+from tests.integration.conftest import apply_admin_migration, apply_talent_migration
 
 DATABASE_URL = os.environ.get("INTEGRATION_DATABASE_URL")
 pytestmark = [
@@ -62,7 +62,7 @@ def _claims(user_id: UUID) -> dict:
 def seed():
     with psycopg.connect(DATABASE_URL) as conn, conn.transaction(force_rollback=True), pytest.MonkeyPatch.context() as mp:
         apply_admin_migration(conn)
-        apply_online_cv_migration(conn)
+        apply_talent_migration(conn)
         employer, candidate = uuid4(), uuid4()
         for user_id, meta in [
             (employer, '{"role": "EMPLOYER", "company_name": "Cty Tích Hợp"}'),

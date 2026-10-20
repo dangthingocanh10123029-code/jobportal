@@ -84,3 +84,11 @@ psql "$DATABASE_URL" -v email=ten@congty.vn -f supabase/seed/make-admin.sql
 ```sh
 psql "$DATABASE_URL" -f supabase/seed/articles.sql
 ```
+
+## Tìm ứng viên (ticket 43)
+
+20/30 ứng viên demo bật "Sẵn sàng tìm việc" kèm địa điểm và số năm kinh nghiệm; 10 người còn lại ẩn khỏi tìm kiếm. Chạy sau migration `20261020000400_talent.sql` và `seed-demo.sql` (seed-demo tạo lại ứng viên nên cần chạy lại file này sau mỗi lần seed).
+
+```sh
+psql "$DATABASE_URL" -f supabase/seed/talent.sql
+```

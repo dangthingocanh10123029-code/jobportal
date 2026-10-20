@@ -36,3 +36,10 @@ def apply_online_cv_migration(conn) -> None:
     """Until the Coordinator pushes ticket 42, run its migration inside the (rolled-back) test transaction."""
     if conn.execute("select to_regclass('public.candidate_cvs') is null").fetchone()[0]:
         conn.execute((MIGRATIONS / "20261020000300_online_cv.sql").read_text())
+
+
+def apply_talent_migration(conn) -> None:
+    """Until the Coordinator pushes ticket 43, run its migration inside the (rolled-back) test transaction."""
+    apply_online_cv_migration(conn)
+    if conn.execute("select to_regclass('public.talent_profiles') is null").fetchone()[0]:
+        conn.execute((MIGRATIONS / "20261020000400_talent.sql").read_text())

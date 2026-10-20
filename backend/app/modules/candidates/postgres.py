@@ -3,12 +3,12 @@ from datetime import UTC
 from app.db import user_tx
 from app.modules.candidates.domain import CandidateProfile
 
-PROFILE_COLS = "id,full_name,phone,headline,skills,experience,education"
+PROFILE_COLS = "id,full_name,phone,headline,skills,experience,education,open_to_work,location,experience_years"
 
 
 def profile(row):
     return CandidateProfile(
-        str(row[0]), row[1], row[2], row[3], row[4] or [], row[5], row[6]
+        str(row[0]), row[1], row[2], row[3], row[4] or [], *row[5:]
     )
 
 
@@ -59,16 +59,10 @@ class PostgresCandidateRepository:
     def applicant_profile(self, application_id):
         with user_tx(self.claims) as conn:
             row = conn.execute(
-                "select candidate_id,candidate_name,candidate_phone,candidate_headline,candidate_skills,candidate_experience,candidate_education from public.employer_application_summaries where id=%s",
+                "select candidate_id,candidate_name,candidate_phone,candidate_headline,candidate_skills,candidate_experience,candidate_education,candidate_open_to_work,candidate_location,candidate_experience_years from public.employer_application_summaries where id=%s",
                 (application_id,),
             ).fetchone()
-        return (
-            CandidateProfile(
-                str(row[0]), row[1], row[2], row[3], row[4] or [], row[5], row[6]
-            )
-            if row
-            else None
-        )
+        return profile(row) if row else None
 
     def toggle_saved(self, user_id, posting_id):
         with user_tx(self.claims) as conn:

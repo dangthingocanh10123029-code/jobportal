@@ -147,6 +147,12 @@ export type CandidateProfile = {
   skills: string[];
   experience: string | null;
   education: string | null;
+  /** Shown in Employer talent search when true (ticket 43). */
+  openToWork: boolean;
+  /** 1–150. */
+  location: string | null;
+  /** 0–50. */
+  experienceYears: number | null;
 };
 
 export type CandidateProfileInput = { headline?: string; skills?: string[]; experience?: string; education?: string };
@@ -335,3 +341,24 @@ export type OnlineCv = {
   certifications: { name: string; issuer: string | null; year: number | null }[];
   updatedAt: string;
 };
+
+export type TalentSummary = {
+  candidateId: string;
+  fullName: string;
+  headline: string | null;
+  skills: string[];
+  location: string | null;
+  experienceYears: number | null;
+  hasOnlineCv: boolean;
+  updatedAt: string;
+  /** Saved by the signed-in Employer. */
+  saved: boolean;
+};
+
+/** Never carries email or phone (no such keys in the response). */
+export type TalentDetail = TalentSummary & {
+  profile: Omit<CandidateProfile, 'phone'>;
+  cv: Omit<OnlineCv, 'email' | 'phone'> | null;
+};
+
+export type TalentFilter = { q?: string; skill?: string; location?: string; minExperience?: number; page?: number };

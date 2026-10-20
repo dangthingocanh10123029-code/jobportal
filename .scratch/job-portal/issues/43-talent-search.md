@@ -4,16 +4,16 @@
 
 **Blocked by:** 42
 
-**Status:** ready-for-agent
+**Status:** ready-for-agent (Phần A xong trên `task/43-a-talent`; seed `supabase/seed/talent.sql`)
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/43-a-talent-search`
-- [ ] Migration `supabase/migrations/20261020000400_talent.sql`:
+- [x] Migration `supabase/migrations/20261020000400_talent.sql`:
 - `profiles.open_to_work` (mặc định false), `location`, `experience_years` (0–50); bảng `saved_candidates`, `talent_invitations` (unique (posting_id, candidate_id)), RLS chặt
 - Hàm tìm kiếm chỉ trả ứng viên open_to_work, không khóa; chỉ các cột công khai (KHÔNG email/phone); tìm không dấu như tìm tin
 - RPC `invite_talent` (giới hạn 20/ngày, tin PUBLISHED của chính Employer) → notification `TALENT_INVITED`
 - FastAPI `backend/app/modules/talent/**`: `POST /me/open-to-work` (cand), `GET /talent`, `GET /talent/{id}`, `POST /talent/{id}/save`, `GET /me/saved-talent`, `POST /talent/{id}/invite` (emp)
 - `src/actions/talent.ts`; `CandidateProfile` thêm trường theo contract
-- [ ] Test: pytest (service InMemory + integration trên DB thật, rollback: đúng quyền, sai vai trò bị từ chối, giới hạn/ràng buộc), Vitest cho Zod của actions; thêm kiểm tra RLS vào `.scratch/job-portal/rls_checks.sql` nếu có bảng mới (Coordinator chạy)
+- [x] Test: pytest (service InMemory + integration trên DB thật, rollback: đúng quyền, sai vai trò bị từ chối, giới hạn/ràng buộc), Vitest cho Zod của actions; thêm kiểm tra RLS vào `.scratch/job-portal/rls_checks.sql` nếu có bảng mới (Coordinator chạy)
 
 ### Phần B — Codex (giao diện) — branch `task/43-b-talent-search`, sau Phần A
 - Candidate: công tắc "Sẵn sàng tìm việc" + địa điểm + số năm kinh nghiệm trong `/candidate/profile`
