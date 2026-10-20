@@ -443,7 +443,7 @@ sendMessageAction(input: { applicationId: string; body: string }): Promise<Actio
 markConversationReadAction(input: { applicationId: string }): Promise<ActionResult<null>>
 getUnreadMessageCount(): Promise<number>   // 0 khi chưa đăng nhập
 ```
-Không tạo notification cho từng tin nhắn (tránh spam). Header có biểu tượng tin nhắn với số chưa đọc. Trang chat làm mới bằng `router.refresh()` mỗi 10 giây khi tab đang mở (không thêm thư viện realtime).
+Gửi quá 30 tin/phút → HTTP 429 `{ error }` (apiFetch hiển thị như lỗi nghiệp vụ). Không tạo notification cho từng tin nhắn (tránh spam). Header có biểu tượng tin nhắn với số chưa đọc. Trang chat làm mới bằng `router.refresh()` mỗi 10 giây khi tab đang mở (không thêm thư viện realtime).
 
 ### 42 — CV online (`@/actions/cv`)
 ```ts
