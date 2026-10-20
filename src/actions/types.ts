@@ -267,3 +267,29 @@ export type ArticleSummary = {
 export type Article = ArticleSummary & { content: string };
 export type AdminArticleSummary = ArticleSummary & { status: ArticleStatus };
 export type AdminArticle = Article & { status: ArticleStatus };
+
+export type Message = {
+  id: string;
+  applicationId: string;
+  senderId: string;
+  /** Sent by the caller. */
+  mine: boolean;
+  /** 1–2000, trimmed. */
+  body: string;
+  createdAt: string;
+  readAt: string | null;
+};
+
+export type Conversation = {
+  applicationId: string;
+  postingTitle: string;
+  /** Candidate sees the company, Employer sees the Candidate. */
+  otherPartyName: string;
+  /** The company logo for the Candidate; null for the Employer. */
+  otherPartyLogoUrl: string | null;
+  lastMessage: string | null;
+  lastMessageAt: string | null;
+  unread: number;
+  /** false once the Application is WITHDRAWN, REJECTED or HIRED. */
+  canSend: boolean;
+};
