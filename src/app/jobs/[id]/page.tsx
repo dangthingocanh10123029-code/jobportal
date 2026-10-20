@@ -4,6 +4,7 @@ import { getCurrentProfile } from '@/actions/auth';
 import { getMyApplicationForPosting } from '@/actions/applications';
 import { getPostingDetail, getRelatedPostings } from '@/actions/postings';
 import { getSavedPostingIds } from '@/actions/candidates';
+import { getMyCv } from '@/actions/cv';
 import { ApplicationForm } from '@/components/applications/application-form';
 import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
@@ -21,10 +22,12 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
   const [posting, profile] = await Promise.all([getPostingDetail(id), getCurrentProfile()]);
   if (!posting) notFound();
   const isCandidate = profile?.role === 'CANDIDATE';
-  const [relatedPostings, savedIds, application] = await Promise.all([
+  const canApply = posting.isOpen && isCandidate;
+  const [relatedPostings, savedIds, application, onlineCv] = await Promise.all([
     getRelatedPostings(id),
     isCandidate ? getSavedPostingIds() : Promise.resolve([]),
-    posting.isOpen && isCandidate ? getMyApplicationForPosting(id) : Promise.resolve(null),
+    canApply ? getMyApplicationForPosting(id) : Promise.resolve(null),
+    canApply ? getMyCv() : Promise.resolve(null),
   ]);
 
   return (
@@ -105,7 +108,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
                   <p>Hồ sơ ứng tuyển của bạn đã được gửi đến nhà tuyển dụng.</p>
                 </div>
               </div>
-            ) : <ApplicationForm postingId={posting.id} />}
+            ) : <ApplicationForm hasOnlineCv={onlineCv !== null} postingId={posting.id} />}
           </section>
         ) : posting.isOpen && !profile ? (
           <section className="surface-card posting-detail-footer">

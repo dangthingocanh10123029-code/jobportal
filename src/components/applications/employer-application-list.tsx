@@ -13,6 +13,7 @@ import { EmployerInterviewActions } from '@/components/interviews/interview-acti
 import { InterviewCard } from '@/components/interviews/interview-card';
 import { isActiveInterview } from '@/components/interviews/labels';
 import { ScheduleInterviewForm } from '@/components/interviews/schedule-interview-form';
+import { Badge } from '@/components/ui/primitives';
 import { ApplicantProfileDetails } from './applicant-profile-details';
 
 const transitionLabels: Partial<Record<ApplicationStatus, string>> = {
@@ -79,6 +80,7 @@ function EmployerApplicationCard({ application, interviews }: { application: Emp
           <div>
             <h2>{application.candidateName}</h2>
             <p>{application.candidatePhone || 'Ứng viên chưa cung cấp số điện thoại'}</p>
+            {application.cvSource === 'ONLINE' ? <Badge tone="info">CV online</Badge> : null}
           </div>
           <span className={`application-status status-${status.toLowerCase()}`}>
             <span aria-hidden="true" className="status-dot" />
@@ -89,9 +91,13 @@ function EmployerApplicationCard({ application, interviews }: { application: Emp
         {application.candidateSkills.length ? <div aria-label="Kỹ năng ứng viên" className="posting-skill-list applicant-skills">{application.candidateSkills.map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
         <div className="candidate-application-meta employer-application-meta">
           <span>Nhận hồ sơ ngày {formatDate(application.createdAt)}</span>
-          <button className="button button-quiet button-small" disabled={downloading} onClick={downloadResume} type="button">
-            {downloading ? 'Đang tạo link…' : 'Tải CV'}
-          </button>
+          {application.cvSource === 'ONLINE' ? (
+            <Link className="button button-quiet button-small" href={`/employer/applications/${application.id}/cv`}>Xem CV online</Link>
+          ) : (
+            <button className="button button-quiet button-small" disabled={downloading} onClick={downloadResume} type="button">
+              {downloading ? 'Đang tạo link…' : 'Tải CV'}
+            </button>
+          )}
           <ApplicantProfileDetails applicationId={application.id} />
           <Link className="button button-quiet button-small" href={`/messages/${application.id}`}>Nhắn tin</Link>
         </div>
