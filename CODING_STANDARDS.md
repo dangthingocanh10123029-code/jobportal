@@ -10,7 +10,7 @@ Tiêu chuẩn bắt buộc cho toàn bộ mã nguồn (Next.js 15, Supabase Post
    - `memory.py` (InMemory) cho pytest nhanh, không mock mạng.
    - `postgres.py` chạy trong `app.db.user_tx(claims)` — luôn dưới role `authenticated`/`anon` của người gọi để RLS/RPC giữ hiệu lực; không truy vấn bằng quyền `postgres`.
 4. Cấu trúc mỗi domain: `domain.py`, `repository.py`, `memory.py`, `postgres.py`, `service.py`, `router.py` (+ `schemas.py`, `storage.py` khi cần).
-5. Next.js là frontend: Server Action trong `src/actions/` chỉ chạy Zod `safeParse` rồi gọi `apiFetch` (`src/lib/api.ts`). Ngoại lệ có chủ đích: auth flows (Supabase Auth, cookie) và `getCurrentActor` trong middleware đọc Supabase trực tiếp.
+5. Next.js là frontend: Server Action trong `src/actions/` chỉ chạy Zod `safeParse` rồi gọi `apiFetch` (`src/lib/api.ts`). Ngoại lệ có chủ đích: auth flows (Supabase Auth, cookie) và `getCurrentActor` trong proxy (`src/proxy.ts`, trước là middleware) đọc Supabase trực tiếp.
 
 ## 2. Type Safety
 

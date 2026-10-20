@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** in-progress (người dùng chọn nâng Next 16.4)
+**Status:** resolved (45b8e20: Next 16.4.2, 0/800 lượt #418)
 
 ## Đã biết
 - Có từ trước redesign 50 (manual-checks v4), nên không do redesign gây ra.

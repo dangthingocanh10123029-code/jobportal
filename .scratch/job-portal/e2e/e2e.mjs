@@ -570,7 +570,7 @@ await check('Điện thoại 360px: trang chủ, tin, công ty, đăng nhập kh
       await mobile.goto(`${BASE}${path}`);
       if (!(await noOverflow(mobile))) throw new Error(`tràn ngang ở ${path}`);
     }
-    await mobile.getByRole('link', { name: 'Job Portal, trang chủ' }).waitFor();
+    await mobile.locator('header').getByRole('link', { name: 'Job Portal, trang chủ' }).waitFor();
   } finally {
     await mobile.close();
   }
@@ -596,10 +596,6 @@ await check('Đăng xuất → về /login, header có "Đăng nhập"', cand, a
   await cand.waitForURL(/\/login\?next=/);
 });
 
-// ponytail: React #418 (intermittent hydration race on `next start`, ticket 51) is a WARN until 51 lands; then drop this filter.
-const hydration418 = consoleErrors.filter((line) => line.includes('#418'));
-consoleErrors.splice(0, consoleErrors.length, ...consoleErrors.filter((line) => !line.includes('#418')));
-if (hydration418.length) console.log(`WARN React #418 hydration (${hydration418.length}) — ticket 51\n     ${hydration418[0]}`);
 results.push([consoleErrors.length ? 'FAIL' : 'PASS', `Không có lỗi console/hydration (${consoleErrors.length})`]);
 console.log(`${consoleErrors.length ? 'FAIL' : 'PASS'} Không có lỗi console/hydration (${consoleErrors.length})`);
 for (const line of consoleErrors.slice(0, 8)) console.log('     ' + line);

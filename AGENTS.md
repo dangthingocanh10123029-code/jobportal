@@ -19,7 +19,7 @@ Single-context layout (`CONTEXT.md` + `docs/adr/`). See `docs/agents/domain.md`.
 | Agent / worktree | Vai trò | Được sửa |
 |---|---|---|
 | Claude — `agent-claude` | Coordinator, kiến trúc, review, merge (không tự code `src/**`) | `.scratch/**`, `docs/**`, `*.md` gốc, `AGENTS.md` |
-| Claude — `agent-claude-logic` | Logic + backend + test | `supabase/**`, `backend/**` (trừ module giao cho Codex), `src/modules/**`, `src/actions/**`, `src/lib/**`, `src/middleware.ts`, test của các thư mục này |
+| Claude — `agent-claude-logic` | Logic + backend + test | `supabase/**`, `backend/**` (trừ module giao cho Codex), `src/modules/**`, `src/actions/**`, `src/lib/**`, `src/proxy.ts` (Next 16, trước là middleware.ts), test của các thư mục này |
 | Codex — `agent-codex` | Giao diện (UX/UI + frontend) + module backend được giao | `src/app/**`, `src/components/**`, file CSS (trừ file ảnh của Antigravity); `backend/app/modules/{companies,candidates,notifications,dashboard}/**` + test tương ứng (ticket 25, 26) |
 | Antigravity — `agent-antigravity` | Hình ảnh | `public/images/**`, `src/app/icon.png`, `src/app/opengraph-image.png` |
 

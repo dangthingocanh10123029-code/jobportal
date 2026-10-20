@@ -10,7 +10,7 @@ Trình duyệt → Vercel service "web" (Next.js, sin1) ──binding API_URL─
 
 - Chỉ service `web` có rewrite công khai. Service `api` **không** mở ra internet: Next.js gọi nó từ server qua binding `API_URL` (Vercel tự tạo biến này lúc chạy). Vì vậy không cần CORS/`ALLOWED_ORIGINS`.
 - Binding chỉ có lúc chạy, không có lúc build. `apiFetch` đọc cookie trước khi kiểm tra `API_URL`, nên `next build` coi các trang là động.
-- Middleware chạy runtime Node.js (`runtime: 'nodejs'`), vì Vercel Services không hỗ trợ Edge.
+- Next 16: `src/proxy.ts` (thay middleware) luôn chạy Node.js, phù hợp Vercel Services (không hỗ trợ Edge).
 - Frontend và backend luôn deploy và rollback cùng nhau.
 
 ## 1. Supabase
