@@ -1376,3 +1376,63 @@ html, body { background: #fff; }
   .company-metrics .shared-stat-card:last-child { grid-column: auto; }
   .review-card { padding: 16px; }
 }
+
+/* 42 — CV online */
+.cv-editor-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 24px; }
+.cv-editor { padding: 24px; }
+.cv-fieldset { display: flex; flex-direction: column; gap: 14px; min-width: 0; margin: 0; padding: 0 0 18px; border: 0; border-bottom: 1px solid var(--color-border); }
+.cv-fieldset legend { margin-bottom: 12px; font-size: 15px; font-weight: 800; }
+.cv-row { display: flex; flex-direction: column; gap: 12px; padding: 14px; border: 1px solid var(--color-border); border-radius: 14px; background: #f8fafc; }
+.cv-row-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.cv-row-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.cv-checkbox { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.cv-template-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.cv-template-option { display: flex; gap: 10px; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; cursor: pointer; }
+.cv-template-option.is-selected { border-color: var(--color-primary); background: var(--color-primary-soft); }
+.cv-template-option span { display: flex; flex-direction: column; gap: 2px; }
+.cv-template-option small { color: var(--color-muted); }
+.cv-template-option:focus-within, .cv-source-options label:focus-within { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.cv-preview { position: sticky; top: 88px; min-width: 0; }
+.cv-source-options { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; border: 0; font-size: 14px; }
+.cv-source-options label { display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; }
+
+.cv-document { padding: 32px; border: 1px solid var(--color-border); border-radius: 12px; color: var(--color-text); background: #fff; box-shadow: var(--shadow-card); font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.cv-header h2 { margin: 0; font-size: 26px; }
+.cv-headline { margin: 4px 0 0; color: var(--color-primary); font-weight: 700; }
+.cv-contacts { margin: 6px 0 0; color: var(--color-muted); font-size: 13px; }
+.cv-section { margin-top: 20px; }
+.cv-section h3 { margin: 0 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--color-border); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.cv-item + .cv-item { margin-top: 10px; }
+.cv-item-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; }
+.cv-item-head span, .cv-item-org { color: var(--color-muted); font-size: 13px; }
+.cv-item-org { margin: 0; }
+.cv-item-desc { margin: 4px 0 0; white-space: pre-line; }
+.cv-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.cv-tags li { padding: 2px 10px; border: 1px solid var(--color-border); border-radius: 999px; font-size: 13px; }
+.cv-certs { margin: 0; padding-left: 18px; }
+.cv-classic { font-family: Georgia, 'Times New Roman', serif; }
+.cv-classic .cv-header { text-align: center; }
+.cv-modern .cv-header { margin: -32px -32px 0; padding: 28px 32px; border-radius: 12px 12px 0 0; color: #fff; background: var(--color-primary); }
+.cv-modern .cv-headline, .cv-modern .cv-contacts { color: #dbeafe; }
+.cv-modern .cv-section h3 { border-bottom: 0; color: var(--color-primary); }
+.cv-modern .cv-tags li { border-color: transparent; color: var(--color-primary); background: var(--color-primary-soft); }
+
+.cv-print-page { max-width: 820px; }
+.cv-print-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+
+@media (max-width: 900px) {
+  .cv-editor-layout { grid-template-columns: 1fr; }
+  .cv-preview { position: static; }
+}
+@media (max-width: 480px) {
+  .cv-editor, .cv-document { padding: 18px; }
+  .cv-modern .cv-header { margin: -18px -18px 0; padding: 20px 18px; }
+}
+@media print {
+  .site-header, .site-footer, .cv-print-toolbar { display: none !important; }
+  body { background: #fff; }
+  .cv-print-page { max-width: none; margin: 0; padding: 0; }
+  .cv-document { padding: 0; border: 0; box-shadow: none; }
+  .cv-modern .cv-header { margin: 0 0 8px; border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cv-item, .cv-section h3 { break-inside: avoid; }
+}

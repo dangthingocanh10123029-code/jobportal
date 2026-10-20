@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { listMyApplications } from '@/actions/applications';
 import { applicationStatusLabels, formatDate } from '@/components/format';
-import { PageHeader } from '@/components/ui/primitives';
+import { Badge, PageHeader } from '@/components/ui/primitives';
 
 export default async function CandidateApplicationsPage() {
   const applications = await listMyApplications();
@@ -27,6 +27,7 @@ export default async function CandidateApplicationsPage() {
                 </div>
                 <div className="candidate-application-meta">
                   <span>Đã nộp ngày {formatDate(application.createdAt)}</span>
+                  {application.cvSource === 'ONLINE' ? <Badge tone="info">CV online</Badge> : null}
                   <Link aria-label={`Xem lịch sử hồ sơ: ${application.postingTitle}`} href={`/candidate/applications/${application.id}`} prefetch={false}>
                     Xem lịch sử <span aria-hidden="true">→</span>
                   </Link>
