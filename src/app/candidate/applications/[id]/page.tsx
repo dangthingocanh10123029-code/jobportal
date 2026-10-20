@@ -48,6 +48,7 @@ export default async function CandidateApplicationDetailPage({ params }: { param
             </span>
             <span>Mã hồ sơ: {application.id}</span>
           </div>
+          <Link className="button button-quiet button-small application-message-link" href={`/messages/${application.id}`}>Nhắn tin với nhà tuyển dụng</Link>
         </header>
 
         {interviews?.length ? (
