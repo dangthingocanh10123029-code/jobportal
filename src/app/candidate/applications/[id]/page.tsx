@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getMyApplication } from '@/actions/applications';
+import { listInterviewsForApplication } from '@/actions/interviews';
 import type { StatusChange } from '@/actions/types';
 import { allowedNextStatuses } from '@/lib/application-status';
 import { WithdrawApplicationButton } from '@/components/applications/withdraw-application-button';
+import { CandidateInterviewActions } from '@/components/interviews/interview-actions';
+import { InterviewCard } from '@/components/interviews/interview-card';
 import { applicationStatusLabels, formatDateTime } from '@/components/format';
 
 function HistoryItem({ change, isLast }: { change: StatusChange; isLast: boolean }) {
@@ -24,7 +27,7 @@ function HistoryItem({ change, isLast }: { change: StatusChange; isLast: boolean
 
 export default async function CandidateApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const application = await getMyApplication(id);
+  const [application, interviews] = await Promise.all([getMyApplication(id), listInterviewsForApplication(id)]);
   if (!application) notFound();
 
   const canWithdraw = allowedNextStatuses(application.status, 'CANDIDATE').includes('WITHDRAWN');
@@ -46,6 +49,15 @@ export default async function CandidateApplicationDetailPage({ params }: { param
             <span>Mã hồ sơ: {application.id}</span>
           </div>
         </header>
+
+        {interviews?.length ? (
+          <div className="application-interviews-section">
+            <h2>Lịch phỏng vấn</h2>
+            {interviews.map((interview) => (
+              <InterviewCard actions={<CandidateInterviewActions interview={interview} />} interview={interview} key={interview.id} />
+            ))}
+          </div>
+        ) : null}
 
         <div className="application-history-section">
           <div className="application-history-heading">

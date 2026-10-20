@@ -5,9 +5,13 @@ import {
   changeApplicationStatusAction,
   getResumeUrlAction,
 } from '@/actions/applications';
-import type { ApplicationStatus, EmployerApplicationSummary } from '@/actions/types';
+import type { ApplicationStatus, EmployerApplicationSummary, Interview } from '@/actions/types';
 import { allowedNextStatuses } from '@/lib/application-status';
 import { applicationStatusLabels, formatDate } from '@/components/format';
+import { EmployerInterviewActions } from '@/components/interviews/interview-actions';
+import { InterviewCard } from '@/components/interviews/interview-card';
+import { isActiveInterview } from '@/components/interviews/labels';
+import { ScheduleInterviewForm } from '@/components/interviews/schedule-interview-form';
 import { ApplicantProfileDetails } from './applicant-profile-details';
 
 const transitionLabels: Partial<Record<ApplicationStatus, string>> = {
@@ -18,12 +22,13 @@ const transitionLabels: Partial<Record<ApplicationStatus, string>> = {
   REJECTED: 'Từ chối hồ sơ',
 };
 
-function EmployerApplicationCard({ application }: { application: EmployerApplicationSummary }) {
+function EmployerApplicationCard({ application, interviews }: { application: EmployerApplicationSummary; interviews: Interview[] }) {
   const [status, setStatus] = useState(application.status);
   const [pendingStatus, setPendingStatus] = useState<ApplicationStatus | null>(null);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const nextStatuses = allowedNextStatuses(status, 'EMPLOYER');
+  const canSchedule = (status === 'REVIEWING' || status === 'INTERVIEWING') && !interviews.some(isActiveInterview);
 
   async function updateStatus(toStatus: ApplicationStatus) {
     if (toStatus === 'REJECTED' && !window.confirm('Bạn có chắc muốn từ chối hồ sơ này?')) return;
@@ -105,16 +110,29 @@ function EmployerApplicationCard({ application }: { application: EmployerApplica
           ))}
         </div>
       ) : null}
+      {interviews.length > 0 || canSchedule ? (
+        <section aria-label={`Lịch phỏng vấn với ${application.candidateName}`} className="employer-application-interviews">
+          {interviews.map((interview) => (
+            <InterviewCard actions={<EmployerInterviewActions interview={interview} />} interview={interview} key={interview.id} />
+          ))}
+          {interviews.some((interview) => interview.status === 'RESCHEDULE_REQUESTED') ? (
+            <p className="field-hint">Ứng viên xin đổi giờ: hủy lịch hiện tại rồi đặt lịch mới.</p>
+          ) : null}
+          {canSchedule ? (
+            <ScheduleInterviewForm applicationId={application.id} candidateName={application.candidateName} onScheduled={() => setStatus('INTERVIEWING')} />
+          ) : null}
+        </section>
+      ) : null}
       {error ? <p className="form-error employer-application-error" role="alert">{error}</p> : null}
     </article>
   );
 }
 
-export function EmployerApplicationList({ applications }: { applications: EmployerApplicationSummary[] }) {
+export function EmployerApplicationList({ applications, interviews }: { applications: EmployerApplicationSummary[]; interviews: Record<string, Interview[]> }) {
   return (
     <section aria-label="Danh sách hồ sơ ứng tuyển" className="candidate-application-list">
       {applications.map((application) => (
-        <EmployerApplicationCard application={application} key={application.id} />
+        <EmployerApplicationCard application={application} interviews={interviews[application.id] ?? []} key={application.id} />
       ))}
     </section>
   );
