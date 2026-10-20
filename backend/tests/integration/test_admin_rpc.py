@@ -14,7 +14,7 @@ from psycopg import errors
 
 from app.modules.admin.domain import AdminError
 from app.modules.admin.postgres import PostgresAdminRepository
-from tests.integration.conftest import apply_admin_migration
+from tests.integration.conftest import apply_reviews_migration
 
 DATABASE_URL = os.environ.get("INTEGRATION_DATABASE_URL")
 pytestmark = [
@@ -54,7 +54,7 @@ def _refused(conn, user_id, query, params=(), exc=errors.RaiseException):
 @pytest.fixture
 def db():
     with psycopg.connect(DATABASE_URL) as conn, conn.transaction(force_rollback=True):
-        apply_admin_migration(conn)
+        apply_reviews_migration(conn)  # admin + company_summaries.rating (45)
         admin = _signup(conn, {"role": "CANDIDATE", "full_name": "Quản Trị"})
         conn.execute("update public.profiles set role = 'ADMIN' where id = %s", (admin,))  # = make-admin.sql
         other_admin = _signup(conn, {"role": "CANDIDATE", "full_name": "Quản Trị 2"})

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { listCompanies } from '@/actions/companies';
 import { companySizeLabels } from '@/components/format';
+import { Stars, formatRating } from '@/components/reviews/stars';
 import { PageHeader } from '@/components/ui/primitives';
 
 type CompanySearchParams = Record<string, string | string[] | undefined>;
@@ -38,6 +39,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
                 <strong>{company.name}{company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</strong>
                 <span>{company.size ? companySizeLabels[company.size] : 'Quy mô chưa cập nhật'}</span>
                 <span>{company.openPostings} tin đang tuyển</span>
+                {company.rating !== null ? <span className="company-list-rating"><Stars size="sm" value={company.rating} /> {formatRating(company.rating)} · {company.reviewCount} đánh giá</span> : <span>Chưa có đánh giá</span>}
               </span>
               <span aria-hidden="true" className="company-list-arrow">→</span>
             </Link>

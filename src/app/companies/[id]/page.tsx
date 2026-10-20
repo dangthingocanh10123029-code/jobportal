@@ -3,8 +3,11 @@ import { notFound } from 'next/navigation';
 import { getCompany } from '@/actions/companies';
 import { getCurrentProfile } from '@/actions/auth';
 import { getSavedPostingIds } from '@/actions/candidates';
+import { canReviewCompany, getMyReview, listCompanyReviews } from '@/actions/reviews';
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 import { companySizeLabels, employmentLabels, formatDate, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
+import { CompanyReviews } from '@/components/reviews/company-reviews';
+import { formatRating } from '@/components/reviews/stars';
 import { StatCard } from '@/components/ui/primitives';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -13,12 +16,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return company ? { title: `${company.name} — Job Portal`, description: company.about ?? `Tìm hiểu về ${company.name} và các vị trí đang tuyển dụng.` } : { title: 'Không tìm thấy công ty — Job Portal' };
 }
 
-export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CompanyDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ reviewPage?: string | string[] }> }) {
   const { id } = await params;
-  const [company, profile, savedIds] = await Promise.all([
+  const { reviewPage } = await searchParams;
+  const [company, profile, savedIds, reviews, myReview, canReview] = await Promise.all([
     getCompany(id),
     getCurrentProfile(),
     getSavedPostingIds(),
+    listCompanyReviews(id, Number(Array.isArray(reviewPage) ? reviewPage[0] : reviewPage) || 1),
+    getMyReview(id),
+    canReviewCompany(id),
   ]);
   if (!company) notFound();
   const isCandidate = profile?.role === 'CANDIDATE';
@@ -41,6 +48,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
       <section aria-label="Tổng quan công ty" className="company-metrics">
         <StatCard label="Vị trí đang tuyển" value={company.openPostings.length} />
         <StatCard label="Quy mô công ty" value={company.size ? companySizeLabels[company.size] : 'Đang cập nhật'} />
+        <StatCard detail={reviews.rating.count ? `${reviews.rating.count} đánh giá đã duyệt` : undefined} label="Đánh giá" value={reviews.rating.average !== null ? <a href="#reviews">{formatRating(reviews.rating.average)} ★</a> : 'Chưa có'} />
         <StatCard label="Địa chỉ" value={company.address ?? 'Đang cập nhật'} />
       </section>
       {company.about ? <section aria-labelledby="company-about-title" className="surface-card company-about-card"><h2 id="company-about-title">Giới thiệu</h2><p>{company.about}</p></section> : null}
@@ -62,6 +70,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
           </div>
         ) : <div className="surface-card company-no-postings"><h3>Chưa có vị trí đang tuyển</h3><p>Các cơ hội mới của công ty sẽ được cập nhật tại đây.</p></div>}
       </section>
+      <CompanyReviews canReview={canReview} companyId={company.id} companyName={company.name} myReview={myReview} reviews={reviews} role={profile?.role ?? null} />
     </main>
   );
 }

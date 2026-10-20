@@ -4,10 +4,10 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** resolved (migration đổi số 0600 → 0750 để chạy sau 0700_articles)
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/45-a-company-reviews`
-- [ ] Migration `supabase/migrations/20261020000600_company_reviews.sql`:
+- [ ] Migration `supabase/migrations/20261020000750_company_reviews.sql`:
 - Bảng `company_reviews` (unique (company_id, candidate_id), rating 1–5, status, reject_reason), RLS: công khai chỉ thấy APPROVED (không lộ candidate_id khi anonymous — dùng view); tác giả thấy review của mình
 - Điều kiện viết: đã từng có đơn vào tin của công ty (kiểm trong RPC `submit_review`)
 - RPC admin `admin_moderate_review` (is_admin, audit REVIEW_APPROVED/REJECTED, notification REVIEW_MODERATED)

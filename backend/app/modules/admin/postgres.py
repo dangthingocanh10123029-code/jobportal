@@ -15,7 +15,7 @@ POSTING_COLS = (
     "display_status, applications, hidden_at, hidden_reason"
 )
 COMPANY_COLS = (
-    "id, name, logo_url, about, size, address, website, company_verified, open_postings, verified_at, employer_email"
+    "id, name, logo_url, about, size, address, website, company_verified, open_postings, verified_at, employer_email, rating, review_count"
 )
 AUDIT_COLS = "id, actor_id, actor_email, action, target_type, target_id, target_label, details, created_at"
 

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition, type FormEvent } from 'react';
-import { setCompanyVerifiedAction, setPostingHiddenAction, setUserLockAction } from '@/actions/admin';
+import { moderateReviewAction, setCompanyVerifiedAction, setPostingHiddenAction, setUserLockAction } from '@/actions/admin';
 
 function useAdminAction() {
   const router = useRouter();
@@ -78,5 +78,36 @@ export function CompanyVerificationControl({ companyId, verified }: { companyId:
     <button className={`button button-small ${verified ? 'button-quiet' : 'button-primary'}`} disabled={state.pending} onClick={submit} type="button">{state.pending ? 'Đang xử lý…' : verified ? 'Bỏ xác minh' : 'Xác minh công ty'}</button>
     {state.error ? <p className="admin-action-message is-error" role="alert">{state.error}</p> : null}
     {state.success ? <p className="admin-action-message" role="status">{state.success}</p> : null}
+  </div>;
+}
+
+export function ReviewModerationControl({ reviewId, status }: { reviewId: string; status: 'PENDING' | 'APPROVED' | 'REJECTED' }) {
+  const state = useAdminAction();
+  function moderate(approve: boolean, reason?: string) {
+    state.setError(''); state.setSuccess('');
+    state.startTransition(async () => {
+      try {
+        const result = await moderateReviewAction({ reviewId, approve, ...(approve ? {} : { reason }) });
+        if (!result.success) { state.setError(result.error); return; }
+        state.setSuccess(approve ? 'Đã duyệt, đánh giá đang hiển thị công khai.' : 'Đã từ chối và gửi lý do cho ứng viên.');
+        state.router.refresh();
+      } catch { state.setError('Không thể cập nhật đánh giá. Vui lòng thử lại.'); }
+    });
+  }
+  function reject(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!window.confirm('Từ chối đánh giá này?')) return;
+    moderate(false, new FormData(event.currentTarget).get('reason')?.toString() ?? '');
+  }
+  return <div className="admin-inline-action">
+    {status !== 'APPROVED' ? <button className="button button-small button-primary" disabled={state.pending} onClick={() => moderate(true)} type="button">{state.pending ? 'Đang xử lý…' : 'Duyệt đánh giá'}</button> : null}
+    {status !== 'REJECTED' ? <form className="admin-inline-action" onSubmit={reject}>
+      <label className="admin-reason-field"><span>Lý do từ chối</span><textarea maxLength={500} minLength={5} name="reason" placeholder="Lý do gửi cho ứng viên (5–500 ký tự)" required rows={2} /></label>
+      <button className="button button-small button-danger" disabled={state.pending} type="submit">{state.pending ? 'Đang xử lý…' : 'Từ chối'}</button>
+    </form> : null}
+    <div aria-live="polite">
+      {state.error ? <p className="admin-action-message is-error" role="alert">{state.error}</p> : null}
+      {state.success ? <p className="admin-action-message" role="status">{state.success}</p> : null}
+    </div>
   </div>;
 }

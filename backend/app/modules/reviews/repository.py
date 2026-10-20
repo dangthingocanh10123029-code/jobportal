@@ -1,0 +1,23 @@
+from typing import Any, Protocol
+
+Row = dict[str, Any]
+
+
+class ReviewRepository(Protocol):
+    """Rows are camelCase CompanyReview (+ status, rejectReason for mine; + companyName, authorEmail for admin)."""
+
+    def list_approved(self, company_id: str, offset: int, limit: int) -> tuple[list[Row], int]: ...
+    def rating_counts(self, company_id: str) -> dict[int, int]:
+        """{stars: count} of APPROVED reviews."""
+        ...
+    def get_mine(self, company_id: str) -> Row | None: ...
+    def can_review(self, company_id: str) -> bool:
+        """Ever applied to one of the company's postings and no review yet."""
+        ...
+    def submit(self, company_id: str, rating: int, title: str, pros: str, cons: str, anonymous: bool) -> None:
+        """New → PENDING; a REJECTED review is rewritten → PENDING; else REVIEW_EXISTS. Needs an application."""
+        ...
+    def list_admin(self, status: str | None, offset: int, limit: int) -> tuple[list[Row], int]: ...
+    def moderate(self, review_id: str, approve: bool, reason: str | None) -> None:
+        """Also writes the REVIEW_APPROVED / REVIEW_REJECTED audit entry and notifies the author. ADMIN only."""
+        ...
