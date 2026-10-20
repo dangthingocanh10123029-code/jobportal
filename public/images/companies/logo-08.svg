@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#EFEDF4"/>
-  <circle cx="64" cy="64" r="38" stroke="#FFFFFF" stroke-width="6"/>
-  <polygon points="64,20 73,55 108,64 73,73 64,108 55,73 20,64 55,55" fill="#292524"/>
-  <polygon points="64,20 73,55 64,64 55,55" fill="#06B6D4"/>
-  <polygon points="64,64 73,73 64,108 55,73" fill="#0E7490"/>
-  <circle cx="64" cy="64" r="10" fill="#FFFFFF"/>
-  <circle cx="64" cy="64" r="4" fill="#06B6D4"/>
+  <rect width="128" height="128" rx="28" fill="#0369A1"/>
+  <!-- Faceted Diamond Shield -->
+  <polygon points="64,24 98,54 64,104 30,54" fill="#0EA5E9"/>
+  <polygon points="64,24 64,104 30,54" fill="#075985" opacity="0.6"/>
+  <polygon points="64,24 98,54 64,54" fill="#FFFFFF" opacity="0.4"/>
+  <polygon points="64,24 30,54 64,54" fill="#E0F2FE" opacity="0.3"/>
 </svg>

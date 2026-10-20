@@ -1,54 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
-  <!-- Ground Shadow -->
-  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F5F5F4"/>
-  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
+  <!-- Ground Soft Shadows -->
+  <ellipse cx="120" cy="155" rx="74" ry="12" fill="#F0F9FF"/>
+  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#E0F2FE" opacity="0.6"/>
 
-  <!-- Minimalist Receipt / Invoice Document -->
-  <g transform="translate(68, 36)">
-    <!-- Base Receipt Card -->
-    <rect width="88" height="108" rx="14" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+  <!-- Billing Order Receipt Container -->
+  <g transform="translate(68, 32)">
+    <!-- Main Card Body -->
+    <path d="M0 12C0 5.4 5.4 0 12 0H84C90.6 0 96 5.4 96 12V106L88 100L80 106L72 100L64 106L56 100L48 106L40 100L32 106L24 100L16 106L8 100L0 106V12Z" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
 
-    <!-- Dark Stone Header Strip -->
-    <path d="M0 14C0 6.268 6.268 0 14 0H74C81.732 0 88 6.268 88 14V22H0V14Z" fill="#292524"/>
-    <circle cx="16" cy="11" r="3" fill="#06B6D4"/>
-    <rect x="26" y="9" width="36" height="4" rx="2" fill="#FAFAF9"/>
+    <!-- Receipt Header -->
+    <rect x="16" y="16" width="36" height="6" rx="3" fill="#0369A1"/>
+    <circle cx="78" cy="19" r="6" fill="#E0F2FE"/>
+    <circle cx="78" cy="19" r="2.5" fill="#0EA5E9"/>
 
-    <!-- Skeleton Order Item Rows -->
-    <rect x="14" y="34" width="42" height="5" rx="2.5" fill="#CFFAFE"/>
-    <rect x="62" y="34" width="12" height="5" rx="2.5" fill="#CBD5E1"/>
+    <line x1="14" y1="32" x2="82" y2="32" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3 3"/>
 
-    <rect x="14" y="46" width="36" height="5" rx="2.5" fill="#F1F5F9"/>
-    <rect x="62" y="46" width="12" height="5" rx="2.5" fill="#CBD5E1"/>
+    <!-- Line Item 1 -->
+    <rect x="16" y="42" width="40" height="4" rx="2" fill="#0C1E2E"/>
+    <rect x="66" y="42" width="14" height="4" rx="2" fill="#0C1E2E"/>
 
-    <rect x="14" y="58" width="46" height="5" rx="2.5" fill="#F1F5F9"/>
-    <rect x="62" y="58" width="12" height="5" rx="2.5" fill="#CBD5E1"/>
+    <!-- Line Item 2 -->
+    <rect x="16" y="54" width="30" height="4" rx="2" fill="#64748B"/>
+    <rect x="68" y="54" width="12" height="4" rx="2" fill="#64748B"/>
 
-    <!-- Dashed Separator Line -->
-    <line x1="14" y1="74" x2="74" y2="74" stroke="#E7E5E4" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <line x1="14" y1="68" x2="82" y2="68" stroke="#E5E7EB" stroke-width="1"/>
 
-    <!-- Total Row -->
-    <rect x="14" y="84" width="28" height="6" rx="3" fill="#0E7490"/>
-    <rect x="52" y="84" width="22" height="6" rx="3" fill="#06B6D4"/>
+    <!-- Total Badge -->
+    <rect x="16" y="78" width="64" height="12" rx="4" fill="#F0F9FF"/>
+    <rect x="22" y="82" width="20" height="4" rx="2" fill="#0369A1"/>
+    <rect x="58" y="82" width="16" height="4" rx="2" fill="#0369A1"/>
   </g>
 
-  <!-- Modern Sleek Payment Card Overlay in Foreground -->
-  <g transform="translate(118, 76)">
-    <rect width="76" height="50" rx="10" fill="#292524" stroke="#FFFFFF" stroke-width="2"/>
-    <!-- Card Chip in Cyan -->
-    <rect x="10" y="14" width="14" height="11" rx="2.5" fill="#06B6D4"/>
-    <rect x="13" y="17" width="8" height="5" rx="1" fill="#22D3EE"/>
-    
-    <!-- Abstract Contactless Waves -->
-    <path d="M30 15C32 17 32 21 30 23" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-    <path d="M34 13C37 16 37 22 34 25" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-
-    <!-- Abstract Card Number Bar -->
-    <rect x="10" y="33" width="38" height="4" rx="2" fill="#E2E8F0" opacity="0.8"/>
-  </g>
-
-  <!-- Soft Ambient Floating Dots -->
-  <circle cx="50" cy="50" r="4" fill="#06B6D4"/>
-  <circle cx="44" cy="112" r="5" fill="#E6E6FA"/>
-  <circle cx="196" cy="62" r="5" fill="#EFEDF4"/>
-  <circle cx="188" cy="128" r="3.5" fill="#CFFAFE"/>
+  <!-- Ambient Floating Dots -->
+  <circle cx="48" cy="54" r="4" fill="#0EA5E9"/>
+  <circle cx="192" cy="58" r="5" fill="#E0F2FE"/>
+  <circle cx="184" cy="112" r="3" fill="#0369A1"/>
 </svg>

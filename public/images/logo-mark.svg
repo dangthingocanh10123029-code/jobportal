@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
-  <!-- Circular Cyan Mark -->
-  <circle cx="32" cy="32" r="30" fill="#06B6D4"/>
-  <!-- Subtle Concentric Ring -->
-  <circle cx="32" cy="32" r="19" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="3"/>
-  <!-- Central White Dot -->
-  <circle cx="32" cy="32" r="8" fill="#FFFFFF"/>
+  <!-- Deep Blue Core Background -->
+  <circle cx="32" cy="32" r="30" fill="#0369A1"/>
+  <!-- Subtle Glowing Ring in Sky Blue Accent -->
+  <circle cx="32" cy="32" r="21" stroke="#0EA5E9" stroke-width="2.5" stroke-opacity="0.85"/>
+  <!-- Inner White Accent Ring -->
+  <circle cx="32" cy="32" r="13" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="2"/>
+  <!-- Radiant Core Dot in White -->
+  <circle cx="32" cy="32" r="5.5" fill="#FFFFFF"/>
 </svg>

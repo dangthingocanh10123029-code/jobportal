@@ -1,165 +1,112 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
   <defs>
-    <filter id="int-shadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#0F172A" flood-opacity="0.06" />
-    </filter>
-    <filter id="int-element-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F172A" flood-opacity="0.08" />
+    <filter id="int-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#0C1E2E" flood-opacity="0.08" />
     </filter>
     <filter id="int-blur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="90" />
+      <feGaussianBlur stdDeviation="80" />
     </filter>
   </defs>
 
-  <!-- Clean Background -->
+  <!-- Clean Crisp White Background -->
   <rect width="1200" height="630" fill="#FFFFFF"/>
 
-  <!-- Soft Ambient Pastel Blobs -->
-  <circle cx="260" cy="180" r="260" fill="#E6E6FA" opacity="0.65" filter="url(#int-blur)"/>
-  <circle cx="960" cy="190" r="280" fill="#CFFAFE" opacity="0.7" filter="url(#int-blur)"/>
-  <circle cx="860" cy="510" r="230" fill="#E8EFE8" opacity="0.5" filter="url(#int-blur)"/>
-  <circle cx="200" cy="500" r="220" fill="#EFEDF4" opacity="0.55" filter="url(#int-blur)"/>
+  <!-- Soft Ambient Lights -->
+  <circle cx="320" cy="200" r="260" fill="#F0F9FF" filter="url(#int-blur)"/>
+  <circle cx="920" cy="240" r="260" fill="#E0F2FE" opacity="0.6" filter="url(#int-blur)"/>
 
   <!-- Ground Plane Shadow -->
-  <ellipse cx="600" cy="570" rx="420" ry="24" fill="#F1F5F9"/>
-  <ellipse cx="600" cy="572" rx="260" ry="14" fill="#CFFAFE" opacity="0.5"/>
+  <ellipse cx="600" cy="580" rx="400" ry="20" fill="#E5E7EB" opacity="0.6"/>
+  <ellipse cx="600" cy="582" rx="240" ry="12" fill="#BAE6FD" opacity="0.4"/>
 
-  <!-- Main Video Interview Display Window -->
-  <g transform="translate(310, 75)" filter="url(#int-shadow)">
-    <!-- Main Window Container -->
-    <rect width="580" height="410" rx="28" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+  <!-- Central Video Conference / Meeting Laptop Display -->
+  <g transform="translate(320, 80)" filter="url(#int-shadow)">
+    <!-- Laptop Screen Shell -->
+    <rect width="560" height="380" rx="24" fill="#0C1E2E"/>
+    <!-- Screen Inner Display -->
+    <rect x="16" y="16" width="528" height="348" rx="16" fill="#F0F9FF"/>
 
-    <!-- Window Top Header Bar -->
-    <g transform="translate(24, 20)">
-      <!-- Three Window Control Dots -->
-      <circle cx="8" cy="8" r="5" fill="#E2E8F0"/>
-      <circle cx="26" cy="8" r="5" fill="#E2E8F0"/>
-      <circle cx="44" cy="8" r="5" fill="#E2E8F0"/>
-
-      <!-- Center Webcam Sensor -->
-      <circle cx="266" cy="8" r="5" fill="#292524"/>
-      <circle cx="266" cy="8" r="2" fill="#06B6D4"/>
-    </g>
-
-    <!-- Hairline Separator -->
-    <line x1="0" y1="48" x2="580" y2="48" stroke="#F1F5F9" stroke-width="1.5"/>
-
-    <!-- Main Video Grid Area (Two Participant Panes) -->
-    <g transform="translate(28, 68)">
-      <!-- Left Video Pane (Interviewer) -->
-      <g transform="translate(0, 0)">
-        <rect width="250" height="230" rx="18" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
-        
-        <!-- Interviewer Avatar -->
-        <circle cx="125" cy="100" r="42" fill="#E6E6FA"/>
-        <circle cx="125" cy="92" r="18" fill="#4F46E5"/>
-        <path d="M95 132C95 116 107 114 125 114C143 114 155 116 155 132H95Z" fill="#4F46E5"/>
-        
-        <!-- Audio Waves Indicator in Soft Indigo -->
-        <g transform="translate(97, 168)">
-          <rect x="0" y="8" width="4" height="12" rx="2" fill="#6366F1"/>
-          <rect x="10" y="2" width="4" height="24" rx="2" fill="#6366F1"/>
-          <rect x="20" y="5" width="4" height="18" rx="2" fill="#6366F1"/>
-          <rect x="30" y="0" width="4" height="28" rx="2" fill="#6366F1"/>
-          <rect x="40" y="6" width="4" height="16" rx="2" fill="#6366F1"/>
-          <rect x="50" y="10" width="4" height="8" rx="2" fill="#6366F1"/>
-        </g>
-
-        <!-- Status Tag Pill -->
-        <rect x="16" y="16" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
-        <circle cx="26" cy="26" r="3.5" fill="#10B981"/>
-        <rect x="35" y="23" width="30" height="6" rx="3" fill="#94A3B8"/>
+    <!-- Split Screen: Left Candidate Participant -->
+    <g transform="translate(32, 32)">
+      <rect width="236" height="280" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+      <!-- Candidate Avatar -->
+      <circle cx="118" cy="110" r="44" fill="#E0F2FE"/>
+      <circle cx="118" cy="100" r="20" fill="#0369A1"/>
+      <path d="M92 142C92 126 104 122 118 122C132 122 144 126 144 142" fill="#0369A1"/>
+      <!-- Audio wave indicator -->
+      <g transform="translate(86, 175)">
+        <line x1="0" y1="12" x2="0" y2="16" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
+        <line x1="12" y1="6" x2="12" y2="22" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
+        <line x1="24" y1="2" x2="24" y2="26" stroke="#0369A1" stroke-width="3" stroke-linecap="round"/>
+        <line x1="36" y1="8" x2="36" y2="20" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
+        <line x1="48" y1="12" x2="48" y2="16" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
       </g>
-
-      <!-- Right Video Pane (Candidate) -->
-      <g transform="translate(274, 0)">
-        <rect width="250" height="230" rx="18" fill="#CFFAFE" fill-opacity="0.3" stroke="#A5F3FC" stroke-width="1.2"/>
-        
-        <!-- Candidate Avatar -->
-        <circle cx="125" cy="100" r="42" fill="#CFFAFE"/>
-        <circle cx="125" cy="92" r="18" fill="#0E7490"/>
-        <path d="M95 132C95 116 107 114 125 114C143 114 155 116 155 132H95Z" fill="#0E7490"/>
-        <!-- Ring -->
-        <circle cx="125" cy="100" r="39" stroke="#06B6D4" stroke-width="2"/>
-
-        <!-- Active Audio Waves Indicator in Cyan -->
-        <g transform="translate(97, 168)">
-          <rect x="0" y="5" width="4" height="18" rx="2" fill="#06B6D4"/>
-          <rect x="10" y="0" width="4" height="28" rx="2" fill="#06B6D4"/>
-          <rect x="20" y="7" width="4" height="14" rx="2" fill="#06B6D4"/>
-          <rect x="30" y="2" width="4" height="24" rx="2" fill="#06B6D4"/>
-          <rect x="40" y="6" width="4" height="16" rx="2" fill="#06B6D4"/>
-          <rect x="50" y="9" width="4" height="10" rx="2" fill="#06B6D4"/>
-        </g>
-
-        <!-- Status Tag Pill -->
-        <rect x="16" y="16" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#A5F3FC" stroke-width="1"/>
-        <circle cx="26" cy="26" r="3.5" fill="#06B6D4"/>
-        <rect x="35" y="23" width="30" height="6" rx="3" fill="#0E7490"/>
-      </g>
+      <!-- Identity placeholder -->
+      <rect x="68" y="220" width="100" height="10" rx="5" fill="#0C1E2E"/>
+      <rect x="88" y="238" width="60" height="6" rx="3" fill="#64748B"/>
     </g>
 
-    <!-- Bottom Controls Floating Pill Bar -->
-    <g transform="translate(190, 330)">
-      <rect width="200" height="50" rx="25" fill="#292524" filter="url(#int-element-shadow)"/>
-      
-      <!-- Mic Button in Cyan -->
-      <circle cx="45" cy="25" r="16" fill="#06B6D4"/>
-      <rect x="42" y="18" width="6" height="10" rx="3" fill="#FFFFFF"/>
-      <path d="M39 24C39 27.5 42 29 45 29C48 29 51 27.5 51 24" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      <line x1="45" y1="29" x2="45" y2="32" stroke="#FFFFFF" stroke-width="1.8"/>
+    <!-- Split Screen: Right Interviewer Participant -->
+    <g transform="translate(292, 32)">
+      <rect width="236" height="280" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+      <!-- Interviewer Avatar -->
+      <circle cx="118" cy="110" r="44" fill="#E0F2FE"/>
+      <circle cx="118" cy="100" r="20" fill="#0C1E2E"/>
+      <path d="M92 142C92 126 104 122 118 122C132 122 144 126 144 142" fill="#0C1E2E"/>
+      <!-- Video Live Indicator Badge -->
+      <rect x="20" y="20" width="36" height="18" rx="9" fill="#0369A1"/>
+      <circle cx="38" cy="29" r="4" fill="#FFFFFF"/>
+      <!-- Identity placeholder -->
+      <rect x="68" y="220" width="100" height="10" rx="5" fill="#0C1E2E"/>
+      <rect x="88" y="238" width="60" height="6" rx="3" fill="#64748B"/>
+    </g>
 
-      <!-- Video Camera Button in Neutral -->
-      <circle cx="100" cy="25" r="16" fill="#3E3835"/>
-      <rect x="93" y="19" width="10" height="8" rx="2" fill="#FFFFFF"/>
-      <path d="M103 21L108 18V28L103 25V21Z" fill="#FFFFFF"/>
-
-      <!-- End Call Button in Red Tone -->
-      <circle cx="155" cy="25" r="16" fill="#EF4444"/>
-      <rect x="148" y="23" width="14" height="4" rx="2" fill="#FFFFFF"/>
+    <!-- Screen Bottom Controls Bar -->
+    <g transform="translate(210, 322)">
+      <circle cx="20" cy="15" r="14" fill="#0369A1"/>
+      <circle cx="55" cy="15" r="14" fill="#0369A1"/>
+      <circle cx="90" cy="15" r="14" fill="#0EA5E9"/>
+      <circle cx="125" cy="15" r="14" fill="#DC2626"/>
     </g>
   </g>
 
-  <!-- Floating Schedule / Clock Card (Top Left) -->
-  <g transform="translate(140, 140)" filter="url(#int-element-shadow)">
-    <rect width="180" height="140" rx="22" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
-    <circle cx="48" cy="50" r="24" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="1.5"/>
-    <line x1="48" y1="50" x2="48" y2="36" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="48" y1="50" x2="60" y2="50" stroke="#292524" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="48" cy="50" r="3" fill="#06B6D4"/>
-    
-    <rect x="86" y="38" width="70" height="10" rx="5" fill="#0E7490"/>
-    <rect x="86" y="54" width="50" height="8" rx="4" fill="#CBD5E1"/>
-
-    <line x1="20" y1="90" x2="160" y2="90" stroke="#F1F5F9" stroke-width="1.5"/>
-    <rect x="20" y="104" width="140" height="14" rx="7" fill="#CFFAFE"/>
-    <rect x="36" y="108" width="80" height="6" rx="3" fill="#0891B2"/>
+  <!-- Laptop Base Stand -->
+  <g transform="translate(260, 460)">
+    <path d="M40 0 H640 L680 18 H0 Z" fill="#CBD5E1"/>
+    <rect x="300" y="0" width="80" height="6" rx="3" fill="#0C1E2E"/>
   </g>
 
-  <!-- Floating Rating / Feedback Card (Bottom Right) -->
-  <g transform="translate(870, 360)" filter="url(#int-element-shadow)">
-    <rect width="200" height="110" rx="22" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
-    
-    <!-- Checkmark Icon -->
-    <circle cx="38" cy="38" r="18" fill="#E8EFE8"/>
-    <path d="M30 38L35 43L46 32" stroke="#15803D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    
-    <rect x="68" y="28" width="100" height="10" rx="5" fill="#1E293B"/>
-    <rect x="68" y="44" width="70" height="8" rx="4" fill="#94A3B8"/>
-
-    <!-- Stars -->
-    <g transform="translate(24, 72)">
-      <path d="M8 2L10 6L14 6.5L11 9.5L12 14L8 11.5L4 14L5 9.5L2 6.5L6 6L8 2Z" fill="#F59E0B"/>
-      <path d="M26 2L28 6L32 6.5L29 9.5L30 14L26 11.5L22 14L23 9.5L20 6.5L24 6L26 2Z" fill="#F59E0B"/>
-      <path d="M44 2L46 6L50 6.5L47 9.5L48 14L44 11.5L40 14L41 9.5L38 6.5L42 6L44 2Z" fill="#F59E0B"/>
-      <path d="M62 2L64 6L68 6.5L65 9.5L66 14L62 11.5L58 14L59 9.5L56 6.5L60 6L62 2Z" fill="#F59E0B"/>
-      <path d="M80 2L82 6L86 6.5L83 9.5L84 14L80 11.5L76 14L77 9.5L74 6.5L78 6L80 2Z" fill="#F59E0B"/>
-    </g>
+  <!-- Left Floating Schedule Calendar Card -->
+  <g transform="translate(100, 150)" filter="url(#int-shadow)">
+    <rect width="180" height="160" rx="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+    <!-- Calendar Top -->
+    <path d="M0 18C0 8.1 8.1 0 18 0H162C171.9 0 180 8.1 180 18V36H0V18Z" fill="#0369A1"/>
+    <circle cx="45" cy="18" r="4" fill="#FFFFFF"/>
+    <circle cx="135" cy="18" r="4" fill="#FFFFFF"/>
+    <!-- Date display -->
+    <circle cx="90" cy="90" r="32" fill="#E0F2FE"/>
+    <rect x="75" y="80" width="30" height="8" rx="4" fill="#0369A1"/>
+    <rect x="82" y="94" width="16" height="6" rx="3" fill="#0EA5E9"/>
+    <!-- Time indicator -->
+    <rect x="40" y="132" width="100" height="8" rx="4" fill="#E5E7EB"/>
   </g>
 
-  <!-- Decorative Floating Sparkles -->
-  <circle cx="240" cy="380" r="5" fill="#06B6D4"/>
-  <circle cx="1020" cy="180" r="6" fill="#06B6D4"/>
-  <circle cx="980" cy="120" r="4" fill="#E6E6FA"/>
-  <path d="M1040 260L1043 268L1051 271L1043 274L1040 282L1037 274L1029 271L1037 268Z" fill="#F59E0B"/>
+  <!-- Right Floating Dialogue Speech Bubble -->
+  <g transform="translate(920, 160)" filter="url(#int-shadow)">
+    <rect width="180" height="110" rx="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+    <path d="M30 110L20 125L45 110Z" fill="#FFFFFF"/>
+    <circle cx="34" cy="36" r="14" fill="#0EA5E9"/>
+    <rect x="58" y="28" width="95" height="8" rx="4" fill="#0C1E2E"/>
+    <rect x="58" y="42" width="70" height="6" rx="3" fill="#64748B"/>
+    <rect x="22" y="68" width="136" height="6" rx="3" fill="#E0F2FE"/>
+    <rect x="22" y="82" width="100" height="6" rx="3" fill="#E0F2FE"/>
+  </g>
+
+  <!-- Right Lower Handshake / Offer Badge -->
+  <g transform="translate(940, 330)" filter="url(#int-shadow)">
+    <circle cx="45" cy="45" r="45" fill="#0369A1"/>
+    <circle cx="45" cy="45" r="34" stroke="#0EA5E9" stroke-width="3"/>
+    <!-- Handshake silhouette -->
+    <path d="M28 45L38 35L48 45L40 53L35 48M62 45L52 35L44 43L50 49" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 </svg>

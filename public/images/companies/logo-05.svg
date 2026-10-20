@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#CFFAFE"/>
-  <path d="M42 44C32 44 24 53 24 64C24 75 32 84 42 84C56 84 72 44 86 44C96 44 104 53 104 64C104 75 96 84 86 84C72 84 56 44 42 44Z" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M42 44C32 44 24 53 24 64C24 75 32 84 42 84C56 84 64 64 64 64" stroke="#06B6D4" stroke-width="12" stroke-linecap="round"/>
-  <path d="M64 64C64 64 72 44 86 44C96 44 104 53 104 64" stroke="#0E7490" stroke-width="12" stroke-linecap="round"/>
-  <circle cx="86" cy="64" r="6" fill="#292524"/>
+  <rect width="128" height="128" rx="28" fill="#E0F2FE"/>
+  <!-- Vortex Swirl -->
+  <path d="M64 24C86 24 104 42 104 64" stroke="#0369A1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M104 64C104 86 86 104 64 104" stroke="#0EA5E9" stroke-width="8" stroke-linecap="round"/>
+  <path d="M64 104C42 104 24 86 24 64" stroke="#0C1E2E" stroke-width="8" stroke-linecap="round"/>
+  <path d="M24 64C24 42 42 24 64 24" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="64" cy="64" r="10" fill="#0369A1"/>
 </svg>

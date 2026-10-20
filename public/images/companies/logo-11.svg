@@ -1,15 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#E6E6FA"/>
-  <line x1="64" y1="64" x2="64" y2="28" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
-  <line x1="64" y1="64" x2="98" y2="48" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
-  <line x1="64" y1="64" x2="94" y2="88" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
-  <line x1="64" y1="64" x2="34" y2="88" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
-  <line x1="64" y1="64" x2="30" y2="48" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="64" cy="64" r="18" fill="#06B6D4"/>
-  <circle cx="64" cy="28" r="10" fill="#0E7490"/>
-  <circle cx="98" cy="48" r="11" fill="#292524"/>
-  <circle cx="94" cy="88" r="12" fill="#4338CA"/>
-  <circle cx="34" cy="88" r="11" fill="#67E8F9"/>
-  <circle cx="30" cy="48" r="9" fill="#059669"/>
-  <circle cx="64" cy="64" r="7" fill="#FFFFFF"/>
+  <rect width="128" height="128" rx="28" fill="#E0F2FE"/>
+  <!-- Molecular Quad Cluster -->
+  <line x1="42" y1="42" x2="86" y2="42" stroke="#0369A1" stroke-width="5"/>
+  <line x1="86" y1="42" x2="86" y2="86" stroke="#0369A1" stroke-width="5"/>
+  <line x1="86" y1="86" x2="42" y2="86" stroke="#0369A1" stroke-width="5"/>
+  <line x1="42" y1="86" x2="42" y2="42" stroke="#0369A1" stroke-width="5"/>
+  <line x1="42" y1="42" x2="86" y2="86" stroke="#0EA5E9" stroke-width="4"/>
+  <circle cx="42" cy="42" r="14" fill="#0369A1"/>
+  <circle cx="86" cy="42" r="14" fill="#0EA5E9"/>
+  <circle cx="86" cy="86" r="14" fill="#0369A1"/>
+  <circle cx="42" cy="86" r="14" fill="#0EA5E9"/>
+  <circle cx="64" cy="64" r="8" fill="#FFFFFF"/>
 </svg>

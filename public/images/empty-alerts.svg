@@ -1,40 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
-  <!-- Ground Shadow -->
-  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F5F5F4"/>
-  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
+  <!-- Ground Soft Shadows -->
+  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F0F9FF"/>
+  <ellipse cx="120" cy="156" rx="44" ry="7" fill="#E0F2FE" opacity="0.6"/>
 
-  <!-- Concentric Alert Signal Arcs -->
-  <path d="M72 88C72 61.4903 93.4903 40 120 40C146.51 40 168 61.4903 168 88" stroke="#CFFAFE" stroke-width="2" stroke-dasharray="4 4"/>
-  <path d="M86 88C86 69.2223 101.222 54 120 54C138.778 54 154 69.2223 154 88" stroke="#E6E6FA" stroke-width="2.5"/>
+  <!-- Main Alert Bell and Filter Sliders -->
+  <g transform="translate(68, 38)">
+    <!-- Base Card Container -->
+    <rect width="104" height="104" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
 
-  <!-- Alert Beacon / Bell Centerpiece in Dark Stone -->
-  <g transform="translate(94, 66)">
-    <!-- Base Platform in Soft Lavender -->
-    <rect x="12" y="62" width="28" height="6" rx="3" fill="#E6E6FA"/>
-    <!-- Support Post -->
-    <rect x="23" y="44" width="6" height="20" rx="3" fill="#292524"/>
+    <!-- Bell in Primary Blue -->
+    <g transform="translate(26, 18)">
+      <path d="M22 10V6C22 4 24 2 26 2C28 2 30 4 30 6V10" stroke="#0369A1" stroke-width="2" fill="none"/>
+      <path d="M10 40C10 28 16 24 19 14C20 11 22 10 26 10C30 10 32 11 33 14C36 24 42 28 42 40H10Z" fill="#E0F2FE" stroke="#0369A1" stroke-width="2"/>
+      <rect x="6" y="40" width="40" height="4" rx="2" fill="#0369A1"/>
+      <circle cx="26" cy="48" r="4" fill="#0EA5E9"/>
+    </g>
 
-    <!-- Bell Dome in Dark Stone -->
-    <path d="M10 44C10 30 18 24 26 24C34 24 42 30 42 44C42 48 45 50 48 52H4C7 50 10 48 10 44Z" fill="#292524"/>
-    <rect x="3" y="50" width="46" height="4" rx="2" fill="#1C1917"/>
+    <!-- Filter Preference Sliders -->
+    <g transform="translate(18, 76)">
+      <line x1="6" y1="6" x2="62" y2="6" stroke="#E5E7EB" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="26" cy="6" r="5" fill="#0369A1"/>
 
-    <!-- Glowing Cyan Beacon Clapper / Lamp -->
-    <circle cx="26" cy="18" r="8" fill="#06B6D4"/>
-    <circle cx="26" cy="18" r="4" fill="#FFFFFF"/>
+      <line x1="6" y1="18" x2="62" y2="18" stroke="#E5E7EB" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="48" cy="18" r="5" fill="#0EA5E9"/>
+    </g>
   </g>
 
-  <!-- Floating Job Notification Envelope on Right -->
-  <g transform="translate(144, 46)">
-    <rect width="48" height="34" rx="8" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
-    <path d="M4 6L24 20L44 6" stroke="#E7E5E4" stroke-width="1.5" stroke-linecap="round"/>
-    
-    <!-- Little Alert Indicator Badge -->
-    <circle cx="42" cy="6" r="6" fill="#06B6D4" stroke="#FFFFFF" stroke-width="2"/>
-  </g>
-
-  <!-- Floating Sparkles and Soft Dots -->
-  <circle cx="54" cy="52" r="4" fill="#06B6D4"/>
-  <circle cx="50" cy="106" r="5" fill="#EFEDF4"/>
-  <circle cx="188" cy="100" r="4" fill="#CFFAFE"/>
-  <path d="M78 36L80 41L85 43L80 45L78 50L76 45L71 43L76 41L78 36Z" fill="#F59E0B" opacity="0.8"/>
+  <!-- Ambient Floating Dots -->
+  <circle cx="48" cy="56" r="4" fill="#0EA5E9"/>
+  <circle cx="190" cy="52" r="5" fill="#E0F2FE"/>
+  <circle cx="184" cy="108" r="3" fill="#0369A1"/>
 </svg>

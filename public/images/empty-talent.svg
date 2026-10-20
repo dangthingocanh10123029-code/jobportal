@@ -1,50 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
-  <!-- Ground Shadow -->
-  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F5F5F4"/>
-  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
+  <!-- Ground Soft Shadows -->
+  <ellipse cx="120" cy="155" rx="74" ry="12" fill="#F0F9FF"/>
+  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#E0F2FE" opacity="0.6"/>
 
-  <!-- Minimalist Candidate Profile Card -->
-  <g transform="translate(64, 44)">
-    <rect width="96" height="98" rx="16" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+  <!-- Candidate Profile Badge Container -->
+  <g transform="translate(70, 36)">
+    <!-- Main Card Body -->
+    <rect width="100" height="106" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
 
-    <!-- Avatar Placeholder -->
-    <circle cx="48" cy="28" r="15" fill="#CFFAFE"/>
-    <circle cx="48" cy="24" r="6" fill="#0891B2"/>
-    <path d="M38 38C38 33 42 32 48 32C54 32 58 33 58 38H38Z" fill="#0891B2"/>
+    <!-- Concentric Search Target Circles -->
+    <circle cx="50" cy="46" r="32" stroke="#E0F2FE" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="50" cy="46" r="22" fill="#F0F9FF"/>
 
-    <!-- Skeleton Name Bar -->
-    <rect x="24" y="49" width="48" height="6" rx="3" fill="#292524"/>
+    <!-- Candidate Silhouette in Dark Slate -->
+    <circle cx="50" cy="40" r="9" fill="#0C1E2E"/>
+    <path d="M34 58C34 50 41 48 50 48C59 48 66 50 66 58" fill="#0C1E2E"/>
 
-    <!-- Two Minimalist Skill Chips -->
-    <rect x="18" y="62" width="28" height="8" rx="4" fill="#E6E6FA"/>
-    <rect x="50" y="62" width="28" height="8" rx="4" fill="#E8EFE8"/>
+    <!-- Talent Star Badge in Accent Blue -->
+    <g transform="translate(68, 16)">
+      <circle cx="10" cy="10" r="10" fill="#0EA5E9"/>
+      <path d="M10 5L11.5 8.5L15 9L12.5 11.5L13 15L10 13.2L7 15L7.5 11.5L5 9L8.5 8.5Z" fill="#FFFFFF"/>
+    </g>
 
-    <!-- Content Divider / Dashed Box -->
-    <rect x="18" y="76" width="60" height="12" rx="4" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="1" stroke-dasharray="2 2"/>
+    <!-- Candidate Skill Tag Pill Placeholders -->
+    <rect x="20" y="74" width="26" height="12" rx="6" fill="#E0F2FE"/>
+    <rect x="52" y="74" width="28" height="12" rx="6" fill="#E0F2FE"/>
   </g>
 
-  <!-- Modern Magnifying Glass in Dark Stone & Cyan -->
-  <g transform="translate(108, 48)">
-    <!-- Cyan Glass Reflection -->
-    <circle cx="34" cy="34" r="28" fill="#CFFAFE" fill-opacity="0.35"/>
-    <circle cx="34" cy="34" r="28" stroke="#292524" stroke-width="4"/>
-    <circle cx="34" cy="34" r="22" stroke="#06B6D4" stroke-opacity="0.4" stroke-width="1.5"/>
-    
-    <!-- Light Reflection Arc -->
-    <path d="M20 22C24 16 34 14 42 16" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-
-    <!-- Glass Handle in Dark Stone with Cyan Accent -->
-    <rect x="54" y="52" width="10" height="34" rx="5" transform="rotate(-45 54 52)" fill="#292524"/>
-    <rect x="55.5" y="68" width="7" height="10" rx="3" transform="rotate(-45 55.5 68)" fill="#06B6D4"/>
-  </g>
-
-  <!-- Floating Talent Spark in Warm Amber -->
-  <g transform="translate(50, 36)">
-    <path d="M12 2L14 9L21 11L14 13L12 20L10 13L3 11L10 9L12 2Z" fill="#F59E0B"/>
-  </g>
-
-  <!-- Floating Pastel Dots -->
-  <circle cx="186" cy="46" r="4" fill="#06B6D4"/>
-  <circle cx="48" cy="98" r="4" fill="#E6E6FA"/>
-  <circle cx="190" cy="120" r="5" fill="#CFFAFE"/>
+  <!-- Ambient Floating Dots -->
+  <circle cx="48" cy="56" r="4" fill="#0EA5E9"/>
+  <circle cx="190" cy="62" r="5" fill="#E0F2FE"/>
+  <circle cx="182" cy="112" r="3" fill="#0369A1"/>
 </svg>

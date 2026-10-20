@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#CFFAFE"/>
-  <path d="M28 100V60C28 40.1 44.1 24 64 24C83.9 24 100 40.1 100 60V100" stroke="#06B6D4" stroke-width="12" stroke-linecap="round"/>
-  <path d="M46 100V66C46 56 54 48 64 48C74 48 82 56 82 66V100" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
-  <rect x="58" y="16" width="12" height="16" rx="4" fill="#292524"/>
-  <circle cx="64" cy="78" r="6" fill="#0E7490"/>
+  <rect width="128" height="128" rx="28" fill="#0369A1"/>
+  <!-- Dual Crescent Eclipse -->
+  <circle cx="64" cy="64" r="38" stroke="#0EA5E9" stroke-width="4"/>
+  <circle cx="58" cy="64" r="28" fill="#FFFFFF"/>
+  <circle cx="72" cy="64" r="24" fill="#0369A1"/>
+  <circle cx="88" cy="48" r="6" fill="#0EA5E9"/>
 </svg>

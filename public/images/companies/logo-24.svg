@@ -1,14 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#EFEDF4"/>
-  <g transform="translate(64,64)">
-    <polygon points="0,-44 8,-12 0,0 -8,-12" fill="#06B6D4"/>
-    <polygon points="0,44 8,12 0,0 -8,12" fill="#06B6D4"/>
-    <polygon points="44,0 12,8 0,0 12,-8" fill="#0E7490"/>
-    <polygon points="-44,0 -12,8 0,0 -12,-8" fill="#0E7490"/>
-    <polygon points="28,-28 12,-4 0,0 4,-12" fill="#292524"/>
-    <polygon points="-28,28 -12,4 0,0 -4,12" fill="#292524"/>
-    <polygon points="28,28 4,12 0,0 12,4" fill="#4338CA"/>
-    <polygon points="-28,-28 -4,-12 0,0 -12,-4" fill="#4338CA"/>
-    <circle cx="0" cy="0" r="8" fill="#FFFFFF"/>
-  </g>
+  <rect width="128" height="128" rx="28" fill="#F0F9FF"/>
+  <!-- Four-Petal Geometric Bloom -->
+  <circle cx="64" cy="44" r="18" fill="#0369A1"/>
+  <circle cx="84" cy="64" r="18" fill="#0EA5E9"/>
+  <circle cx="64" cy="84" r="18" fill="#0369A1"/>
+  <circle cx="44" cy="64" r="18" fill="#0EA5E9"/>
+  <circle cx="64" cy="64" r="8" fill="#0C1E2E"/>
+  <circle cx="64" cy="64" r="3" fill="#FFFFFF"/>
 </svg>

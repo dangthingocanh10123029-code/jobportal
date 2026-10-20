@@ -1,27 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
   <!-- Container Card: 20px radius, white surface, hairline border -->
-  <rect width="80" height="80" rx="20" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+  <rect width="80" height="80" rx="20" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
 
-  <!-- Soft Ambient Blob inside -->
-  <circle cx="56" cy="24" r="14" fill="#CFFAFE"/>
-  <circle cx="56" cy="24" r="5" fill="#06B6D4"/>
+  <!-- Soft Ambient Blob -->
+  <circle cx="58" cy="24" r="14" fill="#E0F2FE"/>
+  <circle cx="58" cy="24" r="5" fill="#0EA5E9"/>
 
-  <!-- Left Building / Tower in Soft Lavender -->
-  <rect x="18" y="36" width="16" height="28" rx="4" fill="#E6E6FA"/>
-  <rect x="23" y="42" width="3" height="4" rx="1" fill="#4338CA"/>
-  <rect x="23" y="50" width="3" height="4" rx="1" fill="#4338CA"/>
+  <!-- Left Auxiliary Building in Soft Surface Blue -->
+  <rect x="18" y="36" width="16" height="28" rx="4" fill="#E0F2FE"/>
+  <rect x="23" y="42" width="3" height="4" rx="1" fill="#0369A1"/>
+  <rect x="23" y="50" width="3" height="4" rx="1" fill="#0369A1"/>
 
-  <!-- Main Tower in Dark Stone with Cyan Accent -->
-  <rect x="28" y="24" width="28" height="40" rx="6" fill="#292524"/>
+  <!-- Main Tower in Dark Slate with Primary Blue Accent -->
+  <rect x="28" y="24" width="28" height="40" rx="6" fill="#0C1E2E"/>
 
-  <!-- Windows in Light Cyan -->
-  <rect x="34" y="30" width="5" height="5" rx="1.5" fill="#CFFAFE"/>
-  <rect x="45" y="30" width="5" height="5" rx="1.5" fill="#CFFAFE"/>
-  <rect x="34" y="39" width="5" height="5" rx="1.5" fill="#CFFAFE"/>
-  <rect x="45" y="39" width="5" height="5" rx="1.5" fill="#CFFAFE"/>
-  <rect x="34" y="48" width="5" height="5" rx="1.5" fill="#CFFAFE"/>
-  <rect x="45" y="48" width="5" height="5" rx="1.5" fill="#CFFAFE"/>
+  <!-- Windows in Soft Blue -->
+  <rect x="34" y="30" width="5" height="5" rx="1.5" fill="#E0F2FE"/>
+  <rect x="45" y="30" width="5" height="5" rx="1.5" fill="#E0F2FE"/>
+  <rect x="34" y="39" width="5" height="5" rx="1.5" fill="#E0F2FE"/>
+  <rect x="45" y="39" width="5" height="5" rx="1.5" fill="#E0F2FE"/>
+  <rect x="34" y="48" width="5" height="5" rx="1.5" fill="#E0F2FE"/>
+  <rect x="45" y="48" width="5" height="5" rx="1.5" fill="#E0F2FE"/>
 
-  <!-- Entrance Doorway -->
-  <rect x="39" y="54" width="6" height="10" rx="2" fill="#06B6D4"/>
+  <!-- Entrance Doorway in Accent Sky Blue -->
+  <rect x="39" y="54" width="6" height="10" rx="2" fill="#0EA5E9"/>
 </svg>

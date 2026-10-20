@@ -2,30 +2,21 @@
   <defs>
     <clipPath id="c06"><circle cx="48" cy="48" r="48"/></clipPath>
   </defs>
-  <circle cx="48" cy="48" r="48" fill="#CFFAFE"/>
+  <circle cx="48" cy="48" r="48" fill="#E0F2FE"/>
   <g clip-path="url(#c06)">
-    <!-- Ponytail Tail -->
-    <path d="M56 22 C70 18, 76 30, 72 44 C68 40, 64 36, 56 26 Z" fill="#292524"/>
-    <!-- Ponytail Tie in Cyan -->
-    <circle cx="58" cy="23" r="4" fill="#06B6D4"/>
-    <!-- Shoulders in Dark Stone -->
-    <path d="M16 96C16 78 28 71 48 71C68 71 80 78 80 96Z" fill="#292524"/>
-    <path d="M48 71V96" stroke="#06B6D4" stroke-width="2"/>
-    <!-- Neck -->
-    <rect x="43" y="53" width="10" height="15" rx="5" fill="#FED7AA"/>
+    <!-- Hijab Drapery Shoulders -->
+    <path d="M14 96C14 74 26 64 48 64C70 64 82 74 82 96Z" fill="#0369A1"/>
+    <!-- Hijab Head Wrap -->
+    <ellipse cx="48" cy="40" rx="20" ry="22" fill="#0369A1"/>
+    <path d="M32 40C32 26 40 20 48 20C56 20 64 26 64 40C64 54 58 58 48 58C38 58 32 54 32 40Z" fill="#0EA5E9"/>
+    <!-- Inner Undercap -->
+    <ellipse cx="48" cy="36" rx="14" ry="12" fill="#FFFFFF"/>
     <!-- Face -->
-    <ellipse cx="48" cy="42" rx="14" ry="16" fill="#FFEDD5"/>
-    <!-- Sleek Hair -->
-    <path d="M34 38C34 26 42 22 50 22C58 22 62 26 62 38C58 28 52 26 48 26C44 26 38 28 34 38Z" fill="#292524"/>
-    <!-- Ears & Earring -->
-    <circle cx="34" cy="43" r="3" fill="#FED7AA"/>
-    <circle cx="34" cy="47" r="1.5" fill="#06B6D4"/>
-    <circle cx="62" cy="43" r="3" fill="#FED7AA"/>
-    <circle cx="62" cy="47" r="1.5" fill="#06B6D4"/>
+    <ellipse cx="48" cy="42" rx="12" ry="14" fill="#FED7AA"/>
     <!-- Eyes -->
-    <circle cx="43" cy="40" r="1.8" fill="#1C1917"/>
-    <circle cx="53" cy="40" r="1.8" fill="#1C1917"/>
+    <circle cx="43" cy="41" r="1.5" fill="#0C1E2E"/>
+    <circle cx="53" cy="41" r="1.5" fill="#0C1E2E"/>
     <!-- Smile -->
-    <path d="M44 49C46 51 50 51 52 49" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M44 48C46 50 50 50 52 48" stroke="#0369A1" stroke-width="1.8" stroke-linecap="round"/>
   </g>
 </svg>

@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#E6E6FA"/>
-  <circle cx="64" cy="40" r="18" fill="#06B6D4"/>
-  <circle cx="42" cy="78" r="18" fill="#292524"/>
-  <circle cx="86" cy="78" r="18" fill="#0E7490"/>
-  <circle cx="64" cy="64" r="16" fill="#FFFFFF"/>
-  <circle cx="64" cy="64" r="8" fill="#06B6D4"/>
+  <rect width="128" height="128" rx="28" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+  <!-- Honeycomb Triad -->
+  <polygon points="64,22 84,34 84,56 64,68 44,56 44,34" fill="#0369A1"/>
+  <polygon points="44,56 64,68 64,90 44,102 24,90 24,68" fill="#0EA5E9"/>
+  <polygon points="84,56 104,68 104,90 84,102 64,90 64,68" fill="#E0F2FE"/>
+  <circle cx="64" cy="68" r="4" fill="#0C1E2E"/>
 </svg>

@@ -1,35 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
-  <!-- Ground Shadow -->
-  <ellipse cx="120" cy="155" rx="70" ry="12" fill="#F5F5F4"/>
-  <ellipse cx="120" cy="156" rx="44" ry="7" fill="#CFFAFE" opacity="0.6"/>
+  <!-- Ground Soft Shadows -->
+  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F0F9FF"/>
+  <ellipse cx="120" cy="156" rx="44" ry="7" fill="#E0F2FE" opacity="0.6"/>
 
-  <!-- Layered Card Behind Bookmark -->
-  <g transform="translate(68, 50)">
-    <rect x="0" y="10" width="104" height="88" rx="16" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
-    
-    <rect x="14" y="24" width="24" height="24" rx="8" fill="#F5F5F4"/>
-    <circle cx="26" cy="36" r="6" fill="#06B6D4"/>
-    
-    <rect x="46" y="26" width="44" height="5" rx="2.5" fill="#CFFAFE"/>
-    <rect x="46" y="36" width="30" height="4" rx="2" fill="#F5F5F4"/>
+  <!-- Clean Saved Card Container -->
+  <g transform="translate(72, 38)">
+    <rect width="96" height="106" rx="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
 
-    <line x1="14" y1="58" x2="90" y2="58" stroke="#F5F5F4" stroke-width="1.5"/>
+    <!-- Card Skeleton Content -->
+    <rect x="16" y="24" width="42" height="6" rx="3" fill="#0C1E2E"/>
+    <rect x="16" y="36" width="64" height="4" rx="2" fill="#CBD5E1"/>
+    <rect x="16" y="46" width="52" height="4" rx="2" fill="#E5E7EB"/>
 
-    <rect x="14" y="68" width="50" height="4" rx="2" fill="#F5F5F4"/>
-    <rect x="14" y="78" width="34" height="4" rx="2" fill="#F5F5F4"/>
-  </g>
-
-  <!-- Bookmark Ribbon in Cyan -->
-  <g transform="translate(132, 28)">
-    <path d="M0 0 H48 V76 L24 60 L0 76 V0 Z" fill="#06B6D4"/>
-    <path d="M0 0 H16 V65 L0 76 V0 Z" fill="#22D3EE" fill-opacity="0.4"/>
-
-    <g transform="translate(24, 28)">
-      <circle cx="0" cy="0" r="14" fill="#FFFFFF"/>
-      <circle cx="0" cy="0" r="6" fill="#06B6D4"/>
+    <!-- Bookmark Ribbon Hanging From Card Top -->
+    <g transform="translate(56, -4)">
+      <path d="M0 0 H24 V36 L12 28 L0 36 Z" fill="#0369A1"/>
+      <path d="M12 8L13.8 13.5H19.5L14.9 16.9L16.7 22.4L12 19L7.3 22.4L9.1 16.9L4.5 13.5H10.2L12 8Z" fill="#FFFFFF" opacity="0.95"/>
     </g>
+
+    <!-- Star Emblem on card -->
+    <circle cx="48" cy="74" r="14" fill="#E0F2FE"/>
+    <path d="M48 66L50.5 72H57L51.8 75.8L53.8 82L48 78.2L42.2 82L44.2 75.8L39 72H45.5L48 66Z" fill="#0EA5E9"/>
   </g>
 
-  <circle cx="50" cy="46" r="4" fill="#06B6D4"/>
-  <circle cx="192" cy="72" r="5" fill="#E6E6FA"/>
+  <!-- Floating Dots -->
+  <circle cx="52" cy="58" r="4" fill="#0EA5E9"/>
+  <circle cx="188" cy="68" r="5" fill="#E0F2FE"/>
+  <circle cx="180" cy="112" r="3" fill="#0369A1"/>
 </svg>
