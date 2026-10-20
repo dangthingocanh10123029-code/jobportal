@@ -27,7 +27,8 @@ function CvItems({ title, items }: { title: string; items: CvItem[] }) {
 }
 
 /** Read-only CV render shared by the editor preview, the print page and the Employer snapshot view. */
-export function CvDocument({ cv }: { cv: CvContent }) {
+/** email/phone optional: the Employer talent view never receives them. */
+export function CvDocument({ cv }: { cv: Omit<CvContent, 'email' | 'phone'> & Partial<Pick<CvContent, 'email' | 'phone'>> }) {
   const contacts = [cv.email, cv.phone, cv.location].filter(Boolean);
   return (
     <article aria-label={`CV của ${cv.fullName || 'ứng viên'}`} className={`cv-document cv-${cv.template.toLowerCase()}`}>
