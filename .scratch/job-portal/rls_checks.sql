@@ -165,4 +165,43 @@ select pg_temp.as_anon();
 select pg_temp.fails($$select submit_application((select p_open from ids), 'x')$$, 'permission denied', '05 anon không gọi được RPC submit');
 reset role;
 
+-- ===== 40: interviews (cần migration 20261020000100_interviews.sql) =====
+insert into storage.objects (bucket_id, name) select 'resumes', c2 || '/cv.pdf' from ids;
+create temp table app2 as
+  with ins as (insert into applications (job_posting_id, candidate_id, resume_path)
+               select p_open, c2, c2 || '/cv.pdf' from ids returning id) select id from ins;
+grant select on app2 to authenticated;
+create temp table iv (id uuid);
+grant select, insert on iv to authenticated;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.ok((select (change_application_status((select id from app2), 'REVIEWING')).status) = 'REVIEWING', '40 chuẩn bị: đơn c2 REVIEWING');
+insert into iv select id from schedule_interview((select id from app2), now() + interval '1 day', 60, 'ONLINE', 'https://meet.example/x');
+select pg_temp.ok((select status from applications where id = (select id from app2)) = 'INTERVIEWING', '40 đặt lịch chuyển đơn REVIEWING -> INTERVIEWING');
+select pg_temp.fails($$select schedule_interview((select id from app2), now() + interval '2 days', 60, 'ONLINE', 'https://meet.example/y')$$, 'INTERVIEW_ALREADY_PENDING', '40 không có 2 lịch PROPOSED/CONFIRMED cùng đơn');
+select pg_temp.fails($$select schedule_interview((select id from app2), now() - interval '1 hour', 60, 'ONLINE', 'https://meet.example/y')$$, 'INVALID_SCHEDULE_TIME', '40 giờ phỏng vấn trong quá khứ bị chặn');
+select pg_temp.fails($$update interviews set status = 'DONE'$$, 'permission denied', '40 Employer không update interviews trực tiếp');
+reset role;
+select pg_temp.as_user((select e2 from ids));
+select pg_temp.ok((select count(*) from interview_details) = 0 and (select count(*) from interviews) = 0, '40 RLS: Employer khác không thấy lịch');
+select pg_temp.fails($$select cancel_interview((select id from iv))$$, 'INTERVIEW_NOT_FOUND', '40 Employer khác không hủy được lịch');
+reset role;
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.ok((select count(*) from interview_details) = 0, '40 RLS: Candidate khác không thấy lịch');
+select pg_temp.fails($$select respond_interview((select id from iv), 'CONFIRM')$$, 'INTERVIEW_NOT_FOUND', '40 Candidate khác không trả lời được');
+reset role;
+select pg_temp.as_user((select c2 from ids));
+select pg_temp.ok((select company_name from interview_details) = 'Công ty A', '40 Candidate của đơn thấy lịch + tên công ty');
+select pg_temp.fails($$select respond_interview((select id from iv), 'RESCHEDULE', ' ')$$, 'RESCHEDULE_NOTE_REQUIRED', '40 xin đổi giờ bắt buộc ghi chú');
+select pg_temp.ok((select (respond_interview((select id from iv), 'CONFIRM')).status) = 'CONFIRMED', '40 Candidate xác nhận lịch');
+select pg_temp.fails($$select mark_interview_done((select id from iv))$$, 'INTERVIEW_NOT_FOUND', '40 Candidate không đánh dấu đã phỏng vấn');
+reset role;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.fails($$select mark_interview_done((select id from iv))$$, 'INTERVIEW_NOT_DUE', '40 chưa tới giờ hẹn thì không đánh dấu DONE');
+select pg_temp.ok((select (cancel_interview((select id from iv), 'Đổi kế hoạch')).status) = 'CANCELLED', '40 Employer hủy lịch đã xác nhận');
+reset role;
+select pg_temp.ok((select count(*) from notifications where type like 'INTERVIEW_%') = 3, '40 thông báo: đặt lịch, trả lời, hủy');
+select pg_temp.as_anon();
+select pg_temp.fails($$select count(*) from interview_details$$, 'permission denied', '40 anon không đọc interview_details');
+reset role;
+
 rollback;
