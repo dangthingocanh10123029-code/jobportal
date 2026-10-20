@@ -363,6 +363,8 @@ Alt text tiếng Việt do Codex viết khi dùng ảnh; ảnh trang trí dùng 
 
 ### Bảng màu chung
 
+> **v7 (ticket 53/54, `docs/design/white-blue-design-system.md`) thay v6:** primary #0369A1 (hover #075985), accent #0EA5E9 (icon, biểu đồ, focus; không làm màu chữ), soft #E0F2FE / #F0F9FF, chữ #0C1E2E / #334155 / #64748B, viền #E5E7EB / #CBD5E1, nền trắng, success #059669 / warning #D97706 / danger #DC2626. Icon UI: `lucide-react`; icon ngành `public/images/industries/*.svg` nét `currentColor` stroke 1.75.
+>
 > **v6 (ticket 50, Soft Minimalism — `docs/design/soft-minimalism-brief.md`) thay bảng dưới:** primary #06B6D4 (nền nút, logo, chấm nhấn), chữ màu cyan #0E7490, tint #CFFAFE / #E6E6FA / #E8EFE8 / #EFEDF4, dark stone #292524, chữ #0B0F19 / #111827 / #4B5563 / #6B7280, viền #E7E5E4 / #F5F5F4, nền trắng. Ảnh mới (ticket 39, 48) vẽ theo bảng v6.
 
 Codex khai báo thành CSS variables, Antigravity vẽ ảnh theo đúng bảng này. Nền sáng (Light Mode, xem `NOTES.md`).
