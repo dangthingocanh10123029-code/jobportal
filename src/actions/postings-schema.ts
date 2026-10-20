@@ -100,6 +100,7 @@ export const searchFilterSchema = z
     level: z.enum(LEVELS).optional().catch(undefined),
     maxExperience: z.coerce.number().int().min(0).max(20).optional().catch(undefined),
     skill: text,
+    postedWithinDays: z.coerce.number().int().min(1).max(30).optional().catch(undefined),
     sort: z.enum(SORTS).optional().catch(undefined),
     page: pageSchema,
   })

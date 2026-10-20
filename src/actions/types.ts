@@ -75,6 +75,8 @@ export type SearchFilter = {
   maxExperience?: number;
   /** Accent- and case-insensitive equality with one of the posting's skills. */
   skill?: string;
+  /** 1–30: only postings created in the last N days (URL ?posted=). */
+  postedWithinDays?: number;
   /** Default 'newest'; 'salary_desc' puts negotiable (salary_max null) last. */
   sort?: PostingSort;
   page?: number;

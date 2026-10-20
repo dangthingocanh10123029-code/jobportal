@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -71,6 +71,7 @@ class InMemoryPostingRepository:
                 and (c.level is None or r.level == c.level)
                 and (c.max_experience is None or r.experience_years <= c.max_experience)
                 and (c.skill is None or any(fold_accents(s) == fold_accents(c.skill) for s in r.skills))
+                and (c.posted_within_days is None or r.created_at >= self._now() - timedelta(days=c.posted_within_days))
             )
 
         rows = [r for r in reversed(self.rows.values()) if matches(r)]

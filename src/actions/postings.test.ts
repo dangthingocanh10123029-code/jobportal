@@ -97,6 +97,8 @@ describe('gọi FastAPI', () => {
     vi.mocked(apiFetch).mockResolvedValue({ ok: true, data: { items: [], total: 0, page: 2, pageSize: 20 } });
     await listOpenPostings({ q: ' ke toan ', employmentType: 'PART_TIME', maxExperience: 0, level: 'CEO' as never, page: 2 });
     expect(apiFetch).toHaveBeenCalledWith('/postings?q=ke+toan&type=PART_TIME&exp=0&page=2');
+    await listOpenPostings({ postedWithinDays: 7 });
+    expect(apiFetch).toHaveBeenLastCalledWith('/postings?postedWithinDays=7&page=1');
   });
 
   it('chi tiết: 404 → null, lỗi khác → ném', async () => {
@@ -137,6 +139,8 @@ describe('searchFilterSchema', () => {
       searchFilterSchema.parse({ industry: 'X', level: 'CEO', maxExperience: '-1', skill: '', sort: 'random' }),
     ).toEqual({ page: 1 });
     expect(searchFilterSchema.parse({ maxExperience: '21' })).toEqual({ page: 1 });
+    expect(searchFilterSchema.parse({ postedWithinDays: '7' })).toEqual({ postedWithinDays: 7, page: 1 });
+    expect(searchFilterSchema.parse({ postedWithinDays: '31' })).toEqual({ page: 1 });
   });
 
   it('giá trị rỗng hoặc rác → bỏ qua bộ lọc đó, không lỗi', () => {

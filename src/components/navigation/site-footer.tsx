@@ -4,12 +4,17 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
-        <span>© Job Portal — Tìm việc nhanh, ứng tuyển dễ</span>
+        <Link aria-label="Job Portal, trang chủ" className="brand" href="/">
+          <span aria-hidden="true" className="brand-mark" />
+          <span aria-hidden="true" className="brand-name">Job Portal</span>
+        </Link>
         <nav aria-label="Liên kết cuối trang">
-          <Link href="/">Tìm việc</Link>
-          <Link href="/companies">Công ty</Link>
-          <Link href="/guide">Cẩm nang</Link>
+          <Link href="/#how-it-works">Giới thiệu</Link>
+          <Link href="/#faq">Bảo mật</Link>
+          <Link href="/guide">Liên hệ</Link>
+          <Link href="/signup">Nhà tuyển dụng</Link>
         </nav>
+        <span>© Job Portal — Tìm việc nhanh, ứng tuyển dễ</span>
       </div>
     </footer>
   );

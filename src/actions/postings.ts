@@ -60,6 +60,7 @@ const QUERY_NAMES: Record<keyof SearchFilter, string> = {
   level: 'level',
   maxExperience: 'exp',
   skill: 'skill',
+  postedWithinDays: 'postedWithinDays',
   sort: 'sort',
   page: 'page',
 };

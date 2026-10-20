@@ -53,6 +53,8 @@ def _where(c: SearchFilter) -> tuple[str, list[Any]]:
         add("experience_years <= %s", c.max_experience)
     if c.skill is not None:
         add("%s = any(search_skills)", fold_accents(c.skill))
+    if c.posted_within_days is not None:
+        add("created_at >= now() - make_interval(days => %s)", c.posted_within_days)
     return (" where " + " and ".join(clauses) if clauses else ""), params
 
 
