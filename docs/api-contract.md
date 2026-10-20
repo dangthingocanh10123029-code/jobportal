@@ -177,6 +177,7 @@ maxExperience?: number;    // tin yêu cầu kinh nghiệm ≤ giá trị này
 skill?: string;            // khớp không dấu, không phân biệt hoa thường với một kỹ năng của tin
 sort?: PostingSort;        // mặc định 'newest'; 'salary_desc' xếp theo salary_max (null = thỏa thuận ở cuối)
 
+postedWithinDays?: number;  // v6 (ticket 50): 1–30, chỉ tin có createdAt trong N ngày; URL ?posted=; dùng `total` cho badge 'N việc làm mới tuần này'
 getRelatedPostings(postingId: string): Promise<PostingSummary[]>   // ≤ 6 tin đang mở cùng ngành, trừ chính nó
 ```
 
