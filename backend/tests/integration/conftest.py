@@ -43,3 +43,10 @@ def apply_reviews_migration(conn) -> None:
     apply_admin_migration(conn)
     if conn.execute("select to_regclass('public.company_reviews') is null").fetchone()[0]:
         conn.execute((MIGRATIONS / "20261020000750_company_reviews.sql").read_text())
+
+
+def apply_talent_migration(conn) -> None:
+    """Until the Coordinator pushes ticket 43, run its migration inside the (rolled-back) test transaction."""
+    apply_online_cv_migration(conn)
+    if conn.execute("select to_regclass('public.talent_profiles') is null").fetchone()[0]:
+        conn.execute((MIGRATIONS / "20261020000400_talent.sql").read_text())

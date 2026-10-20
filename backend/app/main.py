@@ -21,6 +21,7 @@ from app.modules.notifications.router import router as notifications_router
 from app.modules.postings.router import router as postings_router
 from app.modules.profiles.router import router as profiles_router
 from app.modules.reviews.router import router as reviews_router
+from app.modules.talent.router import router as talent_router
 
 
 @asynccontextmanager
@@ -52,3 +53,4 @@ app.include_router(articles_router)
 app.include_router(messages_router)
 app.include_router(cv_router)
 app.include_router(reviews_router)
+app.include_router(talent_router)

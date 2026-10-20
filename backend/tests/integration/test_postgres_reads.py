@@ -29,6 +29,7 @@ from tests.integration.conftest import (
     apply_admin_migration,
     apply_online_cv_migration,
     apply_reviews_migration,
+    apply_talent_migration,
 )
 
 DATABASE_URL = os.environ.get("INTEGRATION_DATABASE_URL")
@@ -68,6 +69,7 @@ def seed():
         apply_admin_migration(conn)
         apply_online_cv_migration(conn)
         apply_reviews_migration(conn)  # company_summaries.rating (45)
+        apply_talent_migration(conn)
         employer, candidate = uuid4(), uuid4()
         for user_id, meta in [
             (employer, '{"role": "EMPLOYER", "company_name": "Cty Tích Hợp"}'),

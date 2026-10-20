@@ -327,4 +327,58 @@ select pg_temp.ok(not exists (select 1 from information_schema.columns where tab
 select pg_temp.ok((select (rating, review_count) = (4.0::float8, 1) from company_summaries where id = (select e1 from ids)), '45 company_summaries có rating/review_count');
 reset role;
 
+-- ===== 43: talent search (cần migration 20261020000400_talent.sql) =====
+insert into job_postings (id, employer_id, title, description, location, employment_type, application_deadline, status)
+  select '00000000-0000-4000-8000-0000000000b3', e1, 'Tin mời ứng viên', 'Mô tả đủ dài cho tin mời ứng viên', 'Hà Nội', 'FULL_TIME', now() + interval '30 days', 'PUBLISHED' from ids;
+select pg_temp.as_user((select c1 from ids));
+update profiles set open_to_work = true, location = 'Hà Nội', experience_years = 3, phone = '0901234567' where id = auth.uid();
+select pg_temp.fails($$update profiles set experience_years = 51 where id = auth.uid()$$, 'check', '43 CHECK số năm kinh nghiệm 0–50');
+with u as (update profiles set open_to_work = true where id = (select c2 from ids) returning 1) select pg_temp.ok((select count(*) from u) = 0, '43 Candidate không bật openToWork của người khác');
+select pg_temp.ok((select count(*) from talent_profiles) = 0, '43 Candidate không đọc talent_profiles');
+select pg_temp.fails($$select invite_talent((select c2 from ids), (select p_open from ids))$$, 'TALENT_NOT_FOUND', '43 Candidate không mời được');
+reset role;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.fails($$update profiles set open_to_work = true where id = auth.uid()$$, 'check', '43 Employer không có openToWork');
+select pg_temp.ok((select array_agg(candidate_id) from talent_profiles) = array[(select c1 from ids)], '43 Employer chỉ thấy ứng viên bật openToWork');
+select pg_temp.ok(not exists (select 1 from information_schema.columns where table_name = 'talent_profiles' and column_name in ('email', 'phone')), '43 talent_profiles không có cột email/phone');
+select pg_temp.ok((select not coalesce(to_jsonb(t) ? 'phone' or cv ? 'email' or cv ? 'phone', false) from talent_profiles t), '43 không lộ phone/email (kể cả trong cv)');
+insert into saved_candidates (employer_id, candidate_id) select auth.uid(), c1 from ids;
+select pg_temp.ok((select saved from talent_profiles) and (select count(*) from saved_candidates) = 1, '43 Employer lưu ứng viên');
+select pg_temp.fails($$insert into saved_candidates (employer_id, candidate_id) select auth.uid(), c2 from ids$$, 'row-level security', '43 không lưu ứng viên đang ẩn');
+select pg_temp.fails($$insert into saved_candidates (employer_id, candidate_id) select e2, c1 from ids$$, 'row-level security', '43 không lưu thay Employer khác');
+select invite_talent((select c1 from ids), '00000000-0000-4000-8000-0000000000b3', 'Mời bạn');
+select pg_temp.fails($$select invite_talent((select c1 from ids), '00000000-0000-4000-8000-0000000000b3')$$, 'ALREADY_INVITED', '43 mời trùng (ứng viên, tin) bị chặn');
+select pg_temp.fails($$select invite_talent((select c1 from ids), (select p_draft from ids))$$, 'POSTING_NOT_OPEN', '43 không mời vào tin nháp');
+select pg_temp.fails($$select invite_talent((select c1 from ids), (select p_expired from ids))$$, 'POSTING_NOT_OPEN', '43 không mời vào tin của Employer khác (đã hết hạn)');
+select pg_temp.fails($$insert into talent_invitations (employer_id, candidate_id, posting_id) select e1, c1, p_open from ids$$, 'permission denied', '43 không ghi talent_invitations trực tiếp');
+reset role;
+insert into job_postings (employer_id, title, description, location, employment_type, application_deadline, status)
+  select e1, 'Tin giới hạn ' || n, 'Mô tả đủ dài cho tin kiểm tra giới hạn', 'Hà Nội', 'FULL_TIME', now() + interval '30 days', 'PUBLISHED'
+  from ids, generate_series(1, 20) n;
+insert into talent_invitations (employer_id, candidate_id, posting_id)
+  select e1, c1, id from job_postings, ids where title like 'Tin giới hạn %' and title <> 'Tin giới hạn 20';
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.fails($$select invite_talent((select c1 from ids), (select id from job_postings where title = 'Tin giới hạn 20'))$$, 'INVITE_LIMIT', '43 tối đa 20 lời mời / 24 giờ');
+reset role;
+select pg_temp.ok((select count(*) from notifications where recipient_id = (select c1 from ids) and type = 'TALENT_INVITED' and link = '/jobs/00000000-0000-4000-8000-0000000000b3') = 1, '43 lời mời tạo notification TALENT_INVITED');
+select pg_temp.as_user((select e2 from ids));
+select pg_temp.ok((select count(*) from saved_candidates) = 0 and (select count(*) from talent_invitations) = 0, '43 Employer khác không thấy lưu/lời mời của A');
+reset role;
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.ok((select count(*) from talent_invitations) = 20, '43 Candidate thấy lời mời của mình (20 lời mời từ A)');
+update profiles set open_to_work = false where id = auth.uid();
+reset role;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.ok((select count(*) from talent_profiles) = 0, '43 tắt openToWork thì biến mất khỏi tìm kiếm');
+reset role;
+update profiles set open_to_work = true where id = (select c1 from ids);
+update profiles set locked_at = now(), locked_reason = 'Kiểm tra khóa' where id = (select c1 from ids);
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.ok((select count(*) from talent_profiles) = 0, '43 tài khoản bị khóa không xuất hiện');
+reset role;
+select pg_temp.as_anon();
+select pg_temp.fails($$select count(*) from talent_profiles$$, 'permission denied', '43 anon không đọc talent_profiles');
+select pg_temp.fails($$select count(*) from saved_candidates$$, 'permission denied', '43 anon không đọc saved_candidates');
+reset role;
+
 rollback;

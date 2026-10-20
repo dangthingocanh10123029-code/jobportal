@@ -10,6 +10,9 @@ class CandidateProfile:
     skills: list[str] | None = None
     experience: str | None = None
     education: str | None = None
+    open_to_work: bool = False
+    location: str | None = None
+    experience_years: int | None = None
 
     def json(self):
         return {
@@ -20,4 +23,7 @@ class CandidateProfile:
             "skills": self.skills or [],
             "experience": self.experience,
             "education": self.education,
+            "openToWork": self.open_to_work,
+            "location": self.location,
+            "experienceYears": self.experience_years,
         }

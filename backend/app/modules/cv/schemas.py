@@ -67,14 +67,12 @@ class Certification(CamelModel):
     year: Annotated[int | None, BeforeValidator(_year)] = None
 
 
-class CvInput(CamelModel):
-    """Body of PUT /me/cv: OnlineCv without candidateId/updatedAt."""
+class CvBody(CamelModel):
+    """Everything but the contact details (what an Employer sees in talent search)."""
 
     template: Literal["CLASSIC", "MODERN"]
     full_name: Annotated[str, _text("Họ tên", 100)]
     headline: Annotated[str | None, _text("Chức danh", 150, optional=True)] = None
-    email: Annotated[str, _pattern("Email", r"(?=.{3,254}$)[^@\s]+@[^@\s]+\.[^@\s]+")]
-    phone: Annotated[str | None, _pattern("Số điện thoại", r"\+?[0-9 .-]{8,20}", optional=True)] = None
     location: Annotated[str | None, _text("Địa chỉ", 150, optional=True)] = None
     summary: Annotated[str | None, _text("Giới thiệu", 2000, optional=True)] = None
     experiences: Annotated[list[CvItem], _max_items("kinh nghiệm", MAX_ITEMS)]
@@ -82,6 +80,13 @@ class CvInput(CamelModel):
     skills: Annotated[list[Annotated[str, _text("Kỹ năng", 30)]], _max_items("kỹ năng", MAX_SKILLS)]
     languages: Annotated[list[Annotated[str, _text("Ngoại ngữ", 30)]], _max_items("ngoại ngữ", MAX_LANGUAGES)]
     certifications: Annotated[list[Certification], _max_items("chứng chỉ", MAX_ITEMS)]
+
+
+class CvInput(CvBody):
+    """Body of PUT /me/cv: OnlineCv without candidateId/updatedAt."""
+
+    email: Annotated[str, _pattern("Email", r"(?=.{3,254}$)[^@\s]+@[^@\s]+\.[^@\s]+")]
+    phone: Annotated[str | None, _pattern("Số điện thoại", r"\+?[0-9 .-]{8,20}", optional=True)] = None
 
 
 class OnlineCv(CvInput):
