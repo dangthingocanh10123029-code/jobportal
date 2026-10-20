@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** in-progress (người dùng chọn nâng Next 16.4)
 
 ## Đã biết
 - Có từ trước redesign 50 (manual-checks v4), nên không do redesign gây ra.
@@ -20,3 +20,6 @@
 - [ ] 200 lượt tải lặp `/`, `/guide`, `/companies`, `/jobs/[id]` trên `next start` không còn #418
 - [ ] E2E bước console trở lại FAIL khi có #418 (bỏ WARN tạm)
 - [ ] npm test, typecheck, next build xanh
+
+## Nguyên nhân gốc (đã xác định)
+Bug React 19.2.0-canary-0bdb9206 đóng gói trong Next 15.5.28: Flight tách phần tử sau ~3200 byte/dòng thành tham chiếu lazy (`$L`); nếu dòng chưa tới khi hydrate, một thẻ host (ở `/` là `div.browse-layout`) suspend trong reconcileChildren; khi replay (`replaySuspendedUnitOfWork`, case 5) React gọi lại beginWork mà không reset con trỏ hydrate → claim nhầm con đầu (`<form>`) → #418, root render lại phía client. Vá 7 dòng của React 19.3 cho 0/360 lượt. Next 16.4.2 (React 19.3 canary) đã có bản sửa; 15.x chưa có. Người dùng chọn nâng Next 16.4.

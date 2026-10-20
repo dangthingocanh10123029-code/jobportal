@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** resolved (d49134d)
 
 ## Gợi ý
 - `src/components/postings/posting-controls.tsx` (`changeStatus`) và action `publishPostingAction`/`closePostingAction`: cân nhắc `revalidatePath('/employer/postings')` trong Server Action thay vì chỉ `router.refresh()` phía client, hoặc trả trạng thái mới để cập nhật cục bộ.
@@ -12,3 +12,6 @@
 ## Chấp nhận
 - [ ] Bước E2E "Đăng tin → badge Đang đăng" PASS 10/10 lượt chạy lặp
 - [ ] npm test, typecheck, next build xanh
+
+## Nguyên nhân gốc
+Ở production (Next 15.5.28 + React 19.2.0-canary-0bdb9206), cập nhật RSC trên cùng trang (router.refresh / revalidatePath) bên dưới Suspense boundary của `loading.tsx` làm transition suspend vĩnh viễn: dữ liệu đúng nhưng UI không đổi. Sửa: bỏ `src/app/employer/postings/loading.tsx`, action publish/close gọi revalidatePath. 10/10 PASS. `candidate/applications` và `employer/dashboard` còn loading.tsx + router.refresh: kiểm lại sau khi nâng Next 16 (ticket 51).
