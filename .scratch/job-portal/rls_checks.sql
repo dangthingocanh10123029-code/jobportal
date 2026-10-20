@@ -418,6 +418,7 @@ reset role;
 select pg_temp.as_anon();
 select pg_temp.fails($$select count(*) from job_alerts$$, 'permission denied', '44 anon không đọc job_alerts');
 select pg_temp.fails($$select count(*) from recommended_postings()$$, 'permission denied', '44 anon không gọi recommended_postings');
+reset role;
 -- ===== 47: billing / featured (cần migration 20261020000800_billing.sql; THANH TOÁN GIẢ LẬP; admin 'ad' của mục 46) =====
 insert into job_postings (id, employer_id, title, description, location, employment_type, application_deadline, status)
 values ('00000000-0000-4000-8000-0000000000b7', (select e1 from ids), 'Tin đẩy nổi bật', 'Tin của e1 để kiểm tra mục 47', 'HN', 'FULL_TIME', now() + interval '20 days', 'PUBLISHED');
