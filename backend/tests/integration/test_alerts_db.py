@@ -113,8 +113,8 @@ def test_publish_notifies_matching_active_alerts_once(db):
     [(link, body)] = _alert_notifications(db, me)
     assert link == f"/jobs/{draft}" and "Kế toán tổng hợp" in body and "Kế toán HN" in body
     assert _alert_notifications(db, other) == []
-    assert [a.last_matched_at is not None for a in _repo(me).list(me)] == [False, True]
-    assert _repo(me).list(me)[1].id == hit.id
+    # Both alerts share the transaction's created_at, so list order is not asserted here.
+    assert {a.id for a in _repo(me).list(me) if a.last_matched_at is not None} == {hit.id}
 
     with _as(conn, db["employer"]):  # editing or closing an open posting does not notify again
         conn.execute("update public.job_postings set title = 'Kế toán tổng hợp HN' where id = %s", (draft,))
