@@ -73,4 +73,7 @@ Script: `.scratch/job-portal/e2e/`. Đăng tin → tìm kiếm/lọc → nộp C
   - prefetch ~40 link/trang → quá tải API + lượt xem giả (ticket 36)
   - đồng hồ Supabase nhanh ~2 s → token mới bị 401 (`leeway=30`, ticket 37); endpoint công khai không sập vì token
   - kết nối pool đứt ngầm → API treo (ticket 35); session pooler chạm 15 client → chuyển transaction pooler 6543 (ticket 38)
-- [ ] Cảnh báo hydration React #418 xuất hiện 1 lần ở `/jobs/[id]` trong E2E production, không tái hiện được trong 32 lượt tải thủ công — theo dõi tiếp
+- [x] Hydration React #418: nguyên nhân là bug React 19.2 canary đóng gói trong Next 15.5.28 (ticket 51). Đã nâng Next 16.4.2: 0/800 lượt tải lặp, E2E production 64/64 (2026-10-20)
+
+## v5/v6 — 2026-10-20
+- [x] E2E production (https://jobportal-sigma-five.vercel.app) 64/64 PASS sau Next 16.4.2 + redesign Soft Minimalism + 8 module v5; cleanup 'left' toàn 0
