@@ -8,7 +8,8 @@ import { SavedPostingButton } from '@/components/candidates/saved-posting-button
 import { companySizeLabels, employmentLabels, formatDate, formatSalary, industryLabels, jobLevelLabels } from '@/components/format';
 import { CompanyReviews } from '@/components/reviews/company-reviews';
 import { formatRating } from '@/components/reviews/stars';
-import { StatCard } from '@/components/ui/primitives';
+import { FeaturedBadge, icon, StatCard, VerifiedCheck } from '@/components/ui/primitives';
+import { ArrowLeft, ArrowRight, ExternalLink, Star } from 'lucide-react';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -32,23 +33,23 @@ export default async function CompanyDetailPage({ params, searchParams }: { para
 
   return (
     <main className="page-shell company-detail-page">
-      <Link className="back-link" href="/companies">← Danh sách công ty</Link>
+      <Link className="back-link" href="/companies"><ArrowLeft {...icon} />Danh sách công ty</Link>
       <section className="surface-card company-detail-header">
         <img alt={`Logo ${company.name}`} className="company-detail-logo" height="112" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="112" />
         <div className="company-detail-heading">
           <span className="eyebrow">Hồ sơ nhà tuyển dụng</span>
-          <h1>{company.name} {company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check">✓</span> : null}</h1>
+          <h1>{company.name} {company.companyVerified ? <VerifiedCheck /> : null}</h1>
           <div className="company-detail-facts">
             {company.size ? <span>{companySizeLabels[company.size]}</span> : null}
             {company.address ? <span>{company.address}</span> : null}
-            {company.website ? <a href={company.website} rel="noopener" target="_blank">{company.website}<span aria-hidden="true"> ↗</span></a> : null}
+            {company.website ? <a href={company.website} rel="noopener" target="_blank">{company.website} <ExternalLink {...icon} /></a> : null}
           </div>
         </div>
       </section>
       <section aria-label="Tổng quan công ty" className="company-metrics">
         <StatCard label="Vị trí đang tuyển" value={company.openPostings.length} />
         <StatCard label="Quy mô công ty" value={company.size ? companySizeLabels[company.size] : 'Đang cập nhật'} />
-        <StatCard detail={reviews.rating.count ? `${reviews.rating.count} đánh giá đã duyệt` : undefined} label="Đánh giá" value={reviews.rating.average !== null ? <a href="#reviews">{formatRating(reviews.rating.average)} ★</a> : 'Chưa có'} />
+        <StatCard detail={reviews.rating.count ? `${reviews.rating.count} đánh giá đã duyệt` : undefined} label="Đánh giá" value={reviews.rating.average !== null ? <a href="#reviews">{formatRating(reviews.rating.average)} <Star {...icon} className="rating-star" fill="currentColor" /></a> : 'Chưa có'} />
         <StatCard label="Địa chỉ" value={company.address ?? 'Đang cập nhật'} />
       </section>
       {company.about ? <section aria-labelledby="company-about-title" className="surface-card company-about-card"><h2 id="company-about-title">Giới thiệu</h2><p>{company.about}</p></section> : null}
@@ -60,11 +61,11 @@ export default async function CompanyDetailPage({ params, searchParams }: { para
               <article className="surface-card company-open-posting-card" key={posting.id}>
                 <img alt="" className="company-list-logo" height="56" src={posting.companyLogoUrl ?? company.logoUrl ?? '/images/company-placeholder.svg'} width="56" />
                 <div className="company-open-posting-content">
-                  <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link>{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}{posting.featured ? <> <span className="featured-badge">Nổi bật</span></> : null}</h3>
+                  <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link>{posting.companyVerified ? <VerifiedCheck /> : null}{posting.featured ? <> <FeaturedBadge /></> : null}</h3>
                   <p>{industryLabels[posting.industry]} · {jobLevelLabels[posting.level]} · {employmentLabels[posting.employmentType]}</p>
                   <div className="company-open-posting-meta"><span>{posting.location}</span><span>{formatSalary(posting.salaryMin, posting.salaryMax)}</span><span>Hạn nộp {formatDate(posting.applicationDeadline)}</span></div>
                 </div>
-                <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`} prefetch={false}><span aria-hidden="true">→</span></Link></div>
+                <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`} prefetch={false}><ArrowRight {...icon} /></Link></div>
               </article>
             ))}
           </div>

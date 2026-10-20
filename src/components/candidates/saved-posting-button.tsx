@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { toggleSavedPostingAction } from '@/actions/candidates';
+import { Heart } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export function SavedPostingButton({ postingId, initialSaved }: { postingId: string; initialSaved: boolean }) {
   const [saved, setSaved] = useState(initialSaved);
@@ -26,5 +28,5 @@ export function SavedPostingButton({ postingId, initialSaved }: { postingId: str
     }
   }
 
-  return <span className="saved-posting-control"><button aria-label={saved ? 'Bỏ lưu' : 'Lưu việc làm'} aria-pressed={saved} className={`saved-posting-button${saved ? ' is-saved' : ''}`} disabled={pending} onClick={toggle} title={saved ? 'Bỏ lưu' : 'Lưu việc làm'} type="button"><span aria-hidden="true">♥</span></button>{error ? <span className="saved-posting-error" role="alert">{error}</span> : null}</span>;
+  return <span className="saved-posting-control"><button aria-label={saved ? 'Bỏ lưu' : 'Lưu việc làm'} aria-pressed={saved} className={`saved-posting-button${saved ? ' is-saved' : ''}`} disabled={pending} onClick={toggle} title={saved ? 'Bỏ lưu' : 'Lưu việc làm'} type="button"><Heart {...icon} fill={saved ? 'currentColor' : 'none'} size={18} /></button>{error ? <span className="saved-posting-error" role="alert">{error}</span> : null}</span>;
 }

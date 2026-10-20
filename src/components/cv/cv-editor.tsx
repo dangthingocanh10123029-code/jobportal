@@ -7,6 +7,8 @@ import { deleteMyCvAction, saveMyCvAction } from '@/actions/cv';
 import type { CvItem, CvTemplate } from '@/actions/types';
 import { SkillsTagInput } from '@/components/postings/skills-tag-input';
 import { CvDocument, type CvContent } from './cv-document';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 type Cert = CvContent['certifications'][number];
 
@@ -27,8 +29,8 @@ function move<T>(list: T[], index: number, delta: number): T[] {
 function RowControls({ label, index, count, onChange }: { label: string; index: number; count: number; onChange: (action: 'up' | 'down' | 'remove') => void }) {
   return (
     <div aria-label={`Thao tác ${label} ${index + 1}`} className="cv-row-controls" role="group">
-      <button aria-label={`Đưa ${label} ${index + 1} lên`} className="button button-quiet button-small" disabled={index === 0} onClick={() => onChange('up')} type="button">↑</button>
-      <button aria-label={`Đưa ${label} ${index + 1} xuống`} className="button button-quiet button-small" disabled={index === count - 1} onClick={() => onChange('down')} type="button">↓</button>
+      <button aria-label={`Đưa ${label} ${index + 1} lên`} className="button button-quiet button-small" disabled={index === 0} onClick={() => onChange('up')} type="button"><ChevronUp {...icon} /></button>
+      <button aria-label={`Đưa ${label} ${index + 1} xuống`} className="button button-quiet button-small" disabled={index === count - 1} onClick={() => onChange('down')} type="button"><ChevronDown {...icon} /></button>
       <button aria-label={`Xóa ${label} ${index + 1}`} className="button button-danger button-small" onClick={() => onChange('remove')} type="button">Xóa</button>
     </div>
   );

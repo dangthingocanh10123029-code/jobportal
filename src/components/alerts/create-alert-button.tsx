@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { useId, useState, type FormEvent } from 'react';
 import { createJobAlertAction } from '@/actions/alerts';
 import type { AlertFilter } from '@/actions/types';
-import { Button, Input } from '@/components/ui/primitives';
+import { Button, icon, Input } from '@/components/ui/primitives';
 import { describeAlertFilter } from './describe';
+import { BellRing } from 'lucide-react';
 
 const ALERT_LIMIT = 5;
 
@@ -37,7 +38,7 @@ export function CreateAlertButton({ filter, alertCount }: { filter: AlertFilter;
     <div className="create-alert">
       {!open && !created ? (
         <Button aria-describedby={atLimit ? `${inputId}-limit` : undefined} disabled={atLimit} onClick={() => setOpen(true)} size="small" type="button" variant="quiet">
-          <span aria-hidden="true">🔔</span> Tạo thông báo việc làm
+          <BellRing {...icon} />Tạo thông báo việc làm
         </Button>
       ) : null}
       {open ? (

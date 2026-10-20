@@ -23,14 +23,14 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
         {!data ? <AdminEmpty description="Phiên quản trị đã hết hạn hoặc bạn không có quyền." title="Không tải được bài viết" /> : data.items.length ? (
           <>
             <AdminTable label="Danh sách bài viết">
-              <thead><tr><th>Bài viết</th><th>Chủ đề</th><th>Trạng thái</th><th>Ngày đăng</th><th>Lượt xem</th></tr></thead>
+              <thead><tr><th>Bài viết</th><th>Chủ đề</th><th>Trạng thái</th><th>Ngày đăng</th><th className="num">Lượt xem</th></tr></thead>
               <tbody>{data.items.map((article) => (
                 <tr key={article.id}>
                   <td><Link className="admin-primary-cell" href={`/admin/articles/${article.id}`}>{article.title}<small>/guide/{article.slug} · {article.readingMinutes} phút đọc</small></Link></td>
                   <td>{articleCategoryLabels[article.category]}</td>
                   <td><AdminBadge tone={article.status === 'PUBLISHED' ? 'success' : 'neutral'}>{article.status === 'PUBLISHED' ? 'Đã đăng' : 'Bản nháp'}</AdminBadge></td>
                   <td>{formatArticleDate(article.publishedAt)}</td>
-                  <td>{article.views.toLocaleString('vi-VN')}</td>
+                  <td className="num">{article.views.toLocaleString('vi-VN')}</td>
                 </tr>
               ))}</tbody>
             </AdminTable>

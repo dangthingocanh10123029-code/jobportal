@@ -3,6 +3,8 @@ import { getCurrentProfile } from '@/actions/auth';
 import { listConversations } from '@/actions/messages';
 import { AutoRefresh } from '@/components/messages/auto-refresh';
 import { ConversationList } from '@/components/messages/conversation-list';
+import { MessagesSquare } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export const metadata = { title: 'Tin nhắn — Job Portal' };
 
@@ -20,7 +22,7 @@ export default async function MessagesPage() {
           <ConversationList conversations={conversations} />
         </nav>
         <section className="messages-placeholder">
-          <span aria-hidden="true">💬</span>
+          <MessagesSquare {...icon} size={36} />
           <p>Chọn một cuộc trò chuyện để xem tin nhắn.</p>
         </section>
       </div>

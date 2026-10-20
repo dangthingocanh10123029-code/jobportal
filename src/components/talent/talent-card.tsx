@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { TalentSummary } from '@/actions/types';
 import { formatDate } from '@/components/format';
 import { avatarFor } from '@/components/avatar';
+import { MapPin } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export function TalentCard({ talent }: { talent: TalentSummary }) {
   return (
@@ -15,7 +17,7 @@ export function TalentCard({ talent }: { talent: TalentSummary }) {
         {talent.saved ? <span className="ui-badge ui-badge-info">Đã lưu</span> : null}
       </div>
       <div className="posting-meta">
-        <span><span aria-hidden="true">⌖</span> {talent.location || 'Chưa cập nhật địa điểm'}</span>
+        <span><MapPin {...icon} />{talent.location || 'Chưa cập nhật địa điểm'}</span>
         <span>{talent.experienceYears === null ? 'Chưa cập nhật kinh nghiệm' : talent.experienceYears === 0 ? 'Chưa có kinh nghiệm' : `${talent.experienceYears} năm kinh nghiệm`}</span>
         {talent.hasOnlineCv ? <span className="ui-badge ui-badge-success">CV online</span> : null}
       </div>

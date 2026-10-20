@@ -8,6 +8,8 @@ import { WithdrawApplicationButton } from '@/components/applications/withdraw-ap
 import { CandidateInterviewActions } from '@/components/interviews/interview-actions';
 import { InterviewCard } from '@/components/interviews/interview-card';
 import { applicationStatusLabels, formatDateTime } from '@/components/format';
+import { ArrowLeft } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 function HistoryItem({ change, isLast }: { change: StatusChange; isLast: boolean }) {
   return (
@@ -34,7 +36,7 @@ export default async function CandidateApplicationDetailPage({ params }: { param
 
   return (
     <main className="page-shell narrow-shell candidate-application-detail-page">
-      <Link className="back-link" href="/candidate/applications">← Quay lại danh sách đơn</Link>
+      <Link className="back-link" href="/candidate/applications"><ArrowLeft {...icon} />Quay lại danh sách đơn</Link>
 
       <section className="surface-card application-detail-card">
         <header className="application-detail-header">

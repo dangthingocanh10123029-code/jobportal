@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { listAdminUsers } from '@/actions/admin';
 import type { Role } from '@/actions/types';
 import { AdminBadge, AdminEmpty, AdminHeading, AdminPager, AdminPanel, AdminTable, formatAdminDate, roleLabels } from '@/components/admin/admin-common';
+import { ArrowRight } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 type Params = { q?: string; role?: string; locked?: string; page?: string };
 const roles: Role[] = ['CANDIDATE', 'EMPLOYER', 'ADMIN'];
@@ -27,7 +29,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           <td><Link className="admin-primary-cell" href={`/admin/users/${user.userId}`} prefetch={false}>{user.displayName || 'Chưa cập nhật'}<small>{user.email}</small></Link></td>
           <td>{roleLabels[user.role]}</td><td>{formatAdminDate(user.createdAt)}</td><td>{formatAdminDate(user.lastSignInAt)}</td>
           <td>{user.lockedAt ? <AdminBadge tone="danger">Đang khóa</AdminBadge> : <AdminBadge tone="success">Hoạt động</AdminBadge>}</td>
-          <td><Link aria-label={`Xem ${user.email}`} className="admin-row-link" href={`/admin/users/${user.userId}`} prefetch={false}>Chi tiết →</Link></td>
+          <td><Link aria-label={`Xem ${user.email}`} className="admin-row-link" href={`/admin/users/${user.userId}`} prefetch={false}>Chi tiết <ArrowRight {...icon} /></Link></td>
         </tr>)}</tbody></AdminTable>
         <AdminPager basePath="/admin/users" filters={filters} page={data.page} pageSize={data.pageSize} total={data.total} />
       </> : <AdminEmpty description="Thử thay đổi từ khóa hoặc bộ lọc." title="Không có người dùng phù hợp" />}

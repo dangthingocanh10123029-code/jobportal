@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { getConversation, markConversationReadAction, sendMessageAction } from '@/actions/messages';
 import type { Conversation, Message } from '@/actions/types';
 import { formatMessageTime, mergeMessages } from './thread';
+import { ArrowLeft, Send } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export function ChatThread({ conversation, messages: latest, hasMore: latestHasMore }: { conversation: Conversation; messages: Message[]; hasMore: boolean }) {
   const router = useRouter();
@@ -74,7 +76,7 @@ export function ChatThread({ conversation, messages: latest, hasMore: latestHasM
   return (
     <section aria-label={`Trò chuyện với ${conversation.otherPartyName}`} className="chat-thread">
       <header className="chat-header">
-        <Link className="chat-back" href="/messages">← Tất cả tin nhắn</Link>
+        <Link className="chat-back" href="/messages"><ArrowLeft {...icon} />Tất cả tin nhắn</Link>
         <h1>{conversation.otherPartyName}</h1>
         <p>{conversation.postingTitle}</p>
       </header>
@@ -124,7 +126,7 @@ export function ChatThread({ conversation, messages: latest, hasMore: latestHasM
           rows={2}
           value={draft}
         />
-        <button className="button button-primary" disabled={!conversation.canSend || sending || !draft.trim()} type="submit">{sending ? 'Đang gửi…' : 'Gửi'}</button>
+        <button className="button button-primary" disabled={!conversation.canSend || sending || !draft.trim()} type="submit"><Send {...icon} />{sending ? 'Đang gửi…' : 'Gửi'}</button>
       </form>
       {conversation.canSend ? null : <p className="chat-locked" id="chat-locked">Hồ sơ đã kết thúc, không thể gửi tin nhắn.</p>}
       <p aria-live="polite" className="form-error chat-error" role={error ? 'alert' : undefined}>{error}</p>

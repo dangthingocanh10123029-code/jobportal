@@ -13,7 +13,8 @@ import { alertFilterFromSearch } from '@/components/alerts/describe';
 import { CompaniesAndStories, HomeFaq, HowItWorks } from '@/components/home/home-sections';
 import { HomeAlertForm } from '@/components/home/home-alert-form';
 import { SalaryRange } from '@/components/home/salary-range';
-import { Button, Input } from '@/components/ui/primitives';
+import { Button, FeaturedBadge, icon, iconLg, Input, VerifiedCheck } from '@/components/ui/primitives';
+import { ArrowRight, BellRing, Briefcase, CalendarClock, Check, Clock, Layers, MapPin, Plus, Search, Sparkles, Wallet } from 'lucide-react';
 
 function PostingCard({ posting, savedIds, isCandidate, matchReasons }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean; matchReasons?: string[] }) {
   return (
@@ -23,23 +24,23 @@ function PostingCard({ posting, savedIds, isCandidate, matchReasons }: { posting
         <div className="public-posting-heading">
           <div>
             <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link></h3>
-            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`} prefetch={false}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
+            <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`} prefetch={false}>{posting.companyName}{posting.companyVerified ? <VerifiedCheck /> : null}</Link></p>
           </div>
-          <span className="posting-badges">{posting.featured ? <span className="featured-badge">Nổi bật</span> : null}<span className="employment-badge">{employmentLabels[posting.employmentType]}</span></span>
+          <span className="posting-badges">{posting.featured ? <FeaturedBadge /> : null}<span className="employment-badge"><Clock {...icon} size={14} />{employmentLabels[posting.employmentType]}</span></span>
         </div>
         <p className="public-posting-meta">
-          <span>{posting.location}</span>
-          <span>{formatSalary(posting.salaryMin, posting.salaryMax)}</span>
-          <span>{jobLevelLabels[posting.level]}</span>
-          <span>{industryLabels[posting.industry]}</span>
-          <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
+          <span><MapPin {...icon} />{posting.location}</span>
+          <span><Wallet {...icon} />{formatSalary(posting.salaryMin, posting.salaryMax)}</span>
+          <span><Layers {...icon} />{jobLevelLabels[posting.level]}</span>
+          <span><Briefcase {...icon} />{industryLabels[posting.industry]}</span>
+          <span><CalendarClock {...icon} />Hạn nộp {formatDate(posting.applicationDeadline)}</span>
         </p>
         {posting.skills.length ? <div aria-label="Kỹ năng" className="posting-skill-list">{posting.skills.slice(0, 3).map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
-        {matchReasons?.length ? <ul aria-label="Lý do phù hợp" className="match-reasons">{matchReasons.map((reason) => <li key={reason}><span aria-hidden="true">✓</span> {reason}</li>)}</ul> : null}
+        {matchReasons?.length ? <ul aria-label="Lý do phù hợp" className="match-reasons">{matchReasons.map((reason) => <li key={reason}><Check {...icon} /> {reason}</li>)}</ul> : null}
       </div>
       <div className="posting-card-actions">
         {isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}
-        <Link className="apply-link" href={`/jobs/${posting.id}`} prefetch={false}>Ứng tuyển<span className="visually-hidden">: {posting.title}</span> <span aria-hidden="true">→</span></Link>
+        <Link className="apply-link" href={`/jobs/${posting.id}`} prefetch={false}>Ứng tuyển<span className="visually-hidden">: {posting.title}</span> <ArrowRight {...icon} /></Link>
       </div>
     </article>
   );
@@ -137,13 +138,11 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return (
     <main className="home-page">
       <section aria-labelledby="home-title" className="home-hero">
-        <span aria-hidden="true" className="blob blob-cyan" />
-        <span aria-hidden="true" className="blob blob-lavender" />
         <div className="home-hero-content">
           {thisWeek > 0 ? (
-            <Link className="hero-badge" href="/?posted=7#job-search"><span aria-hidden="true" className="dot" />{thisWeek} việc làm mới tuần này</Link>
+            <Link className="hero-badge" href="/?posted=7#job-search"><Sparkles {...icon} />{thisWeek} việc làm mới tuần này</Link>
           ) : null}
-          <h1 id="home-title">Tìm công việc thật <span className="hand-word">vừa ý</span></h1>
+          <h1 id="home-title">Tìm công việc thật vừa ý</h1>
           <p>Tin tuyển dụng đang mở từ các công ty trên khắp Việt Nam. Tìm chậm rãi, lưu lại, ứng tuyển khi bạn sẵn sàng.</p>
           <form action="/" aria-label="Tìm việc làm" className="hero-search" method="get">
             <label className="visually-hidden" htmlFor="search-keyword">Từ khóa</label>
@@ -151,7 +150,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
             <label className="visually-hidden" htmlFor="search-location">Địa điểm</label>
             <input className="text-input" defaultValue={filter.location ?? ''} id="search-location" name="location" placeholder="Tỉnh, thành phố" type="search" />
             <HiddenFilters filter={filter} keys={['type', 'minSalary', 'industry', 'level', 'exp', 'skill', 'posted', 'sort']} />
-            <Button type="submit">Tìm việc</Button>
+            <Button type="submit"><Search {...icon} />Tìm việc</Button>
           </form>
           {skills.length ? (
             <nav aria-label="Kỹ năng được tìm nhiều" className="popular-chips">
@@ -244,7 +243,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
                     <Link className="featured-posting-card" href={`/jobs/${posting.id}`} key={posting.id} prefetch={false}>
                       <img alt="" className="company-placeholder" height="40" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="40" />
                       <span className="featured-posting-copy"><strong>{posting.title}</strong><small>{posting.companyName}</small><small>{posting.location} · {formatSalary(posting.salaryMin, posting.salaryMax)}</small></span>
-                      <span className="featured-badge">Nổi bật</span>
+                      <FeaturedBadge />
                     </Link>
                   ))}
                 </div>
@@ -276,23 +275,20 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           </Suspense>
           <HomeFaq />
           {profile?.role !== 'ADMIN' ? (
-            <section aria-labelledby="alert-title" className="alert-section reveal">
-              <span aria-hidden="true" className="blob blob-cyan" />
-              <span aria-hidden="true" className="blob blob-sage" />
-              <span aria-hidden="true" className="blob blob-lilac" />
+            <section aria-labelledby="alert-title" className="alert-section">
               <div className="alert-content">
-                <span aria-hidden="true" className="alert-icon" />
+                <span className="alert-icon"><BellRing {...iconLg} /></span>
                 {profile?.role === 'EMPLOYER' ? (
                   <>
-                    <h2 id="alert-title">Để ứng viên <span className="hand-word">tìm đến</span> bạn</h2>
+                    <h2 id="alert-title">Để ứng viên tìm đến bạn</h2>
                     <p>Đăng tin, nhận hồ sơ và trao đổi với ứng viên ngay trên Job Portal.</p>
-                    <Link className="button button-dark" href="/employer/postings/new">Đăng tin tuyển dụng</Link>
+                    <Link className="button button-primary" href="/employer/postings/new"><Plus {...icon} />Đăng tin tuyển dụng</Link>
                   </>
                 ) : (
                   <>
-                    <h2 id="alert-title">Để việc làm <span className="hand-word">tự tìm đến</span> bạn</h2>
+                    <h2 id="alert-title">Để việc làm tự tìm đến bạn</h2>
                     <p>Lưu một từ khóa, Job Portal báo cho bạn khi có tin mới phù hợp được đăng.</p>
-                    {isCandidate ? <HomeAlertForm atLimit={alerts.length >= 5} /> : <Link className="button button-dark" href="/signup?next=/candidate/alerts">Tạo tài khoản để nhận thông báo</Link>}
+                    {isCandidate ? <HomeAlertForm atLimit={alerts.length >= 5} /> : <Link className="button button-primary" href="/signup?next=/candidate/alerts">Tạo tài khoản để nhận thông báo</Link>}
                   </>
                 )}
               </div>

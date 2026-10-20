@@ -9,6 +9,8 @@ import type { AdminArticle, ArticleCategory } from '@/actions/types';
 import { ArticleMarkdown } from './article-markdown';
 import { articleCategoryLabels } from './labels';
 import { parseArticleMarkdown } from './markdown';
+import { ExternalLink } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export function ArticleAdminEditor({ article }: { article?: AdminArticle }) {
   const router = useRouter();
@@ -84,7 +86,7 @@ export function ArticleAdminEditor({ article }: { article?: AdminArticle }) {
       <div className="article-editor-actions">
         <button className="button button-primary" disabled={pending} type="submit">{pending ? 'Đang xử lý…' : article ? 'Lưu thay đổi' : 'Lưu bản nháp'}</button>
         {article ? <button className="button button-quiet" disabled={pending} onClick={togglePublished} type="button">{published ? 'Gỡ bài' : 'Đăng bài'}</button> : null}
-        {article && published ? <Link className="button button-quiet" href={`/guide/${article.slug}`} target="_blank">Xem trên cẩm nang ↗</Link> : null}
+        {article && published ? <Link className="button button-quiet" href={`/guide/${article.slug}`} target="_blank">Xem trên cẩm nang <ExternalLink {...icon} /></Link> : null}
         <Link className="button button-quiet" href="/admin/articles">Quay lại danh sách</Link>
       </div>
     </form>

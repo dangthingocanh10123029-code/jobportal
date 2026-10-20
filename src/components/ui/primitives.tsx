@@ -1,4 +1,9 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
+import { BadgeCheck, Inbox, Star } from 'lucide-react';
+
+/** Shared props for decorative lucide icons: `<MapPin {...icon} />`, `<Bell {...iconLg} />`. */
+export const icon = { 'aria-hidden': true, size: 16, strokeWidth: 1.75 } as const;
+export const iconLg = { ...icon, size: 20 } as const;
 
 export function Button({ variant = 'primary', size, className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'quiet' | 'danger'; size?: 'small' }) {
   return <button className={`button button-${variant}${size ? ` button-${size}` : ''} ${className}`.trim()} {...props} />;
@@ -58,7 +63,7 @@ export function Badge({ children, tone = 'neutral' }: { children: ReactNode; ton
   return <span className={`ui-badge ui-badge-${tone}`}>{children}</span>;
 }
 
-export function EmptyState({ title, description, action, icon = '✦' }: { title: string; description: string; action?: ReactNode; icon?: ReactNode }) {
+export function EmptyState({ title, description, action, icon = <Inbox {...iconLg} /> }: { title: string; description: string; action?: ReactNode; icon?: ReactNode }) {
   return (
     <section className="shared-empty-state">
       <span aria-hidden="true" className="shared-empty-icon">{icon}</span>
@@ -67,4 +72,12 @@ export function EmptyState({ title, description, action, icon = '✦' }: { title
       {action ? <div className="shared-empty-action">{action}</div> : null}
     </section>
   );
+}
+
+export function VerifiedCheck() {
+  return <span aria-label="Công ty đã xác minh" className="verified-check" role="img"><BadgeCheck {...icon} /></span>;
+}
+
+export function FeaturedBadge() {
+  return <span className="featured-badge"><Star {...icon} size={12} />Nổi bật</span>;
 }

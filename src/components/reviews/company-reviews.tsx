@@ -4,6 +4,8 @@ import type { MyReview, Role } from '@/actions/types';
 import { formatDate } from '@/components/format';
 import { ReviewForm } from './review-form';
 import { Stars, formatRating } from './stars';
+import { Star } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 type Props = {
   companyId: string;
@@ -37,7 +39,7 @@ export function CompanyReviews({ companyId, companyName, reviews, myReview, canR
               const n = rating.distribution[star] ?? 0;
               return (
                 <li key={star}>
-                  <span>{star} ★</span>
+                  <span className="review-star-label">{star} <Star {...icon} fill="currentColor" size={12} /></span>
                   <span aria-hidden="true" className="review-bar"><span style={{ width: `${rating.count ? (n / rating.count) * 100 : 0}%` }} /></span>
                   <span>{n}<span className="visually-hidden"> đánh giá {star} sao</span></span>
                 </li>

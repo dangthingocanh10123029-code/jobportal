@@ -75,7 +75,7 @@ export function CompanyVerificationControl({ companyId, verified }: { companyId:
     });
   }
   return <div className="admin-inline-action">
-    <button className={`button button-small ${verified ? 'button-quiet' : 'button-primary'}`} disabled={state.pending} onClick={submit} type="button">{state.pending ? 'Đang xử lý…' : verified ? 'Bỏ xác minh' : 'Xác minh công ty'}</button>
+    <button className="button button-small button-quiet" disabled={state.pending} onClick={submit} type="button">{state.pending ? 'Đang xử lý…' : verified ? 'Bỏ xác minh' : 'Xác minh công ty'}</button>
     {state.error ? <p className="admin-action-message is-error" role="alert">{state.error}</p> : null}
     {state.success ? <p className="admin-action-message" role="status">{state.success}</p> : null}
   </div>;

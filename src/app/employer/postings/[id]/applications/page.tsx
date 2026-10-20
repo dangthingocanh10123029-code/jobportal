@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { listApplicationsForPosting } from '@/actions/applications';
 import { listInterviewsForApplication } from '@/actions/interviews';
 import { EmployerApplicationList } from '@/components/applications/employer-application-list';
+import { ArrowLeft } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export default async function EmployerPostingApplicationsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,7 +18,7 @@ export default async function EmployerPostingApplicationsPage({ params }: { para
 
   return (
     <main className="page-shell employer-applications-page">
-      <Link className="back-link" href="/employer/postings">← Quay lại tin tuyển dụng</Link>
+      <Link className="back-link" href="/employer/postings"><ArrowLeft {...icon} />Quay lại tin tuyển dụng</Link>
       <div className="page-heading employer-applications-heading">
         <span className="eyebrow">Quản lý tuyển dụng</span>
         <h1>Hồ sơ ứng tuyển</h1>

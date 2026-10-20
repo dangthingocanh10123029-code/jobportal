@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useId, useState, type FormEvent } from 'react';
 import { submitReviewAction } from '@/actions/reviews';
 import type { MyReview } from '@/actions/types';
+import { Star } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 const RATING_LABELS = ['Rất tệ', 'Chưa tốt', 'Bình thường', 'Tốt', 'Rất tốt'];
 
@@ -54,7 +56,7 @@ export function ReviewForm({ companyId, companyName, initial }: { companyId: str
             return (
               <label className={value <= rating ? 'is-active' : undefined} key={value}>
                 <input checked={rating === value} name="rating" onChange={() => setRating(value)} required type="radio" value={value} />
-                <span aria-hidden="true">★</span>
+                <Star {...icon} fill="currentColor" size={28} />
                 <span className="visually-hidden">{value} sao — {label}</span>
               </label>
             );

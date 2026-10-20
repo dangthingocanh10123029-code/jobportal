@@ -3,6 +3,8 @@ import { listAdminPostings } from '@/actions/admin';
 import type { DisplayPostingStatus } from '@/actions/types';
 import { AdminBadge, AdminEmpty, AdminHeading, AdminPager, AdminPanel, AdminTable, formatAdminDate, postingLabels } from '@/components/admin/admin-common';
 import { PostingModerationControl } from '@/components/admin/admin-controls';
+import { ExternalLink } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 type Params = { q?: string; status?: string; hidden?: string; page?: string };
 const statuses: DisplayPostingStatus[] = ['DRAFT', 'PUBLISHED', 'CLOSED', 'EXPIRED'];
@@ -23,11 +25,11 @@ export default async function AdminPostingsPage({ searchParams }: { searchParams
         <button className="button button-primary button-small" type="submit">Lọc danh sách</button>
       </form>
       {!data ? <AdminEmpty description="Phiên quản trị hết hạn hoặc bạn không có quyền xem danh sách này." title="Không thể tải tin tuyển dụng" /> : data.items.length ? <>
-        <AdminTable label="Tất cả tin tuyển dụng"><thead><tr><th>Tin tuyển dụng</th><th>Trạng thái</th><th>Hồ sơ</th><th>Ngày đăng</th><th>Kiểm duyệt</th><th>Thao tác</th></tr></thead><tbody>{data.items.map((posting) => <tr key={posting.id}>
+        <AdminTable label="Tất cả tin tuyển dụng"><thead><tr><th>Tin tuyển dụng</th><th>Trạng thái</th><th className="num">Hồ sơ</th><th>Ngày đăng</th><th>Kiểm duyệt</th><th>Thao tác</th></tr></thead><tbody>{data.items.map((posting) => <tr key={posting.id}>
           <td><span className="admin-primary-cell">{posting.title}<small>{posting.companyName} · {posting.location}</small></span></td>
-          <td><AdminBadge tone={posting.displayStatus === 'PUBLISHED' ? 'success' : 'neutral'}>{postingLabels[posting.displayStatus]}</AdminBadge></td><td>{posting.applications}</td><td>{formatAdminDate(posting.createdAt)}</td>
+          <td><AdminBadge tone={posting.displayStatus === 'PUBLISHED' ? 'success' : 'neutral'}>{postingLabels[posting.displayStatus]}</AdminBadge></td><td className="num">{posting.applications}</td><td>{formatAdminDate(posting.createdAt)}</td>
           <td>{posting.hiddenAt ? <AdminBadge tone="danger">Đang ẩn</AdminBadge> : <AdminBadge tone="success">Công khai</AdminBadge>}</td>
-          <td><details className="admin-action-disclosure"><summary>{posting.hiddenAt ? 'Xử lý' : 'Kiểm duyệt'}</summary><div><p><Link href={`/jobs/${posting.id}`} prefetch={false} target="_blank">Mở trang tin ↗</Link></p>{posting.hiddenReason ? <p className="admin-hidden-reason"><strong>Lý do:</strong> {posting.hiddenReason}</p> : null}<PostingModerationControl hidden={Boolean(posting.hiddenAt)} postingId={posting.id} /></div></details></td>
+          <td><details className="admin-action-disclosure"><summary>{posting.hiddenAt ? 'Xử lý' : 'Kiểm duyệt'}</summary><div><p><Link href={`/jobs/${posting.id}`} prefetch={false} target="_blank">Mở trang tin <ExternalLink {...icon} /></Link></p>{posting.hiddenReason ? <p className="admin-hidden-reason"><strong>Lý do:</strong> {posting.hiddenReason}</p> : null}<PostingModerationControl hidden={Boolean(posting.hiddenAt)} postingId={posting.id} /></div></details></td>
         </tr>)}</tbody></AdminTable>
         <AdminPager basePath="/admin/postings" filters={{ q: params.q, status, hidden: params.hidden }} page={data.page} pageSize={data.pageSize} total={data.total} />
       </> : <AdminEmpty description="Thử thay đổi từ khóa hoặc bộ lọc." title="Không có tin phù hợp" />}
