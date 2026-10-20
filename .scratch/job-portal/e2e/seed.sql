@@ -15,5 +15,9 @@ from u;
 insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
 select gen_random_uuid(), id, id::text, 'email', jsonb_build_object('sub', id::text, 'email', email, 'email_verified', true), now(), now(), now()
 from auth.users where email like 'e2e.%@jobportal.test';
+-- Second open posting: the candidate applies here with the online CV (the first posting gets the PDF).
+insert into public.job_postings (id, employer_id, title, description, location, employment_type, industry, application_deadline, status)
+values ('e2e00000-0000-4000-8000-0000000000a3', 'e2e00000-0000-4000-8000-0000000000e1', 'Chuyên viên nhân sự CV online E2E',
+  'Tuyển dụng, đào tạo và chăm lo đời sống nhân viên cho công ty.', 'Hà Nội', 'FULL_TIME', 'HR', now() + interval '7 days', 'PUBLISHED');
 select email, (select role from public.profiles p where p.id = u.id) from auth.users u where email like 'e2e.%@jobportal.test';
 commit;
