@@ -4,7 +4,7 @@
 
 **Blocked by:** 39
 
-**Status:** ready-for-agent
+**Status:** resolved (ed47375)
 
 ### Antigravity — branch `task/48-v5-visual-assets`
 - [ ] `public/images/articles/{cv,interview,salary,career,workplace}.svg` — ảnh bìa bài cẩm nang 1200×630, không chữ
