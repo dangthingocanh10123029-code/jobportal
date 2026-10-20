@@ -466,6 +466,7 @@ deleteMyCvAction(): Promise<ActionResult<null>>
 getApplicationCv(applicationId: string): Promise<OnlineCv | null>   // Employer chủ tin: bản chụp CV lúc nộp
 ```
 `submitApplicationAction(formData)` nhận thêm field `cvSource`: `'FILE'` (mặc định, field `resume` như cũ) hoặc `'ONLINE'` (không cần file; lưu bản chụp CV online vào đơn, sửa CV sau đó không đổi đơn đã nộp). `Application`/`EmployerApplicationSummary` bổ sung `cvSource: 'FILE' | 'ONLINE'`.
+Giới hạn chốt khi làm 42A: fullName 1–100; headline, location ≤ 150; mỗi language 1–30; certification name/issuer ≤ 150, year 1950–2100. Nộp ONLINE khi chưa có CV → 422 'Bạn chưa tạo CV online'.
 Xuất PDF: trang `/candidate/cv/print` dùng CSS `@media print` + `window.print()`, không thêm thư viện.
 
 ### 43 — Tìm ứng viên (`@/actions/talent`)
