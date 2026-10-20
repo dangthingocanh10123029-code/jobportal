@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#EFF6FF"/>
-  <!-- Triangular interconnected loop paths -->
-  <path d="M 64 28 L 94 80 L 34 80 Z" stroke="#2563EB" stroke-width="12" stroke-linejoin="round"/>
-  <circle cx="64" cy="28" r="8" fill="#1D4ED8"/>
-  <circle cx="94" cy="80" r="8" fill="#F59E0B"/>
-  <circle cx="34" cy="80" r="8" fill="#3B82F6"/>
-  <circle cx="64" cy="62" r="6" fill="#DBEAFE"/>
+  <rect width="128" height="128" rx="28" fill="#CFFAFE"/>
+  <path d="M64 22L98 36V64C98 84 82 101 64 106C46 101 30 84 30 64V36L64 22Z" fill="#FFFFFF"/>
+  <path d="M64 30L90 41V64C90 80 78 93 64 97C50 93 38 80 38 64V41L64 30Z" fill="#06B6D4"/>
+  <path d="M64 30L90 41V64C90 80 78 93 64 97V30Z" fill="#0E7490"/>
+  <circle cx="64" cy="60" r="10" fill="#292524"/>
+  <path d="M64 52L66 58L72 60L66 62L64 68L62 62L56 60L62 58Z" fill="#FFFFFF"/>
 </svg>

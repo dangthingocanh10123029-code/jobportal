@@ -1,25 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
-  <!-- Pedestal -->
-  <ellipse cx="120" cy="152" rx="75" ry="14" fill="#DBEAFE"/>
+  <!-- Ground Shadow -->
+  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F5F5F4"/>
+  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
 
-  <!-- Application Tray Back -->
-  <path d="M 60 120 L 75 82 H 165 L 180 120 Z" fill="#DBEAFE"/>
-
-  <!-- Floating Resume Paper emerging -->
-  <g transform="translate(90, 36) rotate(-6)">
-    <rect width="60" height="80" rx="6" fill="#FFFFFF" stroke="#DBEAFE" stroke-width="2.5"/>
-    <rect x="8" y="14" width="22" height="5" rx="2.5" fill="#2563EB"/>
-    <rect x="8" y="26" width="44" height="4" rx="2" fill="#DBEAFE"/>
-    <rect x="8" y="35" width="36" height="4" rx="2" fill="#DBEAFE"/>
-    <rect x="8" y="44" width="40" height="4" rx="2" fill="#DBEAFE"/>
-    <circle cx="44" cy="62" r="6" fill="#F59E0B"/>
+  <!-- Minimalist Tray in Soft Lavender & Dark Stone -->
+  <g transform="translate(65, 80)">
+    <rect x="0" y="24" width="110" height="46" rx="12" fill="#E6E6FA"/>
+    <path d="M0 38C20 38 30 52 55 52C80 52 90 38 110 38V60C110 65.5 105.5 70 100 70H10C4.5 70 0 65.5 0 60V38Z" fill="#292524"/>
+    <rect x="42" y="58" width="26" height="4" rx="2" fill="#06B6D4"/>
   </g>
 
-  <!-- Application Tray Front Rim with Cutout -->
-  <path d="M 54 120 L 70 144 H 170 L 186 120 H 144 C 138 132 132 135 120 135 C 108 135 102 132 96 120 Z" fill="#2563EB"/>
+  <!-- Envelope with Folded Resume -->
+  <g transform="translate(75, 45)">
+    <!-- Envelope Base -->
+    <rect x="10" y="25" width="80" height="50" rx="10" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+    <path d="M10 25L50 54L90 25" stroke="#E7E5E4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Resume inside in Pure White with Cyan Accent -->
+    <rect x="22" y="6" width="56" height="36" rx="6" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+    <rect x="30" y="14" width="28" height="4" rx="2" fill="#06B6D4"/>
+    <rect x="30" y="22" width="40" height="3" rx="1.5" fill="#E7E5E4"/>
+    <rect x="30" y="28" width="32" height="3" rx="1.5" fill="#E7E5E4"/>
+  </g>
 
-  <!-- Floating Golden Paper Plane / Sparkles -->
-  <polygon points="175,45 178,51 184,53 178,55 175,61 172,55 166,53 172,51" fill="#F59E0B"/>
-  <circle cx="68" cy="65" r="3.5" fill="#F59E0B"/>
-  <circle cx="186" cy="80" r="2.5" fill="#F59E0B"/>
+  <!-- Cyan Origami Plane Ascending -->
+  <g transform="translate(136, 26)">
+    <path d="M-20 40 Q -5 20, 10 10" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/>
+    <path d="M38 0L0 20L14 26L38 0Z" fill="#06B6D4"/>
+    <path d="M38 0L14 26L20 36L26 24L38 0Z" fill="#0E7490"/>
+    <path d="M14 26L20 36L18 27Z" fill="#155E75"/>
+  </g>
+
+  <circle cx="54" cy="50" r="4" fill="#06B6D4"/>
+  <circle cx="184" cy="74" r="5" fill="#EFEDF4"/>
 </svg>

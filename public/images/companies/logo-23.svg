@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#F0F9FF"/>
-  <!-- 3 curved aerodynamic wing vanes -->
-  <path d="M 28 88 C 48 88 72 76 96 40 C 76 56 52 64 28 64 Z" fill="#0284C7"/>
-  <path d="M 32 64 C 50 64 70 54 90 26 C 72 40 52 46 32 46 Z" fill="#38BDF8"/>
-  <path d="M 38 46 C 52 46 68 38 84 18 C 70 28 54 32 38 32 Z" fill="#BAE6FD"/>
+  <rect width="128" height="128" rx="28" fill="#E8EFE8"/>
+  <path d="M22 40 Q 64 80, 106 40" stroke="#FFFFFF" stroke-width="8" fill="none"/>
+  <rect x="36" y="30" width="8" height="66" rx="4" fill="#06B6D4"/>
+  <rect x="84" y="30" width="8" height="66" rx="4" fill="#06B6D4"/>
+  <rect x="20" y="74" width="88" height="8" rx="4" fill="#292524"/>
+  <circle cx="64" cy="38" r="8" fill="#059669"/>
 </svg>
