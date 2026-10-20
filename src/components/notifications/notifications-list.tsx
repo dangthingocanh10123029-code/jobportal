@@ -80,7 +80,7 @@ export function NotificationsList({ notifications }: { notifications: AppNotific
       <section className="surface-card notifications-empty">
         <img alt="" height="180" src="/images/empty-notifications.svg" width="240" />
         <h2>Bạn chưa có thông báo</h2>
-        <p>Các cập nhật về hồ sơ ứng tuyển sẽ xuất hiện ở đây.</p>
+        <p>Các cập nhật về hồ sơ ứng tuyển và việc làm mới khớp thông báo việc làm sẽ xuất hiện ở đây.</p>
       </section>
     );
   }

@@ -1436,3 +1436,33 @@ html, body { background: #fff; }
   .cv-modern .cv-header { margin: 0 0 8px; border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .cv-item, .cv-section h3 { break-inside: avoid; }
 }
+/* Recommendations & job alerts (ticket 44) */
+.home-recommendations { padding-top: 40px; }
+.home-recommendations .page-heading { margin-bottom: 18px; }
+.match-reasons { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 10px 0 0; padding: 0; list-style: none; color: var(--color-success); font-size: 12px; font-weight: 650; }
+.create-alert { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: -6px 0 18px; }
+.create-alert .form-success, .create-alert .field-hint, .create-alert .form-error { margin: 0; font-size: 13px; }
+.create-alert a, .job-alert-list a:not(.button) { color: var(--color-primary); font-weight: 700; }
+.create-alert-form { display: flex; width: min(100%, 520px); flex-direction: column; gap: 10px; padding: 16px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: var(--shadow-card); }
+.create-alert .field-hint { color: var(--color-muted); overflow-wrap: anywhere; }
+.create-alert-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.job-alert-count { margin: -8px 0 14px; color: var(--color-muted); font-size: 13px; }
+.alert-list-status .form-success { margin: 0 0 12px; }
+.job-alert-list { display: flex; flex-direction: column; gap: 13px; margin: 0; padding: 0; list-style: none; }
+.job-alert-card { display: flex; align-items: center; gap: 17px; padding: 20px; box-shadow: none; }
+.job-alert-card.is-paused .job-alert-content { opacity: .75; }
+.job-alert-content { min-width: 0; flex: 1; }
+.job-alert-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.job-alert-heading h2 { margin: 0; font-size: 17px; overflow-wrap: anywhere; }
+.job-alert-content > p { margin: 6px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+.job-alert-content > .job-alert-meta { color: var(--color-muted); font-size: 12px; }
+.job-alert-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.job-alert-switch { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; font-size: 13px; font-weight: 650; cursor: pointer; }
+.job-alert-switch input { width: 18px; height: 18px; accent-color: var(--color-primary); }
+.job-alert-switch input:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.job-alert-delete { color: var(--color-danger); }
+@media (max-width: 700px) {
+  .home-recommendations { padding-top: 28px; }
+  .job-alert-card { flex-direction: column; align-items: stretch; padding: 16px; }
+  .job-alert-actions { justify-content: space-between; }
+}

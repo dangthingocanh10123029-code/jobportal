@@ -2,13 +2,16 @@ import Link from 'next/link';
 import { listOpenPostings } from '@/actions/postings';
 import { getSavedPostingIds } from '@/actions/candidates';
 import { getCurrentProfile } from '@/actions/auth';
+import { getRecommendedPostings, listJobAlerts } from '@/actions/alerts';
 import { searchFilterSchema } from '@/actions/postings-schema';
 import type { Industry, PostingSort, PostingSummary, SearchFilter } from '@/actions/types';
 import { employmentLabels, formatDate, formatExperience, formatSalary, industryLabels, jobLevelLabels, postingSortLabels } from '@/components/format';
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
+import { CreateAlertButton } from '@/components/alerts/create-alert-button';
+import { alertFilterFromSearch } from '@/components/alerts/describe';
 import { Button, Input } from '@/components/ui/primitives';
 
-function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean }) {
+function PostingCard({ posting, savedIds, isCandidate, matchReasons }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean; matchReasons?: string[] }) {
   return (
     <article className="public-posting-card">
       <img alt="" className="company-placeholder" height="48" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="48" />
@@ -29,6 +32,7 @@ function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSumma
           <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
         </div>
         {posting.skills.length ? <div aria-label="Kỹ năng" className="posting-skill-list">{posting.skills.slice(0, 3).map((skill) => <span className="skill-tag" key={skill}>{skill}</span>)}</div> : null}
+        {matchReasons?.length ? <ul aria-label="Lý do phù hợp" className="match-reasons">{matchReasons.map((reason) => <li key={reason}><span aria-hidden="true">✓</span> {reason}</li>)}</ul> : null}
       </div>
       <div className="posting-card-actions">{isCandidate ? <SavedPostingButton initialSaved={savedIds.includes(posting.id)} postingId={posting.id} /> : null}<Link aria-label={`Xem chi tiết: ${posting.title}`} className="posting-arrow" href={`/jobs/${posting.id}`} prefetch={false}><span aria-hidden="true">→</span></Link></div>
     </article>
@@ -81,9 +85,10 @@ function PageNavigation({ page, pageCount, filter }: { page: number; pageCount: 
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<HomeSearchParams> }) {
   const filter = searchFilterFromParams(await searchParams);
-  const [postingsPage, savedIds, profile] = await Promise.all([listOpenPostings(filter), getSavedPostingIds(), getCurrentProfile()]);
+  const [postingsPage, savedIds, profile, recommendations, alerts] = await Promise.all([listOpenPostings(filter), getSavedPostingIds(), getCurrentProfile(), getRecommendedPostings(), listJobAlerts()]);
   const isCandidate = profile?.role === 'CANDIDATE';
   const pageCount = Math.max(1, Math.ceil(postingsPage.total / postingsPage.pageSize));
+  const alertFilter = alertFilterFromSearch(filter);
   const hasFilters = Boolean(filter.q || filter.location || filter.employmentType || filter.minSalary || filter.industry || filter.level || filter.maxExperience !== undefined || filter.skill || (filter.sort && filter.sort !== 'newest'));
 
   return (
@@ -97,6 +102,19 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           <a className="button button-primary" href="#job-search">Khám phá việc làm <span aria-hidden="true">↓</span></a>
         </div>
       </section>
+
+      {isCandidate && !hasFilters && recommendations.length ? (
+        <section aria-labelledby="recommended-postings" className="page-shell home-recommendations">
+          <div className="page-heading">
+            <span className="eyebrow">Dựa trên hồ sơ của bạn</span>
+            <h2 id="recommended-postings">Gợi ý cho bạn</h2>
+            <p>Những tin đang mở phù hợp với kỹ năng và các vị trí bạn từng ứng tuyển.</p>
+          </div>
+          <div aria-label="Việc làm gợi ý" className="public-posting-list">
+            {recommendations.map((posting) => <PostingCard isCandidate key={posting.id} matchReasons={posting.matchReasons} posting={posting} savedIds={savedIds} />)}
+          </div>
+        </section>
+      ) : null}
 
       <section aria-labelledby="open-postings" className="page-shell home-listings">
         <nav aria-label="Lọc theo ngành nghề" className="industry-chips">
@@ -180,6 +198,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           </div>
           <span className="results-count">{postingsPage.total} việc làm</span>
         </div>
+        {isCandidate && Object.keys(alertFilter).length ? <CreateAlertButton alertCount={alerts.length} filter={alertFilter} key={JSON.stringify(alertFilter)} /> : null}
 
         {postingsPage.items.length > 0 ? (
           <div aria-label="Danh sách việc làm đang mở" className="public-posting-list">
