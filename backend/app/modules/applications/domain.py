@@ -3,6 +3,7 @@ from typing import Literal
 from app.auth import Role
 from app.errors import DomainError
 
+CvSource = Literal["FILE", "ONLINE"]
 ApplicationStatus = Literal["SUBMITTED", "REVIEWING", "INTERVIEWING", "OFFERED", "HIRED", "REJECTED", "WITHDRAWN"]
 
 # Spec "Application Status state machine". Mirrors allowedNextStatuses (src/modules/application) and
@@ -44,6 +45,7 @@ _ERRORS = {
     "ALREADY_APPLIED": (409, "Bạn đã nộp hồ sơ cho tin này rồi"),
     "POSTING_NOT_OPEN": (409, "Tin tuyển dụng không còn nhận hồ sơ"),
     "INVALID_RESUME": (422, "CV phải là file PDF, tối đa 5 MB"),
+    "CV_NOT_FOUND": (422, "Bạn chưa tạo CV online"),
     "APPLICATION_NOT_FOUND": (404, "Không tìm thấy hồ sơ"),
     "INVALID_TRANSITION": (409, "Hồ sơ không thể chuyển sang trạng thái này"),
 }

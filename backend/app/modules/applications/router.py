@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from app.auth import CandidateActor, EmployerActor, OptionalUser
 from app.errors import DomainError
-from app.modules.applications.domain import MAX_RESUME_BYTES, ApplicationError
+from app.modules.applications.domain import MAX_RESUME_BYTES, ApplicationError, CvSource
 from app.modules.applications.postgres import PostgresApplicationRepository
 from app.modules.applications.repository import ApplicationRepository
 from app.modules.applications.schemas import (
@@ -46,14 +46,15 @@ def submit_application(
     service: Service,
     posting_id: Annotated[str, Form(alias="postingId")] = "",
     resume: Annotated[UploadFile | None, File()] = None,
+    cv_source: Annotated[CvSource, Form(alias="cvSource")] = "FILE",
 ) -> Application:
-    """Multipart `postingId` + `resume` (PDF ≤ 5 MB)."""
+    """Multipart `postingId` + `cvSource` (FILE by default) + `resume` (PDF ≤ 5 MB, FILE only)."""
     try:
         posting = UUID(posting_id)
     except ValueError:
         raise DomainError(422, "Mã tin không hợp lệ") from None
-    content = resume.file.read(MAX_RESUME_BYTES + 1) if resume else b""
-    return service.submit(UUID(actor.user_id), posting, resume.content_type if resume else None, content)
+    content = resume.file.read(MAX_RESUME_BYTES + 1) if resume and cv_source == "FILE" else b""
+    return service.submit(UUID(actor.user_id), posting, resume.content_type if resume else None, content, cv_source)
 
 
 @router.get("/postings/{posting_id}/my-application", response_model=Application | None)

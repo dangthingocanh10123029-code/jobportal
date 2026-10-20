@@ -12,6 +12,7 @@ from app.modules.applications.router import router as applications_router
 from app.modules.articles.router import router as articles_router
 from app.modules.candidates.router import router as candidates_router
 from app.modules.companies.router import router as companies_router
+from app.modules.cv.router import router as cv_router
 from app.modules.dashboard.router import router as dashboard_router
 from app.modules.health.router import router as health_router
 from app.modules.interviews.router import router as interviews_router
@@ -48,3 +49,4 @@ app.include_router(admin_router)
 app.include_router(interviews_router)
 app.include_router(articles_router)
 app.include_router(messages_router)
+app.include_router(cv_router)

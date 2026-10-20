@@ -118,6 +118,21 @@ def test_refused_submit_removes_orphan_upload(api, fail_remove):
     assert len(api.storage.files) == (2 if fail_remove else 1)  # cleanup failure keeps the refusal message
 
 
+def test_submit_with_online_cv_needs_no_file(api):
+    http = api.as_(ANNA).http
+    res = http.post("/applications", data={"postingId": str(OPEN), "cvSource": "ONLINE"})
+    assert (res.status_code, res.json()) == (422, {"error": "Bạn chưa tạo CV online"})
+    api.repo.cvs.add(ANNA)
+    res = http.post("/applications", data={"postingId": str(OPEN), "cvSource": "ONLINE"},
+                    files={"resume": ("cv.pdf", PDF, "application/pdf")})  # a stray file is ignored
+    assert (res.status_code, res.json()["cvSource"]) == (201, "ONLINE")
+    assert api.storage.files == {}
+    assert api.as_(EMP, "EMPLOYER").http.get(f"/me/postings/{OPEN}/applications").json()[0]["cvSource"] == "ONLINE"
+    assert api.as_(BINH).submit().json()["cvSource"] == "FILE"
+    bad = http.post("/applications", data={"postingId": str(OPEN), "cvSource": "LINK"})
+    assert (bad.status_code, bad.json()) == (422, {"error": "Giá trị của cvSource không hợp lệ"})
+
+
 def test_submit_closed_posting(api):
     res = api.as_(ANNA).submit(posting=CLOSED)
     assert (res.status_code, res.json()) == (409, {"error": "Tin tuyển dụng không còn nhận hồ sơ"})

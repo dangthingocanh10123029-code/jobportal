@@ -15,7 +15,7 @@ from app.modules.applications.schemas import (
     StatusChange,
 )
 
-_COLUMNS = "id, job_posting_id, candidate_id, status, created_at, updated_at"
+_COLUMNS = "id, job_posting_id, candidate_id, status, cv_source, created_at, updated_at"
 
 T = TypeVar("T")
 
@@ -41,9 +41,10 @@ class PostgresApplicationRepository:
             raise
         return rows[0]
 
-    def submit(self, candidate_id: UUID, posting_id: UUID, resume_path: str) -> Application:
+    def submit(self, candidate_id: UUID, posting_id: UUID, resume_path: str | None) -> Application:
         """`candidate_id` is not sent: submit_application takes the Candidate from auth.uid()."""
-        return self._rpc("public.submit_application(%s, %s)", (posting_id, resume_path))
+        source = "FILE" if resume_path else "ONLINE"
+        return self._rpc("public.submit_application(%s, %s, %s)", (posting_id, resume_path, source))
 
     def find_by_posting(self, candidate_id: UUID, posting_id: UUID) -> Application | None:
         rows = self._rows(

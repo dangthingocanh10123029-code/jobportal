@@ -5,6 +5,7 @@ from app.auth import Actor
 from app.modules.applications.domain import (
     ApplicationError,
     ApplicationStatus,
+    CvSource,
     check_resume,
 )
 from app.modules.applications.repository import ApplicationRepository
@@ -29,8 +30,13 @@ class ApplicationService:
         self._repo = repo
         self._storage = storage
 
-    def submit(self, candidate_id: UUID, posting_id: UUID, content_type: str | None, content: bytes) -> Application:
-        """Uploads the Resume, then submits atomically; a refused submit drops the orphan upload (best effort)."""
+    def submit(
+        self, candidate_id: UUID, posting_id: UUID, content_type: str | None, content: bytes, cv_source: CvSource = "FILE"
+    ) -> Application:
+        """ONLINE: the RPC snapshots the online CV, no file. FILE: uploads the Resume, then submits atomically;
+        a refused submit drops the orphan upload (best effort)."""
+        if cv_source == "ONLINE":
+            return self._repo.submit(candidate_id, posting_id, None)
         check_resume(content_type, content)
         # The folder must be the Candidate's id: Storage policy and submit_application both check it.
         path = f"{candidate_id}/{uuid4()}.pdf"
