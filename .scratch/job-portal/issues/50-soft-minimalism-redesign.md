@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** resolved (6867cbf)
 
 ## Quyết định của Coordinator (áp brief vào dự án)
 - `[BRAND NAME]` = **Job Portal**. Mọi chữ hiển thị bằng tiếng Việt, viết hoa kiểu câu.
@@ -32,3 +32,9 @@
 
 ## Hình ảnh
 - Antigravity (ticket 39/48) đổi bảng màu sang cyan #06B6D4 + tint #CFFAFE / #E6E6FA / #E8EFE8 / #EFEDF4 + dark stone #292524.
+
+## Kết quả
+- Font: Outfit + Be Vietnam Pro (fallback dấu tiếng Việt, adjustFontFallback tắt); chữ viết tay dùng Patrick Hand (Reenie Beanie không có dấu).
+- Badge hero = total `postedWithinDays=7` → link `/?posted=7`; chip = kỹ năng phổ biến trong tin đang mở; câu chuyện = review APPROVED.
+- Khác brief có chủ ý: mobile hiện đủ 3 thẻ "Cách hoạt động"; footer "Liên hệ" trỏ /guide (chưa có trang liên hệ); khối giới thiệu chỉ ở trang 1 không lọc.
+- E2E: link mũi tên thẻ tin đổi thành 'Ứng tuyển: …', ô lương tối thiểu thành thanh trượt.
