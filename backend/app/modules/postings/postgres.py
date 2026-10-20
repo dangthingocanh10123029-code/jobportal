@@ -12,12 +12,13 @@ from app.modules.postings.schemas import PostingInput, SearchFilter, StoredPosti
 _COLUMNS = (
     "id, employer_id, company_name, title, description, location, employment_type, salary_min, salary_max, "
     "application_deadline, status, created_at, updated_at, industry, level, experience_years, headcount, skills, "
-    "requirements, benefits, company_logo_url, company_verified, hidden_at, hidden_reason"
+    "requirements, benefits, company_logo_url, company_verified, hidden_at, hidden_reason, featured_until"
 )
 
 # Ties: newest first, then id, so pages stay stable. Mirrored by _SORT_KEYS in the InMemory adapter.
+# 'newest' puts featured postings (ticket 47) first.
 _ORDER = {
-    "newest": "created_at desc, id",
+    "newest": "coalesce(featured_until > now(), false) desc, created_at desc, id",
     "salary_desc": "salary_max desc nulls last, created_at desc, id",
     "deadline_asc": "application_deadline, created_at desc, id",
 }

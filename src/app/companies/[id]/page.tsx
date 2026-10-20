@@ -60,7 +60,7 @@ export default async function CompanyDetailPage({ params, searchParams }: { para
               <article className="surface-card company-open-posting-card" key={posting.id}>
                 <img alt="" className="company-list-logo" height="56" src={posting.companyLogoUrl ?? company.logoUrl ?? '/images/company-placeholder.svg'} width="56" />
                 <div className="company-open-posting-content">
-                  <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link>{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</h3>
+                  <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link>{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}{posting.featured ? <> <span className="featured-badge">Nổi bật</span></> : null}</h3>
                   <p>{industryLabels[posting.industry]} · {jobLevelLabels[posting.level]} · {employmentLabels[posting.employmentType]}</p>
                   <div className="company-open-posting-meta"><span>{posting.location}</span><span>{formatSalary(posting.salaryMin, posting.salaryMax)}</span><span>Hạn nộp {formatDate(posting.applicationDeadline)}</span></div>
                 </div>

@@ -3,10 +3,15 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from app.modules.postings.domain import fold_accents, is_open, meets_min_salary
+from app.modules.postings.domain import (
+    fold_accents,
+    is_featured,
+    is_open,
+    meets_min_salary,
+)
 from app.modules.postings.schemas import PostingInput, SearchFilter, StoredPosting
 
-# Mirrors the ORDER BY of PostgresPostingRepository.list_open; None sorts the rows newest first only.
+# Mirrors the ORDER BY of PostgresPostingRepository.list_open; 'newest' is handled in list_open (featured first).
 _SORT_KEYS: dict[str, Callable[[StoredPosting], Any] | None] = {
     "newest": None,
     "salary_desc": lambda r: -(r.salary_max if r.salary_max is not None else -1),
@@ -71,6 +76,8 @@ class InMemoryPostingRepository:
         rows = [r for r in reversed(self.rows.values()) if matches(r)]
         if key := _SORT_KEYS[c.sort]:
             rows.sort(key=key)  # stable: ties stay newest first
+        else:
+            rows.sort(key=lambda r: not is_featured(r.featured_until, self._now()))
         return [r.model_copy() for r in rows[offset : offset + limit]], len(rows)
 
     def record_view(self, posting_id: UUID) -> None:

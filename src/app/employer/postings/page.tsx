@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { listMyPostings } from '@/actions/postings';
 import type { JobPosting } from '@/actions/types';
 import { PostingControls } from '@/components/postings/posting-controls';
-import { formatDate, formatSalary, postingStatusLabels } from '@/components/format';
+import { formatDate, formatDateTime, formatSalary, postingStatusLabels } from '@/components/format';
 import { PageHeader, StatCard } from '@/components/ui/primitives';
 
 function PostingCard({ posting }: { posting: JobPosting }) {
@@ -23,6 +23,7 @@ function PostingCard({ posting }: { posting: JobPosting }) {
           <span><span aria-hidden="true">⌖</span> {posting.location}</span>
           <span><span aria-hidden="true">◷</span> {formatSalary(posting.salaryMin, posting.salaryMax)}</span>
           <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
+          {posting.featured && posting.featuredUntil ? <span><span className="featured-badge">Nổi bật</span> đến {formatDateTime(posting.featuredUntil)}</span> : null}
         </div>
         {posting.hiddenAt ? <div className="hidden-posting-notice"><strong>Tin đã bị ẩn bởi quản trị viên</strong><p>{posting.hiddenReason}</p></div> : null}
       </div>
@@ -30,6 +31,7 @@ function PostingCard({ posting }: { posting: JobPosting }) {
         <Link className="button button-quiet button-small" href={`/employer/postings/${posting.id}/applications`} prefetch={false}>
           Xem hồ sơ
         </Link>
+        {posting.displayStatus === 'PUBLISHED' && !posting.hiddenAt ? <Link aria-label={`Đẩy tin ${posting.title}`} className="button button-quiet button-small" href={`/employer/billing?posting=${posting.id}`} prefetch={false}>Đẩy tin</Link> : null}
         <PostingControls posting={posting} />
       </div>
     </article>

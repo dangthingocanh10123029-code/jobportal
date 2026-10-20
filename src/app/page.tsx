@@ -10,7 +10,7 @@ import { Button, Input } from '@/components/ui/primitives';
 
 function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean }) {
   return (
-    <article className="public-posting-card">
+    <article className={`public-posting-card${posting.featured ? ' is-featured' : ''}`}>
       <img alt="" className="company-placeholder" height="48" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="48" />
       <div className="public-posting-content">
         <div className="public-posting-heading">
@@ -18,7 +18,7 @@ function PostingCard({ posting, savedIds, isCandidate }: { posting: PostingSumma
             <h3><Link href={`/jobs/${posting.id}`} prefetch={false}>{posting.title}</Link></h3>
             <p className="public-posting-company"><Link href={`/companies/${posting.employerId}`} prefetch={false}>{posting.companyName}{posting.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</Link></p>
           </div>
-          <span className="employment-badge">{employmentLabels[posting.employmentType]}</span>
+          <span className="posting-badges">{posting.featured ? <span className="featured-badge">Nổi bật</span> : null}<span className="employment-badge">{employmentLabels[posting.employmentType]}</span></span>
         </div>
         <div className="public-posting-meta">
           <span>{industryLabels[posting.industry]}</span>
@@ -85,6 +85,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const isCandidate = profile?.role === 'CANDIDATE';
   const pageCount = Math.max(1, Math.ceil(postingsPage.total / postingsPage.pageSize));
   const hasFilters = Boolean(filter.q || filter.location || filter.employmentType || filter.minSalary || filter.industry || filter.level || filter.maxExperience !== undefined || filter.skill || (filter.sort && filter.sort !== 'newest'));
+  // 'newest' lists featured postings first, so the unfiltered first page already holds the block's ≤ 6.
+  const featured = !hasFilters && postingsPage.page === 1 ? postingsPage.items.filter((p) => p.featured).slice(0, 6) : [];
 
   return (
     <main>
@@ -171,6 +173,24 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
             {hasFilters ? <Link className="clear-search-link" href="/">Xóa bộ lọc</Link> : null}
           </div>
         </form>
+
+        {featured.length ? (
+          <section aria-labelledby="featured-postings" className="featured-postings">
+            <div className="page-heading">
+              <span className="eyebrow">Được nhà tuyển dụng đẩy tin</span>
+              <h2 id="featured-postings">Việc làm nổi bật</h2>
+            </div>
+            <div className="featured-posting-grid">
+              {featured.map((posting) => (
+                <Link className="featured-posting-card" href={`/jobs/${posting.id}`} key={posting.id} prefetch={false}>
+                  <img alt="" className="company-placeholder" height="40" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="40" />
+                  <span className="featured-posting-copy"><strong>{posting.title}</strong><small>{posting.companyName}</small><small>{posting.location} · {formatSalary(posting.salaryMin, posting.salaryMax)}</small></span>
+                  <span className="featured-badge">Nổi bật</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <div className="home-listings-heading">
           <div className="page-heading">

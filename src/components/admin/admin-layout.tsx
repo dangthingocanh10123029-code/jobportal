@@ -11,6 +11,8 @@ const links = [
   { href: '/admin/audit', label: 'Nhật ký thao tác', icon: '◷' },
   { href: '/admin/articles', label: 'Cẩm nang', icon: '▧' },
   { href: '/admin/reviews', label: 'Đánh giá', icon: '★' },
+  { href: '/admin/packages', label: 'Gói dịch vụ', icon: '◆' },
+  { href: '/admin/orders', label: 'Đơn hàng', icon: '₫' },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

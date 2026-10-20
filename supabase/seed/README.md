@@ -92,3 +92,11 @@ psql "$DATABASE_URL" -f supabase/seed/articles.sql
 ```sh
 psql "$DATABASE_URL" -f supabase/seed/reviews.sql
 ```
+
+## Gói dịch vụ & tin nổi bật (ticket 47)
+
+**Thanh toán giả lập**, không có tiền thật. Seed 10 đơn PAID (8 tin đang nổi bật, 2 đơn đã hết hạn chỉ tính doanh thu), 1 đơn PENDING, 1 đơn CANCELLED, trên các tin đang mở của Employer demo (chọn theo thứ tự hash cố định). Chạy sau `seed-demo.sql` và migration `20261020000800_billing.sql`; chạy lại xóa đơn demo cũ và tạo lại (ngày theo `now()`).
+
+```sh
+psql "$DATABASE_URL" -f supabase/seed/billing.sql
+```

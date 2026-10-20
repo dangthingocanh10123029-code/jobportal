@@ -327,4 +327,53 @@ select pg_temp.ok(not exists (select 1 from information_schema.columns where tab
 select pg_temp.ok((select (rating, review_count) = (4.0::float8, 1) from company_summaries where id = (select e1 from ids)), '45 company_summaries có rating/review_count');
 reset role;
 
+-- ===== 47: billing / featured (cần migration 20261020000800_billing.sql; THANH TOÁN GIẢ LẬP; admin 'ad' của mục 46) =====
+insert into job_postings (id, employer_id, title, description, location, employment_type, application_deadline, status)
+values ('00000000-0000-4000-8000-0000000000b7', (select e1 from ids), 'Tin đẩy nổi bật', 'Tin của e1 để kiểm tra mục 47', 'HN', 'FULL_TIME', now() + interval '20 days', 'PUBLISHED');
+create temp table od (id uuid);
+grant select, insert on od to authenticated;
+select pg_temp.as_anon();
+select pg_temp.ok((select count(*) from service_packages where code in ('TOP_7', 'TOP_14', 'TOP_30')) = 3, '47 anon thấy 3 gói mặc định');
+select pg_temp.fails($$select create_order((select id from service_packages where code = 'TOP_7'), '00000000-0000-4000-8000-0000000000b7')$$, 'permission denied', '47 anon không tạo đơn');
+select pg_temp.fails($$select count(*) from orders$$, 'permission denied', '47 anon không đọc orders');
+reset role;
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.fails($$select create_order((select id from service_packages where code = 'TOP_7'), '00000000-0000-4000-8000-0000000000b7')$$, 'NOT_EMPLOYER', '47 Candidate không mua gói');
+reset role;
+select pg_temp.as_user((select e2 from ids));
+select pg_temp.fails($$select create_order((select id from service_packages where code = 'TOP_7'), '00000000-0000-4000-8000-0000000000b7')$$, 'POSTING_NOT_ELIGIBLE', '47 Employer khác không đẩy tin của e1');
+reset role;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.fails($$select create_order((select id from service_packages where code = 'TOP_7'), (select p_draft from ids))$$, 'POSTING_NOT_ELIGIBLE', '47 tin nháp không đẩy được');
+insert into od select create_order((select id from service_packages where code = 'TOP_7'), '00000000-0000-4000-8000-0000000000b7');
+select pg_temp.fails($$select create_order((select id from service_packages where code = 'TOP_14'), '00000000-0000-4000-8000-0000000000b7')$$, 'ORDER_PENDING_EXISTS', '47 mỗi tin 1 đơn PENDING');
+select pg_temp.fails($$update orders set status = 'PAID'$$, 'permission denied', '47 không tự đánh dấu PAID');
+select pg_temp.fails($$update job_postings set featured_until = now() + interval '1 year' where id = '00000000-0000-4000-8000-0000000000b7'$$, 'permission denied', '47 không tự set featured_until');
+select pay_order((select id from od));
+select pg_temp.ok((select status = 'PAID' and amount_vnd = 299000 from orders where id = (select id from od)), '47 thanh toán giả lập: PENDING → PAID, giá lúc đặt');
+select pg_temp.fails($$select pay_order((select id from od))$$, 'ORDER_NOT_PENDING', '47 không thanh toán lại');
+reset role;
+select pg_temp.ok((select featured_until > now() + interval '6 days' from job_postings where id = '00000000-0000-4000-8000-0000000000b7'), '47 featured_until cộng 7 ngày');
+select pg_temp.ok((select count(*) from notifications where recipient_id = (select e1 from ids) and type = 'ORDER_PAID') = 1, '47 thông báo ORDER_PAID');
+select pg_temp.as_user((select e2 from ids));
+select pg_temp.ok((select count(*) from orders) = 0 and (select count(*) from order_summaries) = 0, '47 RLS: Employer khác không thấy đơn');
+select pg_temp.fails($$select cancel_order((select id from od))$$, 'ORDER_NOT_FOUND', '47 Employer khác không hủy được đơn');
+select pg_temp.ok((select count(*) from admin_orders) = 0, '47 admin_orders rỗng với non-admin');
+select pg_temp.fails($$select admin_save_package(null, 'HACK', 'Gói lạ', '', 0, 90, true)$$, 'NOT_ADMIN', '47 Employer không sửa gói');
+reset role;
+select pg_temp.as_anon();
+select pg_temp.ok((select id from open_job_postings order by coalesce(featured_until > now(), false) desc, created_at desc, id limit 1) = '00000000-0000-4000-8000-0000000000b7', '47 tin nổi bật lên đầu sort newest');
+reset role;
+select pg_temp.as_user('00000000-0000-4000-8000-0000000000ad');
+select pg_temp.fails($$select admin_save_package(null, 'bad', 'Tên', '', 0, 1, true)$$, 'INVALID_PACKAGE', '47 mã gói sai định dạng');
+select pg_temp.fails($$select admin_save_package(null, 'TOP_7', 'Trùng', '', 0, 1, true)$$, 'PACKAGE_CODE_TAKEN', '47 mã gói duy nhất');
+select admin_save_package((select id from service_packages where code = 'TOP_30'), 'TOP_30', 'Tin nổi bật 30 ngày', 'Tạm tắt', 899000, 30, false);
+select pg_temp.ok((select count(*) from admin_orders where id = (select id from od)) = 1, '47 admin thấy mọi đơn');
+select pg_temp.ok((public.admin_stats() -> 'revenue' ->> 'paidOrders')::int >= 1, '47 AdminStats.revenue');
+reset role;
+select pg_temp.ok((select count(*) from admin_audit_log where action = 'PACKAGE_UPDATED' and target_type = 'PACKAGE') >= 1, '47 sửa gói ghi audit');
+select pg_temp.as_anon();
+select pg_temp.ok(not exists (select 1 from service_packages where code = 'TOP_30'), '47 gói tắt không hiện công khai');
+reset role;
+
 rollback;

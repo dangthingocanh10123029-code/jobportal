@@ -197,6 +197,7 @@ def test_list_open_only_open_newest_first(service, clock):
         "location": "Hà Nội", "employment_type": "FULL_TIME", "salary_min": 15_000_000, "salary_max": 25_000_000,
         "application_deadline": at("2026-11-01T00:00:00Z"), "created_at": newer.created_at, "industry": "IT_SOFTWARE",
         "level": "JUNIOR", "experience_years": 1, "skills": ["TypeScript", "React"], "company_verified": False,
+        "featured": False,
     }
 
 
@@ -360,3 +361,18 @@ def test_where_escapes_like_and_folds():
                       " and %s = any(search_skills)")
     assert params == ["%50\\%\\_ke%", 5, "ke toan"]
     assert _where(SearchFilter()) == ("", [])
+
+
+def test_newest_puts_running_featured_first_and_flags_it(service, clock):
+    from datetime import timedelta
+
+    repo = service._repo
+    old = published(service, title="Nổi bật cũ")
+    published(service, title="Mới nhất")
+    ended = published(service, title="Hết nổi bật")
+    repo.rows[old.id] = repo.rows[old.id].model_copy(update={"featured_until": NOW + timedelta(days=7)})
+    repo.rows[ended.id] = repo.rows[ended.id].model_copy(update={"featured_until": NOW - timedelta(seconds=1)})
+    assert titles(service) == ["Nổi bật cũ", "Hết nổi bật", "Mới nhất"]
+    assert [p.featured for p in service.list_open(SearchFilter()).items] == [True, False, False]
+    assert titles(service, sort="deadline_asc")[0] == "Hết nổi bật"  # only 'newest' lifts featured
+    assert service.get_public(old.id).featured and not service.get_public(ended.id).featured

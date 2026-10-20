@@ -7,6 +7,7 @@ from app.modules.postings.domain import (
     TRANSITIONS,
     PostingError,
     display_status,
+    is_featured,
     is_open,
 )
 from app.modules.postings.repository import PostingRepository
@@ -63,7 +64,7 @@ class PostingService:
 
     def list_open(self, criteria: SearchFilter) -> OpenPostingsPage:
         rows, total = self._repo.list_open(criteria, (criteria.page - 1) * PAGE_SIZE, PAGE_SIZE)
-        return OpenPostingsPage(items=[_summary(r) for r in rows], total=total, page=criteria.page)
+        return OpenPostingsPage(items=[self._summary(r) for r in rows], total=total, page=criteria.page)
 
     def list_related(self, posting_id: UUID) -> list[PostingSummary]:
         """Up to RELATED_LIMIT open postings in the same industry, newest first; [] for DRAFT or unknown ids."""
@@ -71,7 +72,7 @@ class PostingService:
         if posting is None or posting.status == "DRAFT":
             return []
         rows, _ = self._repo.list_open(SearchFilter(industry=posting.industry), 0, RELATED_LIMIT + 1)
-        return [_summary(r) for r in rows if r.id != posting_id][:RELATED_LIMIT]
+        return [self._summary(r) for r in rows if r.id != posting_id][:RELATED_LIMIT]
 
     def get_public(self, posting_id: UUID) -> PostingDetail | None:
         """CLOSED/EXPIRED still readable (is_open false); DRAFT looks missing."""
@@ -100,13 +101,14 @@ class PostingService:
 
     def _view(self, posting: StoredPosting) -> JobPosting:
         status = display_status(posting.status, posting.application_deadline, self._now())
-        return JobPosting(**posting.model_dump(), display_status=status)
+        return JobPosting(**posting.model_dump(), display_status=status,
+                          featured=is_featured(posting.featured_until, self._now()))
+
+    def _summary(self, posting: StoredPosting) -> PostingSummary:
+        return PostingSummary.model_validate(
+            {**posting.model_dump(), "featured": is_featured(posting.featured_until, self._now())})
 
 
 def _assert_salary(data: PostingInput) -> None:
     if data.salary_min is not None and data.salary_max is not None and data.salary_min > data.salary_max:
         raise PostingError("INVALID_SALARY")
-
-
-def _summary(posting: StoredPosting) -> PostingSummary:
-    return PostingSummary.model_validate(posting.model_dump())
