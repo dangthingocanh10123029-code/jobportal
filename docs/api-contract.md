@@ -399,6 +399,7 @@ type NotificationType = ...
   | 'REVIEW_MODERATED'                                                     // 45
   | 'ORDER_PAID';                                                          // 47
 type AuditEntry['action'] = ... | 'REVIEW_APPROVED' | 'REVIEW_REJECTED' | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED' | 'PACKAGE_UPDATED';
+type AuditEntry['targetType'] = ... | 'REVIEW' | 'ARTICLE' | 'PACKAGE';   // mỗi ticket thêm action/target vào CHECK của admin_audit_log (giữ giá trị cũ)
 ```
 
 ### 40 — Lịch phỏng vấn (`@/actions/interviews`)

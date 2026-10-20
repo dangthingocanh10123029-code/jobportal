@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** resolved (cc57ee2; migration + seed 15 bài đã áp)
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/46-a-career-guide`
 - [ ] Migration `supabase/migrations/20261020000700_articles.sql`:
