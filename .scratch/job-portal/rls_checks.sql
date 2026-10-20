@@ -204,4 +204,38 @@ select pg_temp.as_anon();
 select pg_temp.fails($$select count(*) from interview_details$$, 'permission denied', '40 anon không đọc interview_details');
 reset role;
 
+-- ===== 41: messages (cần migration 20261020000200_messages.sql; dùng đơn app2 của c2 trên tin của e1) =====
+create temp table n41 as select count(*) n from notifications;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.ok((select (send_message((select id from app2), '  Chào bạn  ')).body) = 'Chào bạn', '41 Employer gửi tin (đã trim)');
+select pg_temp.fails($$select send_message((select id from app2), '   ')$$, 'INVALID_MESSAGE', '41 tin rỗng bị chặn');
+select pg_temp.fails($$insert into messages (application_id, sender_id, body) select id, auth.uid(), 'x' from app2$$, 'permission denied', '41 không insert messages trực tiếp');
+reset role;
+select pg_temp.as_user((select c2 from ids));
+select pg_temp.ok((select unread from conversations where application_id = (select id from app2)) = 1, '41 Candidate thấy 1 tin chưa đọc');
+select pg_temp.ok((select other_party_name from conversations where application_id = (select id from app2)) = 'Công ty A', '41 Candidate thấy tên công ty');
+select pg_temp.ok((select (send_message((select id from app2), 'Dạ vâng')).sender_id) = (select c2 from ids), '41 Candidate trả lời');
+select mark_conversation_read((select id from app2));
+select pg_temp.ok((select count(*) from messages where read_at is null and sender_id <> auth.uid()) = 0, '41 đánh dấu đã đọc');
+select pg_temp.fails($$update messages set read_at = null$$, 'permission denied', '41 không update messages trực tiếp');
+reset role;
+select pg_temp.as_user((select e2 from ids));
+select pg_temp.ok((select count(*) from messages) = 0 and (select count(*) from conversations where application_id = (select id from app2)) = 0, '41 RLS: Employer khác không thấy tin');
+select pg_temp.fails($$select send_message((select id from app2), 'x')$$, 'APPLICATION_NOT_FOUND', '41 Employer khác không gửi được');
+reset role;
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.ok((select count(*) from messages) = 0, '41 RLS: Candidate khác không thấy tin');
+select pg_temp.fails($$select mark_conversation_read((select id from app2))$$, 'APPLICATION_NOT_FOUND', '41 Candidate khác không đánh dấu đọc được');
+reset role;
+select pg_temp.ok((select count(*) from notifications) = (select n from n41), '41 không tạo thông báo cho tin nhắn');
+select pg_temp.as_user((select c2 from ids));
+select pg_temp.ok((select (change_application_status((select id from app2), 'WITHDRAWN')).status) = 'WITHDRAWN', '41 chuẩn bị: c2 rút đơn');
+select pg_temp.fails($$select send_message((select id from app2), 'x')$$, 'CONVERSATION_CLOSED', '41 đơn đã kết thúc thì không gửi được');
+select pg_temp.ok((select not can_send from conversations where application_id = (select id from app2)), '41 conversations.can_send = false');
+reset role;
+select pg_temp.as_anon();
+select pg_temp.fails($$select count(*) from messages$$, 'permission denied', '41 anon không đọc messages');
+select pg_temp.fails($$select send_message(gen_random_uuid(), 'x')$$, 'permission denied', '41 anon không gọi được send_message');
+reset role;
+
 rollback;
