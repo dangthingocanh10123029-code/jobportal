@@ -14,9 +14,6 @@ type ApiOptions = {
 
 /** Calls the FastAPI backend (`API_URL`). HTTP errors → `{ ok: false }` (5xx also logged); network errors throw. */
 export async function apiFetch<T>(path: string, { method = 'GET', body, formData, auth = true }: ApiOptions = {}): Promise<ApiResult<T>> {
-  const base = process.env.API_URL;
-  if (!base) throw new Error('Thiếu biến môi trường API_URL');
-
   const headers: Record<string, string> = {};
   if (auth) {
     // getSession reads the cookie without re-verifying: middleware already verified (and refreshed) it, and FastAPI checks the JWT.
@@ -24,8 +21,16 @@ export async function apiFetch<T>(path: string, { method = 'GET', body, formData
     const { session } = (await (await createSupabaseServerClient()).auth.getSession()).data;
     if (session && (session.expires_at ?? Infinity) * 1000 > Date.now()) headers.Authorization = `Bearer ${session.access_token}`;
   }
-  let payload: BodyInit | undefined = formData;
-  if (!formData && body !== undefined) {
+  // Checked after reading cookies, so `next build` treats the page as dynamic (on Vercel the API_URL binding only exists at runtime).
+  const base = process.env.API_URL;
+  if (!base) throw new Error('Thiếu biến môi trường API_URL');
+  let payload: BodyInit | undefined;
+  if (formData) {
+    // Encode multipart once, boundary included: on Vercel a FormData body was re-serialized with a different boundary than its header.
+    const encoded = new Response(formData);
+    headers['Content-Type'] = encoded.headers.get('Content-Type')!;
+    payload = await encoded.arrayBuffer();
+  } else if (body !== undefined) {
     headers['Content-Type'] = 'application/json';
     payload = JSON.stringify(body);
   }

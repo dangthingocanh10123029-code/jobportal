@@ -50,13 +50,18 @@ describe('apiFetch', () => {
     expect(init?.headers).toMatchObject({ 'Content-Type': 'application/json' });
   });
 
-  it('formData gửi nguyên, không đặt Content-Type', async () => {
+  it('formData được mã hóa sẵn, boundary trong body khớp Content-Type', async () => {
     fetchMock.mockResolvedValue(json({}));
     const formData = new FormData();
+    formData.append('resume', new Blob(['%PDF-1.4'], { type: 'application/pdf' }), 'cv.pdf');
     await apiFetch('/applications', { method: 'POST', formData });
     const init = fetchMock.mock.calls[0][1];
-    expect(init?.body).toBe(formData);
-    expect(init?.headers).toEqual({ Authorization: 'Bearer tok' });
+    const contentType = (init?.headers as Record<string, string>)['Content-Type'];
+    const boundary = contentType.match(/boundary=(.+)$/)?.[1];
+    const text = new TextDecoder().decode(init?.body as ArrayBuffer);
+    expect(text.startsWith(`--${boundary}`)).toBe(true);
+    expect(text).toContain('filename="cv.pdf"');
+    expect(init?.headers).toMatchObject({ Authorization: 'Bearer tok' });
   });
 
   it('auth:false hoặc chưa đăng nhập → không có Authorization', async () => {

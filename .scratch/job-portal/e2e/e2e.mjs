@@ -359,7 +359,8 @@ await check('Admin: bỏ ẩn tin → khách xem lại được', adm, async () 
 
 // ---------- Close posting ----------
 await check('Đóng tin → trang chi tiết báo "không còn nhận hồ sơ"', emp, async () => {
-  await emp.goto(`${BASE}/employer/postings`);
+  // networkidle: on a slower host the click can land before hydration attaches onClick.
+  await emp.goto(`${BASE}/employer/postings`, { waitUntil: 'networkidle' });
   const card = emp.locator('article', { hasText: TITLE });
   await card.getByRole('button', { name: 'Đóng tin' }).click();
   await card.getByText('Đã đóng').waitFor();

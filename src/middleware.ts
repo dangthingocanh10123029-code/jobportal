@@ -41,6 +41,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // Node.js runtime: Vercel Services does not support Edge functions.
+  runtime: 'nodejs',
   // Skip static assets and images; everything else refreshes the session.
   matcher: ['/((?!_next/static|_next/image|favicon.ico|icon.png|opengraph-image.png|images/).*)'],
 };
