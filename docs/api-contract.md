@@ -425,6 +425,7 @@ listMyInterviews(filter: { scope?: 'upcoming' | 'past' }): Promise<Interview[]> 
 listInterviewsForApplication(applicationId: string): Promise<Interview[] | null>  // Candidate của đơn hoặc Employer chủ tin
 ```
 Thông báo: đặt lịch → Candidate; Candidate trả lời → Employer; hủy → Candidate.
+Chi tiết đã chốt khi làm 40A: `scope` mặc định 'upcoming' (theo giờ kết thúc, tối đa 100 lịch); link ONLINE ≤ 500 ký tự; lý do hủy ≤ 500 chỉ nằm trong thông báo; đặt lịch cho đơn REVIEWING sinh 2 thông báo (đổi trạng thái + lịch); lịch ở RESCHEDULE_REQUESTED không tự hủy — Employer hủy rồi đặt lịch mới.
 
 ### 41 — Nhắn tin (`@/actions/messages`)
 ```ts
