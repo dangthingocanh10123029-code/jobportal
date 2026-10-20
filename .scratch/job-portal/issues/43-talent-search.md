@@ -4,7 +4,7 @@
 
 **Blocked by:** 42
 
-**Status:** ready-for-agent (Phần A xong trên `task/43-a-talent`; seed `supabase/seed/talent.sql`)
+**Status:** resolved (còn nhỏ: ghi chú lưu ứng viên chưa đọc lại được — TalentSummary chưa có `note`)
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/43-a-talent-search`
 - [x] Migration `supabase/migrations/20261020000400_talent.sql`:

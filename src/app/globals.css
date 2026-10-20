@@ -1541,3 +1541,54 @@ html, body { background: #fff; }
   .job-alert-card { flex-direction: column; align-items: stretch; padding: 16px; }
   .job-alert-actions { justify-content: space-between; }
 }
+
+/* Ticket 43 — Tìm ứng viên */
+.open-to-work-card { margin-bottom: 20px; }
+.open-to-work-switch { position: relative; display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+.open-to-work-switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.open-to-work-switch strong { display: block; font-size: 16px; }
+.open-to-work-switch small { display: block; margin-top: 4px; color: var(--color-muted); font-size: 13px; line-height: 1.45; }
+.switch-track { position: relative; flex: 0 0 auto; width: 44px; height: 26px; margin-top: 1px; border-radius: 999px; background: #cbd5e1; transition: background 150ms ease; }
+.switch-thumb { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(15 23 42 / 25%); transition: transform 150ms ease; }
+.open-to-work-switch input:checked + .switch-track { background: var(--color-primary); }
+.open-to-work-switch input:checked + .switch-track .switch-thumb { transform: translateX(18px); }
+.open-to-work-switch input:focus-visible + .switch-track { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.open-to-work-fields { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
+.talent-page, .talent-detail-page { padding-top: 44px; }
+.talent-filter-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 14px; margin-bottom: 24px; padding: 18px; border: 1px solid var(--color-border); border-radius: 15px; background: var(--color-surface); box-shadow: var(--shadow-card); }
+.talent-filter-actions { display: flex; flex-wrap: wrap; gap: 10px; grid-column: 1 / -1; }
+.talent-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.talent-card { display: flex; min-width: 0; flex-direction: column; gap: 12px; padding: 20px; transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; }
+.talent-card:hover { transform: translateY(-2px); border-color: #bfdbfe; box-shadow: 0 12px 32px rgb(15 23 42 / 6%); }
+.talent-card-head { display: flex; min-width: 0; align-items: flex-start; gap: 13px; }
+.talent-card-head > div { min-width: 0; flex: 1; }
+.talent-card-head h1, .talent-card-head h2 { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.talent-card-head h1 { font-size: 22px; }
+.talent-card-head h2 a:hover { color: var(--color-primary); }
+.talent-card-head p { margin: 4px 0 0; color: var(--color-muted); font-size: 13px; overflow-wrap: anywhere; }
+.talent-avatar { display: grid; flex: 0 0 auto; width: 46px; height: 46px; place-items: center; border-radius: 50%; color: var(--color-primary); background: var(--color-primary-soft); font-size: 18px; font-weight: 750; }
+.talent-skills { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.talent-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; gap: 20px; }
+.talent-detail-main { display: flex; min-width: 0; flex-direction: column; gap: 20px; }
+.talent-profile-card { display: flex; flex-direction: column; gap: 14px; padding: 26px; }
+.talent-profile-section h2, .talent-cv > h2 { margin: 0 0 6px; font-size: 15px; }
+.talent-profile-section p { margin: 0; color: #334155; font-size: 14px; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+.talent-detail-side { position: sticky; top: 90px; display: flex; flex-direction: column; gap: 16px; }
+.talent-detail-side .surface-card { padding: 20px; }
+.talent-side-form { gap: 12px; }
+.talent-side-form h2 { margin: 0; font-size: 16px; }
+.talent-side-form .form-success:empty { display: none; }
+.open-to-work-form .form-success:empty { display: none; }
+
+@media (max-width: 900px) {
+  .talent-filter-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .talent-detail-layout { grid-template-columns: minmax(0, 1fr); }
+  .talent-detail-side { position: static; }
+}
+
+@media (max-width: 560px) {
+  .talent-filter-form, .talent-grid, .open-to-work-fields { grid-template-columns: 1fr; }
+  .talent-filter-actions .button { flex: 1; }
+  .talent-profile-card { padding: 20px 17px; }
+  .talent-cv .cv-document { padding: 20px 16px; }
+}
