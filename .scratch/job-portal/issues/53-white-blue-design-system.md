@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** open
+**Status:** resolved
 
 ## Quyết định của Coordinator
 - **Token:** khai báo đúng tên biến của brief trong `:root` (`--bg`, `--surface-muted`, `--border`, `--border-strong`, `--primary`, `--primary-hover`, `--primary-soft`, `--accent`, `--ring`, `--text-strong`, `--text`, `--text-muted`, `--success`, `--warning`, `--danger`). Các biến cũ (`--color-*`) map sang biến mới hoặc xóa hẳn; component không hard-code mã màu (thay mọi `#…`/`rgb(…)` lẻ trong CSS component bằng biến; ngoại lệ duy nhất là giá trị bóng ghi trong brief).

@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** open
+**Status:** resolved
 
 ### Antigravity — branch `task/54-white-blue-assets`
 - [ ] Logo `logo.svg`, `logo-mark.svg`, `src/app/icon.png` (512×512), `src/app/opengraph-image.png` (1200×630, chỉ logo + "Tìm việc nhanh, ứng tuyển dễ", KHÔNG bịa số liệu, tên công ty, domain, lương)
