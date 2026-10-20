@@ -25,7 +25,11 @@ from app.modules.notifications.postgres import PostgresNotificationRepository
 from app.modules.postings.postgres import PostgresPostingRepository
 from app.modules.postings.schemas import SearchFilter
 from app.modules.profiles.postgres import PostgresProfileRepository
-from tests.integration.conftest import apply_admin_migration, apply_online_cv_migration, apply_reviews_migration
+from tests.integration.conftest import (
+    apply_admin_migration,
+    apply_online_cv_migration,
+    apply_reviews_migration,
+)
 
 DATABASE_URL = os.environ.get("INTEGRATION_DATABASE_URL")
 pytestmark = [
