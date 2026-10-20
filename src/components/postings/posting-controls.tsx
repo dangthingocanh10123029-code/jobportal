@@ -1,13 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { closePostingAction, publishPostingAction } from '@/actions/postings';
 import type { JobPosting } from '@/actions/types';
 
 export function PostingControls({ posting }: { posting: JobPosting }) {
-  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,11 +15,7 @@ export function PostingControls({ posting }: { posting: JobPosting }) {
     setError('');
     try {
       const result = await action({ id: posting.id });
-      if (!result.success) {
-        setError(result.error);
-        return;
-      }
-      router.refresh();
+      if (!result.success) setError(result.error);
     } catch {
       setError('Không thể cập nhật trạng thái tin. Vui lòng thử lại.');
     } finally {
