@@ -1,4 +1,4 @@
-Status: in-progress
+Status: resolved
 Type: AFK
 
 # 39 — Làm lại toàn bộ hình ảnh (icon → avatar)
