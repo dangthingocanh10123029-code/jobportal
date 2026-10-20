@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** in-progress (Phần A đã merge, migration đã áp; chờ Phần B)
+**Status:** resolved
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/42-a-online-cv`
 - [x] Migration `supabase/migrations/20261020000300_online_cv.sql`:
