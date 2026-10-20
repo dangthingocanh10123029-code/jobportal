@@ -203,5 +203,32 @@ select pg_temp.ok((select count(*) from notifications where type like 'INTERVIEW
 select pg_temp.as_anon();
 select pg_temp.fails($$select count(*) from interview_details$$, 'permission denied', '40 anon không đọc interview_details');
 reset role;
+-- ===== 46: articles (run after 20261020000700_articles.sql) =====
+insert into auth.users (id, email, raw_user_meta_data) values
+  ('00000000-0000-4000-8000-0000000000ad', 'ad@test.local', '{"role":"CANDIDATE","full_name":"Quản trị"}');
+update profiles set role = 'ADMIN' where id = '00000000-0000-4000-8000-0000000000ad';
+create temp table art (id uuid);
+grant select, insert on art to authenticated;
+select pg_temp.as_user('00000000-0000-4000-8000-0000000000ad');
+insert into art select admin_save_article(null, 'Bài kiểm tra RLS', 'bai-kiem-tra-rls', 'Tóm tắt đủ hai mươi ký tự', 'CV', repeat('nội dung ', 30));
+select admin_save_article(null, 'Bài kiểm tra RLS', 'bai-kiem-tra-rls', 'Tóm tắt đủ hai mươi ký tự', 'CV', repeat('nội dung ', 30));
+select pg_temp.ok(exists (select 1 from articles where slug = 'bai-kiem-tra-rls-2'), '46 slug trùng được thêm -2');
+reset role;
+select pg_temp.as_anon();
+select pg_temp.ok((select count(*) from articles where slug like 'bai-kiem-tra-rls%') = 0, '46 anon không thấy bản nháp');
+select pg_temp.fails($$select admin_save_article(null, 'Tiêu đề', 'tieu-de', 'Tóm tắt đủ hai mươi ký tự', 'CV', repeat('x ', 60))$$, 'permission denied', '46 anon không gọi được admin_save_article');
+reset role;
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.fails($$select admin_set_article_published((select id from art), true)$$, 'NOT_ADMIN', '46 Candidate không đăng bài được');
+select pg_temp.fails($$update articles set views = 1$$, 'permission denied', '46 không sửa trực tiếp bảng articles');
+reset role;
+select pg_temp.as_user('00000000-0000-4000-8000-0000000000ad');
+select admin_set_article_published((select id from art), true);
+reset role;
+select pg_temp.as_anon();
+select increment_article_views('bai-kiem-tra-rls');
+select pg_temp.ok((select views from articles where slug = 'bai-kiem-tra-rls') = 1, '46 anon thấy bài đã đăng, tăng lượt xem');
+reset role;
+select pg_temp.ok((select count(*) from admin_audit_log where action = 'ARTICLE_PUBLISHED' and target_type = 'ARTICLE' and target_id = (select id from art)) = 1, '46 đăng bài ghi audit');
 
 rollback;

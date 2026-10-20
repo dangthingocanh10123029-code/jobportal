@@ -9,6 +9,7 @@ const links = [
   { href: '/admin/postings', label: 'Tin tuyển dụng', icon: '▤' },
   { href: '/admin/companies', label: 'Công ty', icon: '⌂' },
   { href: '/admin/audit', label: 'Nhật ký thao tác', icon: '◷' },
+  { href: '/admin/articles', label: 'Cẩm nang', icon: '▧' },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

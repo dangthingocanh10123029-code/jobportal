@@ -1150,3 +1150,59 @@ html, body { background: #fff; }
   .admin-chart-legend { gap: 10px; font-size: 9px; }
   .admin-detail-stats .shared-stat-card { padding: 9px; }
 }
+
+/* Ticket 46 — career guide */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.guide-hero { padding: 36px; border: 1px solid var(--color-border); border-radius: 24px; background: linear-gradient(135deg, var(--color-primary-soft), #fff 70%); box-shadow: var(--shadow-card); }
+.guide-hero > p { max-width: 640px; margin: 12px 0 0; color: var(--color-muted); font-size: 15px; line-height: 1.65; }
+.guide-search { display: flex; gap: 10px; max-width: 620px; margin-top: 22px; }
+.guide-search .text-input { flex: 1; min-width: 0; }
+.guide-categories { display: flex; gap: 8px; margin: 22px 0 8px; padding-bottom: 4px; overflow-x: auto; }
+.industry-chip:focus-visible, .article-card-link:focus-visible, .guide-toc a:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.article-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.article-card { position: relative; display: flex; flex-direction: column; overflow: hidden; transition: box-shadow 150ms ease, transform 150ms ease; }
+.article-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.article-card-link::after { position: absolute; inset: 0; content: ''; }
+.article-cover { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-primary-soft); }
+.article-card-body { display: flex; flex: 1; flex-direction: column; gap: 8px; padding: 18px 20px 20px; }
+.article-card-body h2 { margin: 0; font-size: 17px; line-height: 1.35; }
+.article-card-body p { flex: 1; margin: 0; color: var(--color-muted); font-size: 14px; line-height: 1.6; }
+.article-category { align-self: flex-start; color: var(--color-primary); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.article-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--color-muted); font-size: 12px; }
+.guide-article-page { max-width: 1120px; }
+.guide-article-header { max-width: 760px; margin: 18px 0 24px; }
+.guide-article-header h1 { margin: 10px 0 12px; }
+.guide-article-excerpt { margin: 0 0 14px; color: var(--color-muted); font-size: 17px; line-height: 1.6; }
+.guide-article-cover { max-height: 360px; border-radius: 20px; }
+.guide-article-layout { display: grid; grid-template-columns: 240px minmax(0, 720px); align-items: start; gap: 40px; margin-top: 32px; }
+.guide-toc { position: sticky; top: 92px; padding: 18px 20px; }
+.guide-toc h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
+.guide-toc ol { display: grid; gap: 8px; margin: 0; padding-left: 18px; color: var(--color-muted); font-size: 13px; line-height: 1.45; }
+.guide-toc a:hover { color: var(--color-primary); }
+.article-body { min-width: 0; font-size: 16px; line-height: 1.75; overflow-wrap: anywhere; }
+.article-body h2 { margin: 32px 0 10px; font-size: 23px; letter-spacing: -0.02em; scroll-margin-top: 90px; }
+.article-body h3 { margin: 24px 0 8px; font-size: 18px; scroll-margin-top: 90px; }
+.article-body > :first-child { margin-top: 0; }
+.article-body p, .article-body ul, .article-body ol { margin: 0 0 14px; }
+.article-body li { margin-bottom: 6px; }
+.guide-related { margin-top: 56px; }
+.guide-related > h2 { margin: 0 0 18px; font-size: 22px; }
+.article-editor-tabs { display: flex; gap: 8px; }
+.article-editor-tabs [aria-selected='true'] { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-soft); }
+.article-content-input { min-height: 420px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; line-height: 1.6; }
+.article-preview { min-height: 420px; max-height: 70vh; padding: 24px; overflow-y: auto; }
+.article-editor-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.site-footer { border-top: 1px solid var(--color-border); background: #f8fafc; }
+.site-footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0; color: var(--color-muted); font-size: 13px; }
+.site-footer nav { display: flex; gap: 18px; }
+.site-footer a:hover { color: var(--color-primary); }
+@media (max-width: 860px) {
+  .guide-article-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .guide-toc { position: static; }
+}
+@media (max-width: 520px) {
+  .guide-hero { padding: 22px 16px; border-radius: 18px; }
+  .guide-search { flex-direction: column; }
+  .article-grid { grid-template-columns: minmax(0, 1fr); }
+  .article-body { font-size: 15px; }
+}

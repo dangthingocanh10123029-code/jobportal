@@ -17,3 +17,10 @@ def apply_interviews_migration(conn) -> None:
     """Until the Coordinator pushes ticket 40, run its migration inside the (rolled-back) test transaction."""
     if conn.execute("select to_regclass('public.interviews') is null").fetchone()[0]:
         conn.execute((MIGRATIONS / "20261020000100_interviews.sql").read_text())
+
+
+def apply_articles_migration(conn) -> None:
+    """Until the Coordinator pushes ticket 46, run its migration inside the (rolled-back) test transaction."""
+    apply_admin_migration(conn)
+    if conn.execute("select to_regclass('public.articles') is null").fetchone()[0]:
+        conn.execute((MIGRATIONS / "20261020000700_articles.sql").read_text())
