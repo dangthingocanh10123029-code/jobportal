@@ -31,8 +31,19 @@ if [ "$logos" != "[]" ]; then
     -H "Content-Type: application/json" -d "{\"prefixes\":$logos}"
 fi
 
+# Job-alert notifications the e2e postings sent to other (demo) candidates do not cascade with the e2e users.
+q "delete from public.notifications n using public.job_postings p
+   where p.employer_id = 'e2e00000-0000-4000-8000-0000000000e1' and n.link like '%' || p.id || '%';" >/dev/null
+# Interviews, messages, CVs, alerts, reviews, orders, saved rows and notifications cascade from users/postings/applications.
 q "delete from auth.users where email like 'e2e.%@jobportal.test';" >/dev/null
 q "select 'left: users=' || (select count(*) from auth.users where email like 'e2e.%')
   || ' postings=' || (select count(*) from public.job_postings where employer_id = 'e2e00000-0000-4000-8000-0000000000e1')
   || ' resumes=' || (select count(*) from storage.objects where bucket_id = 'resumes' and name like 'e2e00000-%')
-  || ' logos=' || (select count(*) from storage.objects where bucket_id = 'company-logos' and name like 'e2e00000-%');"
+  || ' logos=' || (select count(*) from storage.objects where bucket_id = 'company-logos' and name like 'e2e00000-%')
+  || ' interviews=' || (select count(*) from public.interviews i join public.applications a on a.id = i.application_id where a.candidate_id = '$C')
+  || ' messages=' || (select count(*) from public.messages where body like '%(E2E%')
+  || ' cvs=' || (select count(*) from public.candidate_cvs where candidate_id = '$C')
+  || ' alerts=' || (select count(*) from public.job_alerts where candidate_id = '$C' or name like '%E2E%')
+  || ' reviews=' || (select count(*) from public.company_reviews where candidate_id = '$C' or title like '%E2E%')
+  || ' orders=' || (select count(*) from public.orders where employer_id = 'e2e00000-0000-4000-8000-0000000000e1')
+  || ' notifications=' || (select count(*) from public.notifications where link like '%e2e00000-%' or title like '%E2E%' or body like '%E2E%');"
