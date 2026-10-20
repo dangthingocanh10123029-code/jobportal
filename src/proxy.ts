@@ -4,7 +4,7 @@ import { routeGuard } from '@/lib/route-guard';
 import { supabaseEnv } from '@/lib/supabase';
 import { getCurrentActor } from '@/lib/supabase-server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { url, anonKey } = supabaseEnv();
   let response = NextResponse.next({ request });
 
@@ -40,9 +40,8 @@ export async function middleware(request: NextRequest) {
   return redirect;
 }
 
+// proxy.ts always runs on Node.js (Vercel Services does not support Edge).
 export const config = {
-  // Node.js runtime: Vercel Services does not support Edge functions.
-  runtime: 'nodejs',
   // Skip static assets and images; everything else refreshes the session.
   matcher: ['/((?!_next/static|_next/image|favicon.ico|icon.png|opengraph-image.png|images/).*)'],
 };
