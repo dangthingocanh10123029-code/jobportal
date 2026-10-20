@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
+  <!-- Ground Shadow -->
+  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F5F5F4"/>
+  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
+
+  <!-- Standing Minimalist Desk Calendar -->
+  <g transform="translate(74, 38)">
+    <!-- Calendar Card Base -->
+    <rect x="0" y="10" width="92" height="102" rx="14" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+
+    <!-- Calendar Top Binding Flap in Soft Lavender -->
+    <path d="M0 24C0 16.268 6.268 10 14 10H78C85.732 10 92 16.268 92 24V28H0V24Z" fill="#E6E6FA"/>
+
+    <!-- Dark Stone Binding Rings -->
+    <rect x="18" y="4" width="6" height="12" rx="3" fill="#292524"/>
+    <rect x="43" y="4" width="6" height="12" rx="3" fill="#292524"/>
+    <rect x="68" y="4" width="6" height="12" rx="3" fill="#292524"/>
+
+    <!-- Minimalist Clock Face -->
+    <circle cx="46" cy="58" r="22" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="1.5"/>
+    <line x1="46" y1="58" x2="46" y2="44" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="46" y1="58" x2="57" y2="58" stroke="#292524" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="46" cy="58" r="3" fill="#06B6D4"/>
+
+    <!-- Empty Dashed Slot Pill -->
+    <rect x="16" y="88" width="60" height="14" rx="7" fill="#F5F5F4" stroke="#06B6D4" stroke-width="1.2" stroke-dasharray="3 3"/>
+  </g>
+
+  <!-- Video Meeting Badge Floating on Right -->
+  <g transform="translate(148, 52)">
+    <rect width="44" height="32" rx="10" fill="#CFFAFE" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="10" y="9" width="16" height="14" rx="3" fill="#0891B2"/>
+    <path d="M26 13L34 9.5V22.5L26 19V13Z" fill="#0891B2"/>
+  </g>
+
+  <!-- Small Ceramic Desk Succulent on Left -->
+  <g transform="translate(48, 120)">
+    <path d="M12 28C12 16 22 10 24 4C26 12 24 20 18 28Z" fill="#059669"/>
+    <path d="M14 28C10 20 4 16 0 12C6 16 12 22 14 28Z" fill="#10B981"/>
+    <!-- Pot in Dark Stone -->
+    <path d="M8 28L10 35H20L22 28Z" fill="#292524"/>
+  </g>
+
+  <!-- Decorative Floating Dots -->
+  <circle cx="56" cy="48" r="4" fill="#06B6D4"/>
+  <circle cx="184" cy="110" r="5" fill="#E6E6FA"/>
+  <circle cx="176" cy="40" r="3" fill="#CFFAFE"/>
+</svg>

@@ -1,1 +1,187 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="#FFFFFF"/><circle cx="1020" cy="140" r="190" fill="#CFFAFE"/><rect x="460" y="150" width="300" height="190" rx="18" fill="#292524"/><rect x="480" y="170" width="260" height="150" rx="8" fill="#06B6D4"/><rect x="590" y="340" width="40" height="60" fill="#292524"/><rect x="300" y="400" width="620" height="22" rx="11" fill="#292524"/><rect x="340" y="422" width="18" height="140" fill="#292524"/><rect x="862" y="422" width="18" height="140" fill="#292524"/><rect x="800" y="330" width="60" height="70" rx="10" fill="#E8EFE8" stroke="#292524" stroke-width="6"/><circle cx="830" cy="300" r="34" fill="#E8EFE8"/><rect x="360" y="350" width="70" height="50" rx="8" fill="#E6E6FA"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
+  <defs>
+    <filter id="wp-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#0F172A" flood-opacity="0.06" />
+    </filter>
+    <filter id="wp-element-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F172A" flood-opacity="0.08" />
+    </filter>
+    <filter id="wp-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="90" />
+    </filter>
+  </defs>
+
+  <!-- Clean Background -->
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+
+  <!-- Soft Ambient Pastel Blobs -->
+  <circle cx="270" cy="180" r="270" fill="#E8EFE8" opacity="0.65" filter="url(#wp-blur)"/>
+  <circle cx="950" cy="190" r="280" fill="#CFFAFE" opacity="0.7" filter="url(#wp-blur)"/>
+  <circle cx="850" cy="510" r="240" fill="#E6E6FA" opacity="0.55" filter="url(#wp-blur)"/>
+  <circle cx="200" cy="500" r="220" fill="#EFEDF4" opacity="0.5" filter="url(#wp-blur)"/>
+
+  <!-- Ground Plane Shadow -->
+  <ellipse cx="600" cy="570" rx="420" ry="24" fill="#F1F5F9"/>
+  <ellipse cx="600" cy="572" rx="260" ry="14" fill="#CFFAFE" opacity="0.5"/>
+
+  <!-- Main Workspace Scene Card -->
+  <g transform="translate(300, 80)" filter="url(#wp-shadow)">
+    <rect width="600" height="400" rx="28" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+
+    <!-- Header Section -->
+    <g transform="translate(44, 36)">
+      <!-- Office Building / Desk Icon in Cyan -->
+      <circle cx="22" cy="22" r="22" fill="#CFFAFE"/>
+      <rect x="14" y="14" width="16" height="16" rx="4" fill="#0891B2"/>
+      <circle cx="22" cy="22" r="3" fill="#FFFFFF"/>
+
+      <rect x="60" y="10" width="190" height="14" rx="7" fill="#0E7490"/>
+      <rect x="60" y="30" width="120" height="10" rx="5" fill="#94A3B8"/>
+
+      <!-- Work Environment Feature Pills -->
+      <g transform="translate(340, 8)">
+        <rect width="170" height="30" rx="15" fill="#E8EFE8"/>
+        <circle cx="18" cy="15" r="5" fill="#10B981"/>
+        <rect x="30" y="11" width="120" height="8" rx="4" fill="#15803D"/>
+      </g>
+    </g>
+
+    <!-- Hairline Separator -->
+    <line x1="44" y1="96" x2="556" y2="96" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <!-- Workspace Illustration Inside Card -->
+    <g transform="translate(44, 115)">
+      <!-- Minimalist Modern Desk Surface Line -->
+      <line x1="10" y1="210" x2="500" y2="210" stroke="#E2E8F0" stroke-width="2"/>
+
+      <!-- Laptop / Ultra-sleek Display at Center -->
+      <g transform="translate(140, 25)">
+        <!-- Laptop Screen Bezel in Dark Stone -->
+        <rect width="230" height="150" rx="12" fill="#292524"/>
+        
+        <!-- Screen Content in Clean Soft Cyan Base -->
+        <rect x="8" y="8" width="214" height="134" rx="6" fill="#F8FAFC"/>
+
+        <!-- Screen Top Bar -->
+        <rect x="16" y="16" width="60" height="8" rx="4" fill="#0E7490"/>
+        <circle cx="198" cy="20" r="3" fill="#06B6D4"/>
+
+        <!-- Screen Left Sidebar -->
+        <rect x="16" y="32" width="44" height="100" rx="4" fill="#F1F5F9"/>
+        <rect x="22" y="40" width="32" height="6" rx="3" fill="#CBD5E1"/>
+        <rect x="22" y="52" width="28" height="6" rx="3" fill="#CBD5E1"/>
+        <rect x="22" y="64" width="32" height="6" rx="3" fill="#CBD5E1"/>
+
+        <!-- Screen Dashboard Widgets -->
+        <g transform="translate(68, 32)">
+          <rect width="134" height="46" rx="6" fill="#CFFAFE" fill-opacity="0.4"/>
+          <rect x="10" y="10" width="50" height="8" rx="4" fill="#0891B2"/>
+          <rect x="10" y="24" width="114" height="6" rx="3" fill="#A5F3FC"/>
+
+          <rect y="54" width="62" height="46" rx="6" fill="#E6E6FA"/>
+          <circle cx="31" cy="77" r="12" fill="#4F46E5" opacity="0.3"/>
+
+          <rect x="70" y="54" width="64" height="46" rx="6" fill="#E8EFE8"/>
+          <path d="M80 82L90 72L98 80L112 66" stroke="#059669" stroke-width="2" stroke-linecap="round"/>
+        </g>
+
+        <!-- Laptop Keyboard Base (Slanted) -->
+        <path d="M-20 150L-35 185H265L250 150H-20Z" fill="#E2E8F0"/>
+        <!-- Trackpad -->
+        <rect x="85" y="160" width="60" height="18" rx="4" fill="#CBD5E1"/>
+      </g>
+
+      <!-- Ergonomic Desk Lamp on Left -->
+      <g transform="translate(40, 40)">
+        <path d="M30 170V70C30 40 55 30 75 30" stroke="#0E7490" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M60 20L95 38L85 58L50 40Z" fill="#292524"/>
+        <ellipse cx="68" cy="48" rx="14" ry="7" fill="#06B6D4"/>
+        <!-- Lamp Base -->
+        <ellipse cx="30" cy="170" rx="18" ry="6" fill="#292524"/>
+      </g>
+
+      <!-- Ceramic Coffee Mug with Steam on Right -->
+      <g transform="translate(400, 145)">
+        <!-- Steam Curls -->
+        <path d="M12 -8C10 -16 16 -20 12 -28" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M22 -6C20 -14 26 -18 22 -26" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" fill="none"/>
+        
+        <!-- Mug Body in Dark Stone -->
+        <rect width="32" height="38" rx="6" fill="#292524"/>
+        <rect x="4" y="4" width="24" height="6" rx="3" fill="#3E3835"/>
+        <!-- Mug Handle -->
+        <path d="M32 8H38C42 8 45 12 45 16C45 20 42 24 38 24H32" stroke="#292524" stroke-width="4" fill="none"/>
+      </g>
+
+      <!-- Lush Ceramic Desk Plant on Far Right -->
+      <g transform="translate(460, 115)">
+        <path d="M20 55C20 15 45 5 55 -5C60 20 50 45 35 55Z" fill="#059669"/>
+        <path d="M22 55C14 35 2 25 -5 20C10 25 20 38 22 55Z" fill="#10B981"/>
+        <path d="M25 55C32 30 50 25 58 20C50 35 40 45 30 55Z" fill="#34D399"/>
+        <!-- Pot -->
+        <path d="M10 55L14 80H34L38 55Z" fill="#E6E6FA"/>
+        <rect x="8" y="53" width="32" height="4" rx="2" fill="#DDD6FE"/>
+      </g>
+    </g>
+
+    <!-- Bottom Workplace Culture Tags -->
+    <g transform="translate(44, 335)">
+      <rect width="150" height="34" rx="17" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <circle cx="18" cy="17" r="4" fill="#06B6D4"/>
+      <rect x="32" y="13" width="96" height="8" rx="4" fill="#1E293B"/>
+
+      <g transform="translate(166, 0)">
+        <rect width="150" height="34" rx="17" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        <circle cx="18" cy="17" r="4" fill="#10B981"/>
+        <rect x="32" y="13" width="96" height="8" rx="4" fill="#1E293B"/>
+      </g>
+
+      <g transform="translate(332, 0)">
+        <rect width="170" height="34" rx="17" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        <circle cx="18" cy="17" r="4" fill="#6366F1"/>
+        <rect x="32" y="13" width="116" height="8" rx="4" fill="#1E293B"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Team Collaboration Card (Top Right) -->
+  <g transform="translate(880, 110)" filter="url(#wp-element-shadow)">
+    <rect width="190" height="110" rx="22" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+    
+    <!-- Three Overlapping Collaborative Avatars -->
+    <circle cx="38" cy="40" r="18" fill="#CFFAFE" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="62" cy="40" r="18" fill="#E6E6FA" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="86" cy="40" r="18" fill="#E8EFE8" stroke="#FFFFFF" stroke-width="2"/>
+    
+    <!-- Heart / Synergy Motif in Cyan -->
+    <circle cx="145" cy="40" r="16" fill="#CFFAFE"/>
+    <path d="M145 44C145 44 138 39 138 35C138 32.5 140 31 142 31C143.5 31 144.5 32 145 33C145.5 32 146.5 31 148 31C150 31 152 32.5 152 35C152 39 145 44 145 44Z" fill="#0891B2"/>
+
+    <rect x="24" y="74" width="142" height="12" rx="6" fill="#F1F5F9"/>
+    <rect x="36" y="77" width="90" height="6" rx="3" fill="#0E7490"/>
+  </g>
+
+  <!-- Flexibility / Modern Perks Badge (Bottom Left) -->
+  <g transform="translate(130, 360)" filter="url(#wp-element-shadow)">
+    <rect width="180" height="106" rx="22" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+    <circle cx="36" cy="36" r="18" fill="#CFFAFE"/>
+    <!-- Sun / Sparkle Icon -->
+    <circle cx="36" cy="36" r="6" fill="#0891B2"/>
+    <line x1="36" y1="24" x2="36" y2="27" stroke="#0891B2" stroke-width="2" stroke-linecap="round"/>
+    <line x1="36" y1="45" x2="36" y2="48" stroke="#0891B2" stroke-width="2" stroke-linecap="round"/>
+    <line x1="24" y1="36" x2="27" y2="36" stroke="#0891B2" stroke-width="2" stroke-linecap="round"/>
+    <line x1="45" y1="36" x2="48" y2="36" stroke="#0891B2" stroke-width="2" stroke-linecap="round"/>
+
+    <rect x="66" y="26" width="94" height="10" rx="5" fill="#0E7490"/>
+    <rect x="66" y="42" width="60" height="8" rx="4" fill="#94A3B8"/>
+
+    <rect x="20" y="68" width="140" height="20" rx="10" fill="#E8EFE8"/>
+    <rect x="36" y="74" width="108" height="8" rx="4" fill="#059669"/>
+  </g>
+
+  <!-- Sparkles & Floating Dots -->
+  <circle cx="210" cy="180" r="5" fill="#06B6D4"/>
+  <circle cx="1020" cy="270" r="6" fill="#06B6D4"/>
+  <circle cx="980" cy="360" r="4" fill="#E6E6FA"/>
+  <path d="M190 280L193 288L201 291L193 294L190 302L187 294L179 291L187 288Z" fill="#F59E0B"/>
+</svg>

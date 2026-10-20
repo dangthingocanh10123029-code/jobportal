@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
+  <!-- Ground Shadow -->
+  <ellipse cx="120" cy="155" rx="72" ry="12" fill="#F5F5F4"/>
+  <ellipse cx="120" cy="156" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
+
+  <!-- Minimalist Review Card -->
+  <g transform="translate(62, 46)">
+    <rect width="116" height="96" rx="18" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+
+    <!-- Row of 5 Rating Stars -->
+    <g transform="translate(18, 20)">
+      <!-- Star 1 (Amber) -->
+      <path d="M7 1L9 5L13.5 5.5L10 8.5L11 13L7 10.5L3 13L4 8.5L0.5 5.5L5 5L7 1Z" fill="#F59E0B"/>
+      <!-- Star 2 (Amber) -->
+      <path d="M25 1L27 5L31.5 5.5L28 8.5L29 13L25 10.5L21 13L22 8.5L18.5 5.5L23 5L25 1Z" fill="#F59E0B"/>
+      <!-- Star 3 (Amber) -->
+      <path d="M43 1L45 5L49.5 5.5L46 8.5L47 13L43 10.5L39 13L40 8.5L36.5 5.5L41 5L43 1Z" fill="#F59E0B"/>
+      <!-- Star 4 (Outline / Empty) -->
+      <path d="M61 1L63 5L67.5 5.5L64 8.5L65 13L61 10.5L57 13L58 8.5L54.5 5.5L59 5L61 1Z" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="1.2"/>
+      <!-- Star 5 (Outline / Empty) -->
+      <path d="M79 1L81 5L85.5 5.5L82 8.5L83 13L79 10.5L75 13L76 8.5L72.5 5.5L77 5L79 1Z" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="1.2"/>
+    </g>
+
+    <!-- Skeleton Feedback Lines -->
+    <rect x="18" y="44" width="80" height="6" rx="3" fill="#F1F5F9"/>
+    <rect x="18" y="56" width="64" height="6" rx="3" fill="#F1F5F9"/>
+
+    <!-- Reviewer Avatar Silhouette at Bottom -->
+    <circle cx="28" cy="78" r="9" fill="#CFFAFE"/>
+    <circle cx="28" cy="76" r="4" fill="#0891B2"/>
+    <rect x="42" y="75" width="46" height="5" rx="2.5" fill="#E2E8F0"/>
+  </g>
+
+  <!-- Floating Sage Thumbs-Up / Satisfaction Badge -->
+  <g transform="translate(150, 32)">
+    <circle cx="18" cy="18" r="18" fill="#E8EFE8" stroke="#FFFFFF" stroke-width="2"/>
+    <!-- Thumbs up icon -->
+    <path d="M11 20V15H14L18 10C18.8 10 19.5 10.7 19.5 11.5V13L18.5 15H23C24.1 15 25 15.9 25 17L23.5 22C23.2 23 22.2 24 21 24H14C12.3 24 11 22.7 11 21V20Z" fill="#059669"/>
+    <rect x="9" y="15" width="3" height="9" rx="1.5" fill="#047857"/>
+  </g>
+
+  <!-- Decorative Floating Dots -->
+  <circle cx="48" cy="56" r="4" fill="#06B6D4"/>
+  <circle cx="44" cy="108" r="5" fill="#E6E6FA"/>
+  <circle cx="192" cy="114" r="4" fill="#CFFAFE"/>
+</svg>
