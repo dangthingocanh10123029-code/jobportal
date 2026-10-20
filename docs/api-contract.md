@@ -489,7 +489,7 @@ Giới hạn: location 1–150; note lưu ứng viên ≤ 500; lời nhắn mờ
 
 ### 44 — Gợi ý việc + job alert (`@/actions/alerts`)
 ```ts
-type AlertFilter = Pick<SearchFilter, 'q' | 'location' | 'type' | 'industry' | 'level' | 'minSalary'>;
+type AlertFilter = Pick<SearchFilter, 'q' | 'location' | 'employmentType' | 'industry' | 'level' | 'minSalary'>;   // khóa camelCase lưu trong jsonb
 type JobAlert = { id: string; name: string; filter: AlertFilter; active: boolean; createdAt: string; lastMatchedAt: string | null };
 getRecommendedPostings(): Promise<(PostingSummary & { matchReasons: string[] })[]>
   // Candidate: ≤ 10 tin đang mở, chưa nộp, điểm theo kỹ năng trùng + ngành/địa điểm từ đơn đã nộp & hồ sơ; matchReasons tiếng Việt, vd 'Khớp kỹ năng: Excel, MISA'. Khách/Employer → []

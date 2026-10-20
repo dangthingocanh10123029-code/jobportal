@@ -387,3 +387,19 @@ export type TalentDetail = TalentSummary & {
 };
 
 export type TalentFilter = { q?: string; skill?: string; location?: string; minExperience?: number; page?: number };
+
+/** The search filter subset a job alert saves; at least one condition. */
+export type AlertFilter = Pick<SearchFilter, 'q' | 'location' | 'employmentType' | 'industry' | 'level' | 'minSalary'>;
+export type JobAlert = {
+  id: string;
+  /** 1–100 */
+  name: string;
+  /** Only the conditions that were set. */
+  filter: AlertFilter;
+  active: boolean;
+  createdAt: string;
+  /** Last time a newly published posting matched (and a JOB_ALERT notification was sent). */
+  lastMatchedAt: string | null;
+};
+/** matchReasons in Vietnamese, e.g. 'Khớp kỹ năng: Excel, MISA'. */
+export type RecommendedPosting = PostingSummary & { matchReasons: string[] };
