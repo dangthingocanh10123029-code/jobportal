@@ -213,6 +213,7 @@ class SearchFilter:
     level: JobLevel | None = None
     max_experience: int | None = None
     skill: str | None = None
+    posted_within_days: int | None = None
     sort: PostingSort = "newest"
     page: int = 1
 
@@ -228,6 +229,7 @@ class SearchQuery(CamelModel):
     exp: str | None = None
     skill: str | None = None
     min_salary: str | None = None
+    posted_within_days: str | None = None
     sort: str | None = None
     page: str | None = None
 
@@ -235,6 +237,7 @@ class SearchQuery(CamelModel):
         min_salary = _whole(self.min_salary)
         exp = _whole(self.exp)
         page = _whole(self.page)
+        days = _whole(self.posted_within_days)
         return SearchFilter(
             q=_text(self.q),
             location=_text(self.location),
@@ -244,6 +247,7 @@ class SearchQuery(CamelModel):
             level=_one_of(self.level, JobLevel),
             max_experience=exp if exp is not None and 0 <= exp <= 20 else None,
             skill=_text(self.skill),
+            posted_within_days=days if days is not None and 1 <= days <= 30 else None,
             sort=_one_of(self.sort, PostingSort) or "newest",
             page=min(page, MAX_PAGE) if page is not None and page >= 1 else 1,
         )

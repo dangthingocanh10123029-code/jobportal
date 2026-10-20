@@ -159,12 +159,13 @@ def test_postings(seed):
     anon = PostgresPostingRepository(None)
     every_filter = SearchFilter(
         q="ky su tich hop", location="ha noi", employment_type="FULL_TIME", min_salary=1, industry="OTHER",
-        level="JUNIOR", max_experience=0, skill="python", sort="salary_desc",
+        level="JUNIOR", max_experience=0, skill="python", posted_within_days=7, sort="salary_desc",
     )
     assert anon.list_open(every_filter, 0, 20) == ([], 0)  # the seeded posting has no skills
     rows, total = anon.list_open(SearchFilter(q="ky su tich hop", sort="deadline_asc"), 0, 20)
     assert total >= 1 and seed["posting"] in [p.id for p in rows]
     assert anon.list_open(SearchFilter(q="ky su tich hop"), 1000, 20) == ([], total)  # page past the end
+    assert seed["posting"] in [p.id for p in anon.list_open(SearchFilter(q="ky su tich hop", posted_within_days=1), 0, 20)[0]]
 
 
 def test_profiles(seed):

@@ -275,6 +275,17 @@ def test_max_experience(service):
     assert titles(service, max_experience=0) == ["0 năm"]
 
 
+def test_posted_within_days(service):
+    from datetime import timedelta
+
+    repo = service._repo
+    for title, age in (("Hôm qua", 1), ("Tuần trước", 8)):
+        p = published(service, title=title)
+        repo.rows[p.id] = repo.rows[p.id].model_copy(update={"created_at": NOW - timedelta(days=age)})
+    assert titles(service, posted_within_days=7) == ["Hôm qua"]
+    assert service.list_open(SearchFilter(posted_within_days=30)).total == 2
+
+
 def test_skill_exact_without_accents(service):
     published(service, title="Kế toán", skills=["Kế toán thuế", "Excel"])
     published(service, title="Dev", skills=["TypeScript"])

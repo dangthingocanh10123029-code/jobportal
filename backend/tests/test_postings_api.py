@@ -177,6 +177,9 @@ def test_search_query_drops_malformed_fields():
     ).to_filter() == SearchFilter()
     assert SearchQuery(min_salary="1e30").to_filter() == SearchFilter()
     assert SearchQuery(q="a" * 150).to_filter().q == "a" * 100
+    assert SearchQuery.model_validate({"postedWithinDays": "7"}).to_filter() == SearchFilter(posted_within_days=7)
+    for raw in ("0", "31", "x", "1.5"):
+        assert SearchQuery(posted_within_days=raw).to_filter() == SearchFilter()
 
 
 @pytest.mark.parametrize(("raw", "page"), [(None, 1), ("3", 3), ("0", 1), ("-1", 1), ("1.5", 1), ("abc", 1),
