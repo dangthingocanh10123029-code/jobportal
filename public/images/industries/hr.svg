@@ -1,11 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
-  <!-- Central person -->
   <circle cx="24" cy="14" r="5" stroke="currentColor" stroke-width="3"/>
-  <path d="M 14 36 C 14 30 18 25 24 25 C 30 25 34 30 34 36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-  <!-- Left person -->
-  <circle cx="11" cy="18" r="3.5" stroke="currentColor" stroke-width="2.5"/>
-  <path d="M 6 36 C 6 31.5 9 28 13.5 27" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Right person -->
-  <circle cx="37" cy="18" r="3.5" stroke="currentColor" stroke-width="2.5"/>
-  <path d="M 42 36 C 42 31.5 39 28 34.5 27" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M16 28C16 24 19.5 22 24 22C28.5 22 32 24 32 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="37" cy="19" r="4" stroke="currentColor" stroke-width="3"/>
+  <path d="M33 30C35 27.5 37.5 26 41 26C43 26 44 27 44 30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="11" cy="19" r="4" stroke="currentColor" stroke-width="3"/>
+  <path d="M4 30C4 27 5 26 7 26C10.5 26 13 27.5 15 30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M12 38H36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M24 28V38" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
 </svg>

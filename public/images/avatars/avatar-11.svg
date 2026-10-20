@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" fill="none">
+  <defs>
+    <clipPath id="c11"><circle cx="48" cy="48" r="48"/></clipPath>
+  </defs>
+  <circle cx="48" cy="48" r="48" fill="#CFFAFE"/>
+  <g clip-path="url(#c11)">
+    <!-- Shoulders & T-Shirt in Deep Cyan -->
+    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#0E7490"/>
+    <path d="M42 70C42 74 45 76 48 76C51 76 54 74 54 70Z" fill="#CFFAFE"/>
+    <!-- Neck -->
+    <rect x="42" y="52" width="12" height="15" rx="5" fill="#FED7AA"/>
+    <!-- Face -->
+    <ellipse cx="48" cy="43" rx="15" ry="17" fill="#FFEDD5"/>
+    <!-- Ears -->
+    <circle cx="33" cy="44" r="3.5" fill="#FED7AA"/>
+    <circle cx="63" cy="44" r="3.5" fill="#FED7AA"/>
+    <!-- Baseball Cap in Dark Stone -->
+    <path d="M33 36C33 22 40 18 48 18C56 18 63 22 63 36Z" fill="#292524"/>
+    <path d="M32 36C32 38 40 40 48 40C56 40 64 38 64 36Z" fill="#1C1917"/>
+    <!-- Tiny Hair tufts -->
+    <path d="M33 40C33 44 35 46 36 46M63 40C63 44 61 46 60 46" stroke="#44403C" stroke-width="2"/>
+    <!-- Eyes -->
+    <circle cx="42" cy="43" r="1.8" fill="#1C1917"/>
+    <circle cx="54" cy="43" r="1.8" fill="#1C1917"/>
+    <!-- Smile -->
+    <path d="M44 51C46 54 50 54 52 51" stroke="#E11D48" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

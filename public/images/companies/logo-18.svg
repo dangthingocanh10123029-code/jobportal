@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#ECFDF5"/>
-  <path d="M 64 28 C 44 28 32 44 32 64 C 32 84 46 96 64 96 C 54 96 46 88 46 76 C 46 64 56 56 68 56 C 80 56 88 46 88 38 C 88 32 80 28 64 28 Z" fill="#059669"/>
-  <path d="M 64 100 C 84 100 96 84 96 64 C 96 44 82 32 64 32 C 74 32 82 40 82 52 C 82 64 72 72 60 72 C 48 72 40 82 40 90 C 40 96 48 100 64 100 Z" fill="#10B981"/>
-  <circle cx="68" cy="40" r="5" fill="#F59E0B"/>
-  <circle cx="60" cy="88" r="5" fill="#6EE7B7"/>
+  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
+  <circle cx="64" cy="64" r="40" stroke="#E7E5E4" stroke-width="6"/>
+  <polygon points="64,22 74,64 64,64" fill="#06B6D4"/>
+  <polygon points="64,22 54,64 64,64" fill="#0E7490"/>
+  <polygon points="64,106 74,64 64,64" fill="#E7E5E4"/>
+  <polygon points="64,106 54,64 64,64" fill="#A8A29E"/>
+  <polygon points="106,64 64,54 64,64" fill="#292524"/>
+  <polygon points="22,64 64,74 64,64" fill="#44403C"/>
+  <circle cx="64" cy="64" r="6" fill="#FFFFFF"/>
 </svg>

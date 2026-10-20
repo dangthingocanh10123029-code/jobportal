@@ -1,10 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#F1F5F9"/>
-  <!-- Shield shape -->
-  <g transform="translate(32, 24)">
-    <path d="M 4 4 H 60 V 38 C 60 58 32 72 32 72 C 32 72 4 58 4 38 Z" fill="#2563EB"/>
-    <path d="M 32 4 H 60 V 38 C 60 58 32 72 32 72 Z" fill="#1D4ED8"/>
-    <path d="M 4 38 C 4 44 8 50 14 56 L 32 38 H 4 Z" fill="#3B82F6"/>
-    <circle cx="32" cy="34" r="8" fill="#F59E0B"/>
-  </g>
+  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
+  <line x1="36" y1="40" x2="92" y2="40" stroke="#E7E5E4" stroke-width="6" stroke-linecap="round"/>
+  <line x1="36" y1="64" x2="92" y2="64" stroke="#E7E5E4" stroke-width="6" stroke-linecap="round"/>
+  <line x1="36" y1="88" x2="92" y2="88" stroke="#E7E5E4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M40 24C40 44 88 44 88 64C88 84 40 84 40 104" stroke="#06B6D4" stroke-width="8" stroke-linecap="round"/>
+  <path d="M88 24C88 44 40 44 40 64C40 84 88 84 88 104" stroke="#059669" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="64" cy="64" r="8" fill="#292524"/>
 </svg>

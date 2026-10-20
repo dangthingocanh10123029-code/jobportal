@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" fill="none">
+  <defs>
+    <clipPath id="c10"><circle cx="48" cy="48" r="48"/></clipPath>
+  </defs>
+  <circle cx="48" cy="48" r="48" fill="#F5F5F4"/>
+  <g clip-path="url(#c10)">
+    <!-- Shoulders & Jacket in Cyan -->
+    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#06B6D4"/>
+    <polygon points="48,70 43,85 53,85" fill="#FFFFFF"/>
+    <!-- Neck -->
+    <rect x="43" y="53" width="10" height="15" rx="5" fill="#FED7AA"/>
+    <!-- Face -->
+    <ellipse cx="48" cy="42" rx="14" ry="16" fill="#FFEDD5"/>
+    <!-- Pixie Cut Hair in Dark Stone -->
+    <path d="M33 38C33 25 41 20 48 20C57 20 63 25 63 36C60 30 54 28 48 29C42 30 36 34 33 38Z" fill="#292524"/>
+    <path d="M33 32C37 32 44 26 50 25C44 26 38 29 33 32Z" fill="#44403C"/>
+    <!-- Ears -->
+    <circle cx="34" cy="43" r="3.2" fill="#FED7AA"/>
+    <circle cx="62" cy="43" r="3.2" fill="#FED7AA"/>
+    <!-- Eyes -->
+    <circle cx="43" cy="40" r="1.8" fill="#1C1917"/>
+    <circle cx="53" cy="40" r="1.8" fill="#1C1917"/>
+    <!-- Cheeks -->
+    <circle cx="39" cy="45" r="2.5" fill="#FCA5A5" fill-opacity="0.5"/>
+    <circle cx="57" cy="45" r="2.5" fill="#FCA5A5" fill-opacity="0.5"/>
+    <!-- Smile -->
+    <path d="M44 48C46 51 50 51 52 48" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+</svg>

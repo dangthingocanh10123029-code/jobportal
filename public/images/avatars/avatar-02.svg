@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" fill="none">
+  <defs>
+    <clipPath id="c02"><circle cx="48" cy="48" r="48"/></clipPath>
+  </defs>
+  <circle cx="48" cy="48" r="48" fill="#E6E6FA"/>
+  <g clip-path="url(#c02)">
+    <!-- Back Hair -->
+    <ellipse cx="48" cy="52" rx="22" ry="26" fill="#44403C"/>
+    <!-- Shoulders & Sweater in Deep Cyan -->
+    <path d="M18 96C18 78 30 71 48 71C66 71 78 78 78 96Z" fill="#0E7490"/>
+    <!-- Crewneck collar -->
+    <path d="M41 71C41 75 45 77 48 77C51 77 55 75 55 71Z" fill="#CFFAFE"/>
+    <!-- Neck -->
+    <rect x="43" y="54" width="10" height="14" rx="5" fill="#FECDD3"/>
+    <!-- Face -->
+    <ellipse cx="48" cy="43" rx="14" ry="16" fill="#FFE4E6"/>
+    <!-- Front Hair -->
+    <path d="M34 40C34 26 40 21 48 21C56 21 62 26 62 40C58 29 52 26 48 26C44 26 38 29 34 40Z" fill="#57534E"/>
+    <path d="M33 36C33 50 36 60 38 66C36 60 34 50 35 36Z" fill="#44403C"/>
+    <path d="M63 36C63 50 60 60 58 66C60 60 62 50 61 36Z" fill="#44403C"/>
+    <!-- Eyes -->
+    <circle cx="43" cy="41" r="1.8" fill="#1C1917"/>
+    <circle cx="53" cy="41" r="1.8" fill="#1C1917"/>
+    <!-- Cheeks -->
+    <circle cx="39" cy="46" r="2.5" fill="#F472B6" fill-opacity="0.4"/>
+    <circle cx="57" cy="46" r="2.5" fill="#F472B6" fill-opacity="0.4"/>
+    <!-- Smile -->
+    <path d="M44 49C46 52 50 52 52 49" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+</svg>

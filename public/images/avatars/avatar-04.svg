@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" fill="none">
+  <defs>
+    <clipPath id="c04"><circle cx="48" cy="48" r="48"/></clipPath>
+  </defs>
+  <circle cx="48" cy="48" r="48" fill="#EFEDF4"/>
+  <g clip-path="url(#c04)">
+    <!-- Back Bob Hair -->
+    <ellipse cx="48" cy="46" rx="20" ry="22" fill="#292524"/>
+    <rect x="28" y="40" width="40" height="20" rx="8" fill="#292524"/>
+    <!-- Shoulders in Indigo -->
+    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#4338CA"/>
+    <!-- Neck -->
+    <rect x="43" y="53" width="10" height="15" rx="5" fill="#FECDD3"/>
+    <!-- Face -->
+    <ellipse cx="48" cy="42" rx="14" ry="16" fill="#FFE4E6"/>
+    <!-- Front Bob Hair & Bangs -->
+    <path d="M32 42C32 26 40 22 48 22C56 22 64 26 64 42C64 30 56 26 48 26C40 26 32 30 32 42Z" fill="#1C1917"/>
+    <!-- Glasses in Cyan -->
+    <circle cx="42" cy="41" r="5" stroke="#06B6D4" stroke-width="2" fill="none"/>
+    <circle cx="54" cy="41" r="5" stroke="#06B6D4" stroke-width="2" fill="none"/>
+    <line x1="47" y1="41" x2="49" y2="41" stroke="#06B6D4" stroke-width="2"/>
+    <!-- Eyes -->
+    <circle cx="42" cy="41" r="1.5" fill="#1C1917"/>
+    <circle cx="54" cy="41" r="1.5" fill="#1C1917"/>
+    <!-- Cheeks -->
+    <circle cx="38" cy="46" r="2.5" fill="#FDA4AF" fill-opacity="0.5"/>
+    <circle cx="58" cy="46" r="2.5" fill="#FDA4AF" fill-opacity="0.5"/>
+    <!-- Smile -->
+    <path d="M44 49C46 51 50 51 52 49" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+</svg>

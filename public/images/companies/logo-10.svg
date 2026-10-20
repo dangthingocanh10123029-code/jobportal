@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#FFF1F2"/>
-  <!-- Central rhombus with four radiating facet petals -->
-  <g transform="translate(64,64)">
-    <polygon points="0,-36 12,-12 36,0 12,12 0,36 -12,12 -36,0 -12,-12" fill="#E11D48"/>
-    <polygon points="0,-20 7,-7 20,0 7,7 0,20 -7,7 -20,0 -7,-7" fill="#FB7185"/>
-    <circle cx="0" cy="0" r="5" fill="#FFF1F2"/>
-  </g>
+  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
+  <path d="M26 84 C40 84 48 70 64 70 C80 70 88 84 102 84" stroke="#CFFAFE" stroke-width="10" stroke-linecap="round"/>
+  <path d="M26 62 C40 62 48 48 64 48 C80 48 88 62 102 62" stroke="#06B6D4" stroke-width="10" stroke-linecap="round"/>
+  <path d="M26 40 C40 40 48 26 64 26 C80 26 88 40 102 40" stroke="#0E7490" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="86" cy="34" r="8" fill="#292524"/>
 </svg>

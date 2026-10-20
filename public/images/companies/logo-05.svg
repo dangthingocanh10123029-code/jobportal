@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#FFF1F2"/>
-  <!-- 3 swooping parallel ribbon curves -->
-  <path d="M 32 76 C 44 92 68 96 84 80 C 96 68 100 48 92 36" stroke="#E11D48" stroke-width="8" stroke-linecap="round"/>
-  <path d="M 28 60 C 38 74 60 78 74 64 C 84 54 88 38 80 28" stroke="#F43F5E" stroke-width="8" stroke-linecap="round"/>
-  <path d="M 26 44 C 34 56 50 60 62 48" stroke="#FDA4AF" stroke-width="8" stroke-linecap="round"/>
+  <rect width="128" height="128" rx="28" fill="#CFFAFE"/>
+  <path d="M42 44C32 44 24 53 24 64C24 75 32 84 42 84C56 84 72 44 86 44C96 44 104 53 104 64C104 75 96 84 86 84C72 84 56 44 42 44Z" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M42 44C32 44 24 53 24 64C24 75 32 84 42 84C56 84 64 64 64 64" stroke="#06B6D4" stroke-width="12" stroke-linecap="round"/>
+  <path d="M64 64C64 64 72 44 86 44C96 44 104 53 104 64" stroke="#0E7490" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="86" cy="64" r="6" fill="#292524"/>
 </svg>

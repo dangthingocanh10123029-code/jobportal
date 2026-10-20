@@ -1,11 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
-  <!-- Top facet -->
-  <polygon points="64,28 92,44 64,60 36,44" fill="#818CF8"/>
-  <!-- Left facet -->
-  <polygon points="36,44 64,60 64,96 36,80" fill="#4F46E5"/>
-  <!-- Right facet -->
-  <polygon points="64,60 92,44 92,80 64,96" fill="#3730A3"/>
-  <!-- Accent dot inside -->
-  <circle cx="64" cy="60" r="5" fill="#F59E0B"/>
+  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
+  <polygon points="64,24 98,44 98,84 64,104 30,84 30,44" fill="#E7E5E4"/>
+  <polygon points="64,24 98,44 64,64 30,44" fill="#67E8F9"/>
+  <polygon points="64,64 98,44 98,84 64,104" fill="#0E7490"/>
+  <polygon points="64,64 30,44 30,84 64,104" fill="#06B6D4"/>
+  <circle cx="64" cy="64" r="8" fill="#FFFFFF"/>
 </svg>
