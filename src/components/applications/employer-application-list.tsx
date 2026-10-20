@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import {
   changeApplicationStatusAction,
@@ -92,6 +93,7 @@ function EmployerApplicationCard({ application, interviews }: { application: Emp
             {downloading ? 'Đang tạo link…' : 'Tải CV'}
           </button>
           <ApplicantProfileDetails applicationId={application.id} />
+          <Link className="button button-quiet button-small" href={`/messages/${application.id}`}>Nhắn tin</Link>
         </div>
       </div>
 
