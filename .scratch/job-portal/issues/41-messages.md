@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** in-progress (Phần A đã merge e046586, migration đã áp; chờ Phần B)
+**Status:** resolved (A e046586, B merge task/41-b-messages)
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/41-a-messages`
 - [x] Migration `supabase/migrations/20261020000200_messages.sql`:
