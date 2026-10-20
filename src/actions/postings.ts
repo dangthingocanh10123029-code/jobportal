@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { cache } from 'react';
 import { apiFetch } from '@/lib/api';
 import { fail, readOr, toAction } from './_shared';
@@ -28,16 +29,22 @@ export async function updatePostingAction(input: PostingInput & { id: string }):
   return toAction(await apiFetch(`/me/postings/${id}`, { method: 'PUT', body: fields }));
 }
 
-export async function publishPostingAction(input: { id: string }): Promise<ActionResult<JobPosting>> {
+// revalidatePath makes the action response itself carry the re-rendered list, applied in the same router update.
+// A separate client router.refresh() afterwards was a second round trip that sometimes never reached the screen (ticket 52).
+async function changeStatus(input: { id: string }, verb: 'publish' | 'close'): Promise<ActionResult<JobPosting>> {
   const parsed = postingIdSchema.safeParse(input?.id);
   if (!parsed.success) return fail(firstError(parsed.error));
-  return toAction(await apiFetch(`/me/postings/${parsed.data}/publish`, { method: 'POST' }));
+  const res = await apiFetch<JobPosting>(`/me/postings/${parsed.data}/${verb}`, { method: 'POST' });
+  if (res.ok) revalidatePath('/employer/postings');
+  return toAction(res);
+}
+
+export async function publishPostingAction(input: { id: string }): Promise<ActionResult<JobPosting>> {
+  return changeStatus(input, 'publish');
 }
 
 export async function closePostingAction(input: { id: string }): Promise<ActionResult<JobPosting>> {
-  const parsed = postingIdSchema.safeParse(input?.id);
-  if (!parsed.success) return fail(firstError(parsed.error));
-  return toAction(await apiFetch(`/me/postings/${parsed.data}/close`, { method: 'POST' }));
+  return changeStatus(input, 'close');
 }
 
 export async function listMyPostings(): Promise<JobPosting[]> {

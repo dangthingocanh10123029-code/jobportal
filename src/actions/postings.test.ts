@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { apiFetch } from '@/lib/api';
 import {
@@ -14,7 +15,11 @@ import { pageSchema, postingInputSchema, searchFilterSchema } from './postings-s
 import type { PostingInput } from './types';
 
 vi.mock('@/lib/api', () => ({ apiFetch: vi.fn() }));
-beforeEach(() => vi.mocked(apiFetch).mockReset());
+vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
+beforeEach(() => {
+  vi.mocked(apiFetch).mockReset();
+  vi.mocked(revalidatePath).mockReset();
+});
 
 const valid: PostingInput = {
   title: 'Lập trình viên TypeScript',
@@ -91,6 +96,17 @@ describe('gọi FastAPI', () => {
     vi.mocked(apiFetch).mockResolvedValue({ ok: true, data: { id: ID } });
     expect(await publishPostingAction({ id: ID })).toEqual({ success: true, data: { id: ID } });
     expect(apiFetch).toHaveBeenCalledWith(`/me/postings/${ID}/publish`, { method: 'POST' });
+    expect(revalidatePath).toHaveBeenCalledWith('/employer/postings');
+  });
+
+  it('đóng tin: thành công → làm mới /employer/postings; lỗi API → không làm mới', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ ok: false, status: 409, error: 'Tin không ở trạng thái đang đăng' });
+    expect(await closePostingAction({ id: ID })).toEqual({ success: false, error: 'Tin không ở trạng thái đang đăng' });
+    expect(revalidatePath).not.toHaveBeenCalled();
+    vi.mocked(apiFetch).mockResolvedValue({ ok: true, data: { id: ID } });
+    expect(await closePostingAction({ id: ID })).toEqual({ success: true, data: { id: ID } });
+    expect(apiFetch).toHaveBeenLastCalledWith(`/me/postings/${ID}/close`, { method: 'POST' });
+    expect(revalidatePath).toHaveBeenCalledWith('/employer/postings');
   });
 
   it('tìm kiếm: đổi tên tham số theo contract, bỏ trường rác', async () => {
