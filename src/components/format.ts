@@ -94,3 +94,12 @@ export function formatDateTime(value: string) {
     minute: '2-digit',
   }).format(new Date(value));
 }
+
+/** "Đăng 2 giờ trước"; older than a week falls back to the date. */
+export function formatPostedAgo(createdAt: string, now = Date.now()) {
+  const minutes = Math.max(0, Math.floor((now - new Date(createdAt).getTime()) / 60_000));
+  if (minutes < 60) return minutes < 1 ? 'Vừa đăng' : `Đăng ${minutes} phút trước`;
+  if (minutes < 24 * 60) return `Đăng ${Math.floor(minutes / 60)} giờ trước`;
+  const days = Math.floor(minutes / (24 * 60));
+  return days <= 7 ? `Đăng ${days} ngày trước` : `Đăng ${formatDate(createdAt)}`;
+}

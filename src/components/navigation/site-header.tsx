@@ -4,33 +4,43 @@ import { getUnreadMessageCount } from '@/actions/messages';
 import { getUnreadNotificationCount } from '@/actions/notifications';
 import { SignOutButton } from './sign-out-button';
 
+type NavLink = [href: string, label: string];
+
+const PUBLIC_LINKS: NavLink[] = [['/', 'Việc làm'], ['/companies', 'Công ty'], ['/guide?category=SALARY', 'Lương'], ['/guide', 'Cẩm nang']];
+const ROLE_LINKS: Record<string, NavLink[]> = {
+  CANDIDATE: [['/candidate/applications', 'Đơn ứng tuyển'], ['/interviews', 'Lịch phỏng vấn'], ['/candidate/profile', 'Hồ sơ của tôi'], ['/candidate/cv', 'CV online'], ['/candidate/saved', 'Việc đã lưu'], ['/candidate/alerts', 'Thông báo việc làm']],
+  EMPLOYER: [['/employer/dashboard', 'Dashboard'], ['/employer/postings', 'Tin tuyển dụng'], ['/employer/talent', 'Tìm ứng viên'], ['/employer/billing', 'Gói dịch vụ'], ['/interviews', 'Lịch phỏng vấn'], ['/employer/company', 'Hồ sơ công ty']],
+  ADMIN: [['/admin', 'Quản trị']],
+};
+const ADMIN_MOBILE_LINKS: NavLink[] = [['/admin/users', 'Người dùng'], ['/admin/postings', 'Tin tuyển dụng'], ['/admin/companies', 'Công ty'], ['/admin/audit', 'Nhật ký thao tác'], ['/admin/articles', 'Cẩm nang']];
+const GUEST_LINKS: NavLink[] = [['/signup', 'Nhà tuyển dụng']];
+
+const links = (items: NavLink[]) => items.map(([href, label]) => <Link href={href} key={href}>{label}</Link>);
+
 export async function SiteHeader() {
   const [profile, unreadCount, unreadMessages] = await Promise.all([getCurrentProfile(), getUnreadNotificationCount(), getUnreadMessageCount()]);
   const canMessage = profile?.role === 'CANDIDATE' || profile?.role === 'EMPLOYER';
+  const roleLinks = profile ? ROLE_LINKS[profile.role] ?? [] : GUEST_LINKS;
+  const canPost = !profile || profile.role === 'EMPLOYER';
 
   return (
-    <header className={`site-header${canMessage ? ' has-wide-nav' : ''}`}>
+    <header className={`site-header${profile ? ' has-wide-nav' : ''}`}>
       <div className="site-header-inner">
         <Link aria-label="Job Portal, trang chủ" className="brand" href="/">
-          <img alt="Job Portal" className="brand-logo" height="32" src="/images/logo.svg" width="176" />
+          <span aria-hidden="true" className="brand-mark" />
+          <span aria-hidden="true" className="brand-name">Job Portal</span>
         </Link>
         <nav aria-label="Điều hướng chính" className="main-nav">
-          <Link href="/">Tìm việc</Link>
-          <Link href="/companies">Công ty</Link>
-          <Link href="/guide">Cẩm nang</Link>
-          {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/interviews">Lịch phỏng vấn</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/cv">CV online</Link><Link href="/candidate/saved">Việc đã lưu</Link><Link href="/candidate/alerts">Thông báo việc làm</Link></> : null}
-          {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/talent">Tìm ứng viên</Link><Link href="/employer/billing">Gói dịch vụ</Link><Link href="/interviews">Lịch phỏng vấn</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
-          {profile?.role === 'ADMIN' ? <Link href="/admin">Quản trị</Link> : null}
+          {links(PUBLIC_LINKS)}
+          {links(roleLinks)}
         </nav>
         <details className="mobile-menu">
           <summary aria-label="Mở menu"><span aria-hidden="true" className="mobile-menu-icon">☰</span><span className="mobile-menu-label">Menu</span></summary>
           <nav aria-label="Điều hướng di động" className="mobile-menu-panel">
-            <Link href="/">Tìm việc</Link>
-            <Link href="/companies">Công ty</Link>
-            <Link href="/guide">Cẩm nang</Link>
-            {profile?.role === 'CANDIDATE' ? <><Link href="/candidate/applications">Đơn ứng tuyển</Link><Link href="/interviews">Lịch phỏng vấn</Link><Link href="/candidate/profile">Hồ sơ của tôi</Link><Link href="/candidate/cv">CV online</Link><Link href="/candidate/saved">Việc đã lưu</Link><Link href="/candidate/alerts">Thông báo việc làm</Link></> : null}
-            {profile?.role === 'EMPLOYER' ? <><Link href="/employer/dashboard">Dashboard</Link><Link href="/employer/postings">Tin tuyển dụng</Link><Link href="/employer/talent">Tìm ứng viên</Link><Link href="/employer/billing">Gói dịch vụ</Link><Link href="/interviews">Lịch phỏng vấn</Link><Link href="/employer/company">Hồ sơ công ty</Link></> : null}
-            {profile?.role === 'ADMIN' ? <><Link href="/admin">Quản trị</Link><Link href="/admin/users">Người dùng</Link><Link href="/admin/postings">Tin tuyển dụng</Link><Link href="/admin/companies">Công ty</Link><Link href="/admin/audit">Nhật ký thao tác</Link><Link href="/admin/articles">Cẩm nang</Link></> : null}
+            {links(PUBLIC_LINKS)}
+            {links(roleLinks)}
+            {profile?.role === 'ADMIN' ? links(ADMIN_MOBILE_LINKS) : null}
+            {canPost ? <Link href="/employer/postings/new">Đăng tin</Link> : null}
             {canMessage ? <Link href="/messages">Tin nhắn ({unreadMessages})</Link> : null}
             {profile ? <Link href="/notifications">Thông báo ({unreadCount})</Link> : <><Link href="/login">Đăng nhập</Link><Link href="/signup">Tạo tài khoản</Link></>}
           </nav>
@@ -53,12 +63,14 @@ export async function SiteHeader() {
                 {unreadCount > 0 ? <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span> : null}
               </Link>
               <Link className="profile-link" href="/account">Tài khoản</Link>
+              {canPost ? <Link className="button button-dark button-small header-post-link" href="/employer/postings/new">Đăng tin</Link> : null}
               <SignOutButton />
             </>
           ) : (
             <>
               <Link className="login-link" href="/login">Đăng nhập</Link>
               <Link className="button button-primary button-small" href="/signup">Tạo tài khoản</Link>
+              <Link className="button button-dark button-small header-post-link" href="/employer/postings/new">Đăng tin</Link>
             </>
           )}
         </div>
