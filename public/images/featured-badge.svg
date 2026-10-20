@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-  <!-- Circular Warm Amber Badge Container -->
+  <!-- Container with Soft Amber and White-Blue Border -->
   <circle cx="12" cy="12" r="11" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1"/>
-  <circle cx="12" cy="12" r="8.5" stroke="#F59E0B" stroke-opacity="0.25" stroke-width="0.8"/>
+  <circle cx="12" cy="12" r="8.5" stroke="#D97706" stroke-opacity="0.25" stroke-width="0.8"/>
 
   <!-- Featured Star Emblem with Clean Facets -->
-  <path d="M12 4.6L14.15 9.1L19.1 9.65L15.4 13.15L16.4 18.05L12 15.55L7.6 18.05L8.6 13.15L4.9 9.65L9.85 9.1L12 4.6Z" fill="#F59E0B" stroke="#D97706" stroke-width="0.8" stroke-linejoin="round"/>
-  
+  <path d="M12 4.6L14.15 9.1L19.1 9.65L15.4 13.15L16.4 18.05L12 15.55L7.6 18.05L8.6 13.15L4.9 9.65L9.85 9.1L12 4.6Z" fill="#D97706" stroke="#B45309" stroke-width="0.8" stroke-linejoin="round"/>
+
   <!-- Subtle Highlight Shimmer -->
-  <path d="M12 4.6L14.15 9.1L19.1 9.65L15.4 13.15L12 11.2V4.6Z" fill="#FBBF24" opacity="0.6"/>
+  <path d="M12 4.6L14.15 9.1L19.1 9.65L15.4 13.15L12 11.2V4.6Z" fill="#F59E0B" opacity="0.6"/>
 
   <!-- Crisp Core Dot in Soft White -->
   <circle cx="12" cy="12" r="1.5" fill="#FFFFFF"/>

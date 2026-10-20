@@ -1,15 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
-  <!-- Top Cube -->
-  <polygon points="64,24 88,38 64,52 40,38" fill="#A5F3FC"/>
-  <polygon points="64,52 88,38 88,62 64,76" fill="#06B6D4"/>
-  <polygon points="64,52 40,38 40,62 64,76" fill="#0E7490"/>
-  <!-- Bottom-Left Cube -->
-  <polygon points="40,66 64,80 40,94 16,80" fill="#E6E6FA"/>
-  <polygon points="40,94 64,80 64,104 40,118" fill="#4338CA"/>
-  <polygon points="40,94 16,80 16,104 40,118" fill="#312E81"/>
-  <!-- Bottom-Right Cube -->
-  <polygon points="88,66 112,80 88,94 64,80" fill="#E7E5E4"/>
-  <polygon points="88,94 112,80 112,104 88,118" fill="#292524"/>
-  <polygon points="88,94 64,80 64,104 88,118" fill="#1C1917"/>
+  <rect width="128" height="128" rx="28" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+  <!-- Wave Rhythms -->
+  <path d="M24 48 C40 36 48 60 64 48 C80 36 88 60 104 48" stroke="#0369A1" stroke-width="6" stroke-linecap="round"/>
+  <path d="M24 68 C40 56 48 80 64 68 C80 56 88 80 104 68" stroke="#0EA5E9" stroke-width="6" stroke-linecap="round"/>
+  <path d="M24 88 C40 76 48 100 64 88 C80 76 88 100 104 88" stroke="#E0F2FE" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="64" cy="28" r="6" fill="#0369A1"/>
 </svg>

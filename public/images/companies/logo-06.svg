@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#E8EFE8"/>
-  <path d="M64 26C40 26 28 46 28 72C28 92 44 102 64 102C64 80 50 64 64 26Z" fill="#059669"/>
-  <path d="M64 26C88 26 100 46 100 72C100 92 84 102 64 102C64 70 80 50 64 26Z" fill="#10B981"/>
-  <circle cx="64" cy="48" r="8" fill="#06B6D4"/>
+  <rect width="128" height="128" rx="28" fill="#0C1E2E"/>
+  <!-- Tri-fold Delta Prism -->
+  <polygon points="64,26 100,90 28,90" stroke="#0369A1" stroke-width="6" stroke-linejoin="round"/>
+  <polygon points="64,42 86,82 42,82" fill="#0EA5E9"/>
+  <circle cx="64" cy="62" r="6" fill="#FFFFFF"/>
 </svg>

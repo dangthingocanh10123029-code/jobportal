@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
-  <line x1="36" y1="40" x2="92" y2="40" stroke="#E7E5E4" stroke-width="6" stroke-linecap="round"/>
-  <line x1="36" y1="64" x2="92" y2="64" stroke="#E7E5E4" stroke-width="6" stroke-linecap="round"/>
-  <line x1="36" y1="88" x2="92" y2="88" stroke="#E7E5E4" stroke-width="6" stroke-linecap="round"/>
-  <path d="M40 24C40 44 88 44 88 64C88 84 40 84 40 104" stroke="#06B6D4" stroke-width="8" stroke-linecap="round"/>
-  <path d="M88 24C88 44 40 44 40 64C40 84 88 84 88 104" stroke="#059669" stroke-width="8" stroke-linecap="round"/>
-  <circle cx="64" cy="64" r="8" fill="#292524"/>
+  <rect width="128" height="128" rx="28" fill="#0C1E2E"/>
+  <!-- Shutter Aperture Petals -->
+  <path d="M64 24C64 46 46 64 24 64C46 64 64 82 64 104C64 82 82 64 104 64C82 64 64 46 64 24Z" fill="#0369A1"/>
+  <circle cx="64" cy="64" r="16" fill="#0EA5E9"/>
+  <circle cx="64" cy="64" r="7" fill="#FFFFFF"/>
 </svg>

@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#EFEDF4"/>
-  <circle cx="64" cy="42" r="18" fill="#CFFAFE" fill-opacity="0.8"/>
-  <circle cx="64" cy="86" r="18" fill="#CFFAFE" fill-opacity="0.8"/>
-  <circle cx="42" cy="64" r="18" fill="#E6E6FA" fill-opacity="0.8"/>
-  <circle cx="86" cy="64" r="18" fill="#E6E6FA" fill-opacity="0.8"/>
-  <circle cx="64" cy="64" r="18" fill="#06B6D4"/>
-  <circle cx="64" cy="64" r="8" fill="#FFFFFF"/>
+  <rect width="128" height="128" rx="28" fill="#E0F2FE"/>
+  <!-- Concentric Rounded Squares -->
+  <rect x="26" y="26" width="76" height="76" rx="20" stroke="#0369A1" stroke-width="6"/>
+  <rect x="42" y="42" width="44" height="44" rx="12" stroke="#0EA5E9" stroke-width="5"/>
+  <rect x="56" y="56" width="16" height="16" rx="4" fill="#0C1E2E"/>
 </svg>

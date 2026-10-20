@@ -2,32 +2,27 @@
   <defs>
     <clipPath id="c12"><circle cx="48" cy="48" r="48"/></clipPath>
   </defs>
-  <circle cx="48" cy="48" r="48" fill="#E6E6FA"/>
+  <circle cx="48" cy="48" r="48" fill="#F0F9FF"/>
   <g clip-path="url(#c12)">
-    <!-- Top Hair Bun in Dark Stone -->
-    <circle cx="48" cy="18" r="9" fill="#1C1917"/>
-    <!-- Shoulders in Dark Stone -->
-    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#292524"/>
-    <!-- Inner Blouse in Light Cyan -->
-    <path d="M43 70C43 76 45 80 48 80C51 80 53 76 53 70Z" fill="#CFFAFE"/>
+    <!-- Pixie Cut Hair in Dark Slate -->
+    <path d="M32 42C32 24 38 18 48 18C58 18 64 24 64 42C62 30 56 26 48 26C40 26 34 32 32 42Z" fill="#0C1E2E"/>
+    <!-- Shoulders in Primary Blue -->
+    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#0369A1"/>
+    <!-- White Collar -->
+    <polygon points="48,70 38,82 48,84 58,82" fill="#FFFFFF"/>
     <!-- Neck -->
-    <rect x="43" y="53" width="10" height="15" rx="5" fill="#FECDD3"/>
+    <rect x="42" y="52" width="12" height="16" rx="6" fill="#FED7AA"/>
     <!-- Face -->
-    <ellipse cx="48" cy="42" rx="14" ry="16" fill="#FFE4E6"/>
-    <!-- Sleek Front Hair -->
-    <path d="M34 38C34 26 40 23 48 23C56 23 62 26 62 38C58 29 52 27 48 27C44 27 38 29 34 38Z" fill="#292524"/>
-    <!-- Ears & Cyan Pearl Earrings -->
-    <circle cx="34" cy="43" r="3" fill="#FECDD3"/>
-    <circle cx="33" cy="47" r="1.8" fill="#06B6D4"/>
-    <circle cx="62" cy="43" r="3" fill="#FECDD3"/>
-    <circle cx="63" cy="47" r="1.8" fill="#06B6D4"/>
+    <ellipse cx="48" cy="42" rx="14" ry="16" fill="#FFEDD5"/>
+    <!-- Pixie Hair Tufts -->
+    <path d="M33 34C37 28 44 24 50 24C58 24 62 29 63 36C58 31 52 30 46 32Z" fill="#0C1E2E"/>
+    <!-- Earrings in Accent Blue -->
+    <circle cx="34" cy="44" r="2" fill="#0EA5E9"/>
+    <circle cx="62" cy="44" r="2" fill="#0EA5E9"/>
     <!-- Eyes -->
-    <circle cx="43" cy="40" r="1.8" fill="#1C1917"/>
-    <circle cx="53" cy="40" r="1.8" fill="#1C1917"/>
-    <!-- Cheeks -->
-    <circle cx="39" cy="45" r="2.5" fill="#F472B6" fill-opacity="0.4"/>
-    <circle cx="57" cy="45" r="2.5" fill="#F472B6" fill-opacity="0.4"/>
+    <circle cx="43" cy="41" r="1.5" fill="#0C1E2E"/>
+    <circle cx="53" cy="41" r="1.5" fill="#0C1E2E"/>
     <!-- Smile -->
-    <path d="M44 48C46 51 50 51 52 48" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M44 49C46 51 50 51 52 49" stroke="#0369A1" stroke-width="1.8" stroke-linecap="round"/>
   </g>
 </svg>

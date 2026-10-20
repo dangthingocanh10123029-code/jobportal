@@ -2,12 +2,12 @@
   <defs>
     <clipPath id="c01"><circle cx="48" cy="48" r="48"/></clipPath>
   </defs>
-  <circle cx="48" cy="48" r="48" fill="#CFFAFE"/>
+  <circle cx="48" cy="48" r="48" fill="#E0F2FE"/>
   <g clip-path="url(#c01)">
-    <!-- Shoulders & Shirt in Dark Stone -->
-    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#292524"/>
-    <!-- Collar in Cyan -->
-    <path d="M48 70L40 82L48 86L56 82Z" fill="#06B6D4"/>
+    <!-- Shoulders & Shirt in Dark Slate -->
+    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#0C1E2E"/>
+    <!-- Collar in Primary Blue -->
+    <path d="M48 70L40 82L48 86L56 82Z" fill="#0369A1"/>
     <!-- Neck -->
     <rect x="42" y="52" width="12" height="16" rx="6" fill="#FED7AA"/>
     <!-- Face -->
@@ -15,16 +15,16 @@
     <!-- Ears -->
     <circle cx="33" cy="43" r="3.5" fill="#FED7AA"/>
     <circle cx="63" cy="43" r="3.5" fill="#FED7AA"/>
-    <!-- Short Hair in Dark Stone -->
-    <path d="M33 38C33 26 40 20 48 20C56 20 63 26 63 38C63 32 58 27 48 27C38 27 33 32 33 38Z" fill="#1C1917"/>
-    <!-- Glasses in Cyan -->
-    <circle cx="42" cy="40" r="5" stroke="#06B6D4" stroke-width="2" fill="none"/>
-    <circle cx="54" cy="40" r="5" stroke="#06B6D4" stroke-width="2" fill="none"/>
-    <line x1="47" y1="40" x2="49" y2="40" stroke="#06B6D4" stroke-width="2"/>
+    <!-- Short Hair in Dark Slate -->
+    <path d="M33 38C33 26 40 20 48 20C56 20 63 26 63 38C63 32 58 27 48 27C38 27 33 32 33 38Z" fill="#0C1E2E"/>
+    <!-- Glasses in Accent Blue -->
+    <circle cx="42" cy="40" r="5" stroke="#0EA5E9" stroke-width="1.8" fill="none"/>
+    <circle cx="54" cy="40" r="5" stroke="#0EA5E9" stroke-width="1.8" fill="none"/>
+    <line x1="47" y1="40" x2="49" y2="40" stroke="#0EA5E9" stroke-width="1.8"/>
     <!-- Eyes -->
-    <circle cx="42" cy="40" r="1.5" fill="#1C1917"/>
-    <circle cx="54" cy="40" r="1.5" fill="#1C1917"/>
+    <circle cx="42" cy="40" r="1.5" fill="#0C1E2E"/>
+    <circle cx="54" cy="40" r="1.5" fill="#0C1E2E"/>
     <!-- Smile -->
-    <path d="M44 49C46 51 50 51 52 49" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M44 49C46 51 50 51 52 49" stroke="#0369A1" stroke-width="1.8" stroke-linecap="round"/>
   </g>
 </svg>

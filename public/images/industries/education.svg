@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
-  <polygon points="24,10 42,18 24,26 6,18" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M12 21V31C12 35 17 38 24 38C31 38 36 35 36 31V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-  <path d="M42 19V32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="42" cy="35" r="2.5" stroke="currentColor" stroke-width="3"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"></path><path d="M22 10v6"></path><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path></svg>

@@ -2,28 +2,27 @@
   <defs>
     <clipPath id="c07"><circle cx="48" cy="48" r="48"/></clipPath>
   </defs>
-  <circle cx="48" cy="48" r="48" fill="#E6E6FA"/>
+  <circle cx="48" cy="48" r="48" fill="#F0F9FF"/>
   <g clip-path="url(#c07)">
-    <!-- Shoulders & Sweater in Sage Green -->
-    <path d="M16 96C16 77 28 69 48 69C68 69 80 77 80 96Z" fill="#059669"/>
-    <!-- Crewneck in Pale Sage -->
-    <path d="M42 69C42 73 45 75 48 75C51 75 54 73 54 69Z" fill="#A7F3D0"/>
+    <!-- Suit in Dark Slate -->
+    <path d="M16 96C16 78 28 70 48 70C68 70 80 78 80 96Z" fill="#0C1E2E"/>
+    <!-- Shirt in White -->
+    <polygon points="48,70 40,96 56,96" fill="#FFFFFF"/>
+    <!-- Tie in Primary Blue -->
+    <polygon points="48,72 45,78 47,94 49,94 51,78" fill="#0369A1"/>
     <!-- Neck -->
-    <rect x="42" y="52" width="12" height="15" rx="5" fill="#FED7AA"/>
+    <rect x="42" y="52" width="12" height="16" rx="6" fill="#FED7AA"/>
     <!-- Face -->
-    <ellipse cx="48" cy="41" rx="15" ry="17" fill="#FFEDD5"/>
+    <ellipse cx="48" cy="42" rx="14" ry="16" fill="#FFEDD5"/>
     <!-- Ears -->
-    <circle cx="33" cy="42" r="3.5" fill="#FED7AA"/>
-    <circle cx="63" cy="42" r="3.5" fill="#FED7AA"/>
-    <!-- Hair -->
-    <path d="M33 36C33 24 40 19 48 19C56 19 63 24 63 36C59 27 52 25 48 25C44 25 37 27 33 36Z" fill="#292524"/>
-    <!-- Beard & Mustache -->
-    <path d="M38 46C38 56 43 59 48 59C53 59 58 56 58 46C55 49 51 50 48 50C45 50 41 49 38 46Z" fill="#1C1917"/>
-    <path d="M43 47C45 48 51 48 53 47" stroke="#1C1917" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="34" cy="43" r="3" fill="#FED7AA"/>
+    <circle cx="62" cy="43" r="3" fill="#FED7AA"/>
+    <!-- Side-parted Hair -->
+    <path d="M34 38C34 26 42 20 48 20C56 20 62 25 62 38C58 28 50 24 44 26C38 28 35 32 34 38Z" fill="#0C1E2E"/>
     <!-- Eyes -->
-    <circle cx="42" cy="39" r="1.8" fill="#1C1917"/>
-    <circle cx="54" cy="39" r="1.8" fill="#1C1917"/>
+    <circle cx="43" cy="41" r="1.5" fill="#0C1E2E"/>
+    <circle cx="53" cy="41" r="1.5" fill="#0C1E2E"/>
     <!-- Smile -->
-    <path d="M45 52C46.5 53.5 49.5 53.5 51 52" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M44 49C46 51 50 51 52 49" stroke="#0369A1" stroke-width="1.8" stroke-linecap="round"/>
   </g>
 </svg>

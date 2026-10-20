@@ -1,44 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" fill="none">
-  <!-- Ground Shadow -->
-  <ellipse cx="120" cy="156" rx="72" ry="12" fill="#F5F5F4"/>
-  <ellipse cx="120" cy="157" rx="46" ry="7" fill="#CFFAFE" opacity="0.6"/>
+  <!-- Ground Soft Shadows -->
+  <ellipse cx="120" cy="155" rx="76" ry="12" fill="#F0F9FF"/>
+  <ellipse cx="120" cy="156" rx="48" ry="7" fill="#E0F2FE" opacity="0.7"/>
 
-  <!-- Minimalist Clipboard in Soft Tints -->
-  <g transform="translate(74, 30)">
-    <!-- Board in Soft Lilac -->
-    <rect x="0" y="10" width="92" height="116" rx="14" fill="#EFEDF4"/>
-    <!-- Paper Sheet in Pure White -->
-    <rect x="8" y="20" width="76" height="100" rx="8" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1"/>
-    
-    <!-- Top Clamp in Dark Stone -->
-    <rect x="28" y="4" width="36" height="14" rx="4" fill="#292524"/>
-    <circle cx="46" cy="11" r="2" fill="#06B6D4"/>
+  <!-- Blank Posting Card Container -->
+  <g transform="translate(62, 38)">
+    <rect width="116" height="104" rx="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+    <!-- Dotted Outline inner placeholder -->
+    <rect x="10" y="10" width="96" height="84" rx="10" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
 
-    <!-- Placeholder Content Lines -->
-    <rect x="18" y="38" width="38" height="6" rx="3" fill="#CFFAFE"/>
-    <rect x="18" y="52" width="56" height="4" rx="2" fill="#F5F5F4"/>
-    <rect x="18" y="62" width="46" height="4" rx="2" fill="#F5F5F4"/>
-    <rect x="18" y="72" width="52" height="4" rx="2" fill="#F5F5F4"/>
+    <!-- Briefcase Symbol in Primary Blue -->
+    <g transform="translate(40, 26)">
+      <rect x="4" y="10" width="28" height="20" rx="4" fill="#E0F2FE" stroke="#0369A1" stroke-width="2"/>
+      <path d="M12 10V6C12 4.9 12.9 4 14 4H22C23.1 4 24 4.9 24 6V10" stroke="#0369A1" stroke-width="2"/>
+      <line x1="4" y1="18" x2="32" y2="18" stroke="#0369A1" stroke-width="1.5"/>
+      <rect x="16" y="16" width="4" height="4" rx="1" fill="#0EA5E9"/>
+    </g>
 
-    <!-- Empty Dashed Box -->
-    <rect x="16" y="86" width="60" height="24" rx="8" stroke="#06B6D4" stroke-width="1.5" stroke-dasharray="3 3" fill="#F5F5F4"/>
+    <!-- Create Plus Action Button in Primary Blue -->
+    <circle cx="58" cy="74" r="14" fill="#0369A1"/>
+    <path d="M58 67V81M51 74H65" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
   </g>
 
-  <!-- Big Cyan Plus Button Badge (Pill circular) -->
-  <g transform="translate(136, 102)">
-    <circle cx="24" cy="24" r="24" fill="#06B6D4"/>
-    <circle cx="24" cy="24" r="24" stroke="#FFFFFF" stroke-width="3"/>
-    <path d="M24 14V34M14 24H34" stroke="#111827" stroke-width="3.5" stroke-linecap="round"/>
-  </g>
-
-  <!-- Minimalist Sage Ceramic Plant -->
-  <g transform="translate(42, 116)">
-    <path d="M16 34C16 18 30 10 32 4C34 14 30 26 22 34Z" fill="#059669"/>
-    <path d="M18 34C14 24 6 20 2 16C10 20 16 26 18 34Z" fill="#10B981"/>
-    <!-- Pot in Dark Stone -->
-    <path d="M12 34L14 42H26L28 34Z" fill="#292524"/>
-  </g>
-
-  <circle cx="178" cy="40" r="4" fill="#06B6D4"/>
-  <circle cx="58" cy="50" r="5" fill="#E6E6FA"/>
+  <!-- Decorative Accent Dots -->
+  <circle cx="48" cy="50" r="4" fill="#0EA5E9"/>
+  <circle cx="192" cy="62" r="5" fill="#E0F2FE"/>
+  <circle cx="184" cy="110" r="3" fill="#0369A1"/>
 </svg>

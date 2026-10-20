@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#CFFAFE"/>
-  <path d="M64 80 L76 104 L64 96 L52 104 Z" fill="#06B6D4"/>
-  <path d="M64 84 L70 98 L64 93 L58 98 Z" fill="#A5F3FC"/>
-  <polygon points="64,20 88,82 64,72" fill="#292524"/>
-  <polygon points="64,20 40,82 64,72" fill="#1C1917"/>
-  <circle cx="64" cy="46" r="9" fill="#FFFFFF"/>
-  <circle cx="64" cy="46" r="5" fill="#06B6D4"/>
+  <rect width="128" height="128" rx="28" fill="#0369A1"/>
+  <!-- Portal Gateway Arches -->
+  <path d="M28 100 V60 C28 40 44 24 64 24 C84 24 100 40 100 60 V100" stroke="#0EA5E9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M42 100 V64 C42 52 52 42 64 42 C76 42 86 52 86 64 V100" stroke="#E0F2FE" stroke-width="7" stroke-linecap="round"/>
+  <path d="M56 100 V68 C56 64 60 60 64 60 C68 60 72 64 72 68 V100" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
 </svg>

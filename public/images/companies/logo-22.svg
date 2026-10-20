@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#F5F5F4"/>
-  <polygon points="34,30 94,30 64,64" fill="#06B6D4"/>
-  <polygon points="64,64 94,98 34,98" fill="#0E7490"/>
-  <rect x="28" y="24" width="72" height="8" rx="4" fill="#292524"/>
-  <rect x="28" y="96" width="72" height="8" rx="4" fill="#292524"/>
-  <circle cx="64" cy="64" r="6" fill="#FFFFFF"/>
-  <circle cx="64" cy="82" r="4" fill="#FFFFFF"/>
+  <rect width="128" height="128" rx="28" fill="#0369A1"/>
+  <!-- Atomic Orbitals -->
+  <ellipse cx="64" cy="64" rx="42" ry="16" stroke="#0EA5E9" stroke-width="4"/>
+  <ellipse cx="64" cy="64" rx="42" ry="16" stroke="#E0F2FE" stroke-width="4" transform="rotate(60 64 64)"/>
+  <ellipse cx="64" cy="64" rx="42" ry="16" stroke="#FFFFFF" stroke-width="4" transform="rotate(120 64 64)"/>
+  <circle cx="64" cy="64" r="8" fill="#FFFFFF"/>
 </svg>

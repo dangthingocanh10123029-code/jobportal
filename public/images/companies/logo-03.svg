@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#E6E6FA"/>
-  <polygon points="64,22 104,88 64,74" fill="#06B6D4"/>
-  <polygon points="64,22 24,88 64,74" fill="#0E7490"/>
-  <polygon points="64,74 104,88 84,104 64,88" fill="#292524"/>
-  <polygon points="64,74 24,88 44,104 64,88" fill="#4338CA"/>
-  <circle cx="64" cy="52" r="7" fill="#FFFFFF"/>
+  <rect width="128" height="128" rx="28" fill="#0369A1"/>
+  <!-- Interlocking infinity loops -->
+  <path d="M42 46 C32 46 24 54 24 64 C24 74 32 82 42 82 C52 82 60 72 64 64 C68 56 76 46 86 46 C96 46 104 54 104 64 C104 74 96 82 86 82 C76 82 68 72 64 64" stroke="#0EA5E9" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="42" cy="64" r="7" fill="#FFFFFF"/>
+  <circle cx="86" cy="64" r="7" fill="#E0F2FE"/>
 </svg>

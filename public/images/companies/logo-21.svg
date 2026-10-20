@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
-  <rect width="128" height="128" rx="28" fill="#CFFAFE"/>
-  <path d="M42 78H88C98 78 106 70 106 60C106 51 99 44 90 42C88 30 78 22 66 22C56 22 47 28 44 37C34 38 26 46 26 56C26 68 33 78 42 78Z" fill="#FFFFFF"/>
-  <path d="M48 78H84C92 78 98 72 98 64C98 56 92 50 84 50C83 41 75 34 66 34C58 34 51 40 49 48C41 49 36 55 36 63C36 71 41 78 48 78Z" fill="#06B6D4"/>
-  <polygon points="68,60 58,74 65,74 60,94 74,78 66,78" fill="#292524"/>
+  <rect width="128" height="128" rx="28" fill="#0C1E2E"/>
+  <!-- Double Helix Sine Waves -->
+  <path d="M24 64 Q44 28 64 64 T104 64" stroke="#0369A1" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <path d="M24 64 Q44 100 64 64 T104 64" stroke="#0EA5E9" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <circle cx="44" cy="46" r="5" fill="#FFFFFF"/>
+  <circle cx="84" cy="46" r="5" fill="#FFFFFF"/>
+  <circle cx="44" cy="82" r="5" fill="#FFFFFF"/>
+  <circle cx="84" cy="82" r="5" fill="#FFFFFF"/>
 </svg>
