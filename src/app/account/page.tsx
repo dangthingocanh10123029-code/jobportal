@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getCurrentProfile } from '@/actions/auth';
 import { ProfileForm } from '@/components/auth/profile-form';
+import { avatarFor } from '@/components/avatar';
 
 export default async function AccountPage() {
   const profile = await getCurrentProfile();
@@ -28,7 +29,7 @@ export default async function AccountPage() {
       </div>
       <section className="surface-card account-card">
         <div className="account-summary">
-          <div aria-hidden="true" className="avatar-mark">{(displayName?.[0] ?? profile.userId[0] ?? 'J').toLocaleUpperCase('vi')}</div>
+          <img alt="" className="avatar-mark" height="56" src={avatarFor(profile.userId)} width="56" />
           <div>
             <p className="account-name">{displayName || 'Thành viên Job Portal'}</p>
             <span className="role-badge">{profile.role === 'CANDIDATE' ? 'Ứng viên' : 'Nhà tuyển dụng'}</span>

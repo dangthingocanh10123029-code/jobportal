@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import type { TalentSummary } from '@/actions/types';
 import { formatDate } from '@/components/format';
+import { avatarFor } from '@/components/avatar';
 
 export function TalentCard({ talent }: { talent: TalentSummary }) {
   return (
     <article className="surface-card talent-card">
       <div className="talent-card-head">
-        <span aria-hidden="true" className="talent-avatar">{talent.fullName.trim().charAt(0).toUpperCase() || '?'}</span>
+        <img alt="" className="talent-avatar" height="46" src={avatarFor(talent.candidateId)} width="46" />
         <div>
           <h2><Link href={`/employer/talent/${talent.candidateId}`} prefetch={false}>{talent.fullName}</Link></h2>
           <p>{talent.headline || 'Chưa có tiêu đề hồ sơ'}</p>
