@@ -381,4 +381,43 @@ select pg_temp.fails($$select count(*) from talent_profiles$$, 'permission denie
 select pg_temp.fails($$select count(*) from saved_candidates$$, 'permission denied', '43 anon không đọc saved_candidates');
 reset role;
 
+-- ===== 44: job alerts + gợi ý (cần migration 20261020000500_job_alerts.sql) =====
+update profiles set locked_at = null, locked_reason = null, skills = '{excel}' where id = (select c1 from ids);
+insert into job_postings (id, employer_id, title, description, location, employment_type, application_deadline, status, skills)
+  select '00000000-0000-4000-8000-0000000000b4', e1, 'Kế toán báo việc 44', 'Mô tả đủ dài cho tin báo việc', 'Hà Nội', 'FULL_TIME', now() + interval '30 days', 'DRAFT', '{Excel}' from ids;
+select pg_temp.as_user((select c1 from ids));
+insert into job_alerts (candidate_id, name, filter) select c1, 'Kế toán HN', '{"q": "ke toan bao viec", "location": "ha noi"}' from ids;
+insert into job_alerts (candidate_id, name, filter) select c1, 'Tắt', '{"q": "ke toan bao viec"}' from ids;
+update job_alerts set active = false where name = 'Tắt';
+insert into job_alerts (candidate_id, name, filter) select c1, 'IT ' || n, '{"industry": "IT_SOFTWARE"}' from ids, generate_series(1, 3) n;
+select pg_temp.fails($$insert into job_alerts (candidate_id, name, filter) select c1, 'Thứ 6', '{"q": "x"}' from ids$$, 'ALERT_LIMIT', '44 tối đa 5 alert / Candidate');
+delete from job_alerts where name = 'IT 3';
+select pg_temp.fails($$insert into job_alerts (candidate_id, name, filter) select c1, 'Rỗng', '{}' from ids$$, 'check', '44 filter rỗng bị chặn');
+select pg_temp.fails($$insert into job_alerts (candidate_id, name, filter) select c1, 'Lạ', '{"skill": "x"}' from ids$$, 'check', '44 filter có khóa lạ bị chặn');
+select pg_temp.fails($$update job_alerts set last_matched_at = now()$$, 'permission denied', '44 không tự sửa last_matched_at');
+select pg_temp.fails($$insert into job_alerts (candidate_id, name, filter) select c2, 'Hộ', '{"q": "x"}' from ids$$, 'row-level security', '44 không tạo alert cho người khác');
+reset role;
+select pg_temp.as_user((select c2 from ids));
+select pg_temp.ok((select count(*) from job_alerts) = 0, '44 Candidate khác không thấy alert của c1');
+with u as (update job_alerts set active = false returning 1) select pg_temp.ok((select count(*) from u) = 0, '44 Candidate khác không tắt được alert của c1');
+with d as (delete from job_alerts returning 1) select pg_temp.ok((select count(*) from d) = 0, '44 Candidate khác không xóa được alert của c1');
+reset role;
+select pg_temp.as_user((select e1 from ids));
+select pg_temp.fails($$insert into job_alerts (candidate_id, name, filter) values (auth.uid(), 'NTD', '{"q": "x"}')$$, 'row-level security', '44 Employer không tạo alert');
+update job_postings set status = 'PUBLISHED' where id = '00000000-0000-4000-8000-0000000000b4';
+select pg_temp.ok((select count(*) from recommended_postings()) = 0, '44 Employer không có gợi ý');
+update job_postings set title = 'Kế toán báo việc 44 (sửa)' where id = '00000000-0000-4000-8000-0000000000b4';
+reset role;
+select pg_temp.ok((select count(*) from notifications where recipient_id = (select c1 from ids) and type = 'JOB_ALERT' and link = '/jobs/00000000-0000-4000-8000-0000000000b4') = 1, '44 đăng tin khớp → đúng 1 JOB_ALERT (alert tắt không báo, sửa tin không báo lại)');
+select pg_temp.ok((select count(*) from notifications where recipient_id = (select e1 from ids) and type = 'JOB_ALERT') = 0, '44 chủ tin không nhận JOB_ALERT');
+select pg_temp.ok((select last_matched_at is not null from job_alerts where name = 'Kế toán HN'), '44 last_matched_at được cập nhật');
+select pg_temp.as_user((select c1 from ids));
+select pg_temp.ok((select 'Khớp kỹ năng: Excel' = any(match_reasons) from recommended_postings() where posting_id = '00000000-0000-4000-8000-0000000000b4'), '44 gợi ý tin khớp kỹ năng kèm lý do');
+select pg_temp.ok(not exists (select 1 from recommended_postings() r join applications a on a.job_posting_id = r.posting_id and a.candidate_id = auth.uid()), '44 gợi ý không có tin đã nộp');
+reset role;
+select pg_temp.as_anon();
+select pg_temp.fails($$select count(*) from job_alerts$$, 'permission denied', '44 anon không đọc job_alerts');
+select pg_temp.fails($$select count(*) from recommended_postings()$$, 'permission denied', '44 anon không gọi recommended_postings');
+reset role;
+
 rollback;

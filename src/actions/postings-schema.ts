@@ -2,12 +2,12 @@ import { z } from 'zod';
 
 import type { Industry, JobLevel, PostingSort } from './types';
 
-const EMPLOYMENT_TYPES = ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'] as const;
-const INDUSTRIES = [
+export const EMPLOYMENT_TYPES = ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT'] as const;
+export const INDUSTRIES = [
   'IT_SOFTWARE', 'SALES', 'MARKETING', 'ACCOUNTING_FINANCE', 'HR', 'ADMIN', 'CUSTOMER_SERVICE', 'EDUCATION',
   'HEALTHCARE', 'CONSTRUCTION', 'MANUFACTURING', 'LOGISTICS', 'HOSPITALITY', 'DESIGN', 'LEGAL', 'OTHER',
 ] as const satisfies readonly Industry[];
-const LEVELS = ['INTERN', 'FRESHER', 'JUNIOR', 'MIDDLE', 'SENIOR', 'LEAD', 'MANAGER'] as const satisfies readonly JobLevel[];
+export const LEVELS = ['INTERN', 'FRESHER', 'JUNIOR', 'MIDDLE', 'SENIOR', 'LEAD', 'MANAGER'] as const satisfies readonly JobLevel[];
 const SORTS = ['newest', 'salary_desc', 'deadline_asc'] as const satisfies readonly PostingSort[];
 
 // Kept in sync with the CHECK constraints in supabase/migrations/*_job_postings.sql and *_rich_postings.sql.
