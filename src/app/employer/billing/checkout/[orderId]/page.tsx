@@ -4,7 +4,8 @@ import { listMyOrders } from '@/actions/billing';
 import { CheckoutActions } from '@/components/billing/billing-controls';
 import { formatVnd, orderStatusLabels, orderStatusTones } from '@/components/billing/labels';
 import { formatDateTime } from '@/components/format';
-import { Badge, Card, PageHeader } from '@/components/ui/primitives';
+import { Badge, Card, icon, PageHeader } from '@/components/ui/primitives';
+import { ArrowLeft } from 'lucide-react';
 
 export default async function CheckoutPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await params;
@@ -27,7 +28,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ order
         {/* The refresh after paying unmounts CheckoutActions (and its message), so the paid state confirms itself. */}
         {order.status === 'PAID' ? <p className="billing-message" role="status">Thanh toán giả lập thành công. Tin của bạn đã được đẩy nổi bật.</p> : null}
       </Card>
-      <Link className="clear-search-link" href="/employer/billing">← Về gói dịch vụ</Link>
+      <Link className="clear-search-link" href="/employer/billing"><ArrowLeft {...icon} />Về gói dịch vụ</Link>
     </main>
   );
 }

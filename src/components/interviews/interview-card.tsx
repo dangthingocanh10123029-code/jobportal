@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import type { Interview } from '@/actions/types';
-import { Badge } from '@/components/ui/primitives';
+import { Badge, icon } from '@/components/ui/primitives';
 import { formatInterviewTime, interviewModeLabels, interviewStatusLabels, interviewStatusTones } from './labels';
+import { Calendar, MapPin, Video } from 'lucide-react';
 
 /** One scheduled interview; `heading` names the other party, `actions` holds the role's buttons. */
 export function InterviewCard({ interview, heading, actions }: { interview: Interview; heading?: ReactNode; actions?: ReactNode }) {
@@ -11,7 +12,7 @@ export function InterviewCard({ interview, heading, actions }: { interview: Inte
   return (
     <article className={`interview-card interview-${interview.status.toLowerCase()}`}>
       <div className="interview-card-when">
-        <strong>{time}</strong>
+        <strong><Calendar {...icon} />{time}</strong>
         <span>{day}</span>
         <small>{interview.durationMinutes} phút · giờ Việt Nam</small>
       </div>
@@ -21,7 +22,7 @@ export function InterviewCard({ interview, heading, actions }: { interview: Inte
           <Badge tone={interviewStatusTones[interview.status]}>{interviewStatusLabels[interview.status]}</Badge>
         </div>
         <p className="interview-card-location">
-          <span className="interview-mode">{interviewModeLabels[interview.mode]}</span>
+          <span className="interview-mode">{interview.mode === 'ONLINE' ? <Video {...icon} /> : <MapPin {...icon} />}{interviewModeLabels[interview.mode]}</span>
           {interview.mode === 'ONSITE' ? interview.location : <span className="interview-link-text">{interview.location}</span>}
         </p>
         {interview.note ? <p className="interview-note"><strong>Ghi chú của nhà tuyển dụng:</strong> {interview.note}</p> : null}
@@ -30,7 +31,7 @@ export function InterviewCard({ interview, heading, actions }: { interview: Inte
           <div className="interview-card-actions">
             {joinable ? (
               <a className="button button-primary button-small" href={interview.location} rel="noopener noreferrer" target="_blank">
-                Tham gia phỏng vấn
+                <Video {...icon} />Tham gia phỏng vấn
               </a>
             ) : null}
             {actions}

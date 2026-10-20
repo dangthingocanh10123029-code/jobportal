@@ -5,6 +5,8 @@ import { useState, useTransition, type FormEvent } from 'react';
 import { cancelOrderAction, createOrderAction, payOrderAction, savePackageAction } from '@/actions/billing';
 import type { ServicePackage } from '@/actions/types';
 import { formatVnd } from './labels';
+import { CreditCard, ShoppingCart } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 function useBillingAction() {
   const router = useRouter();
@@ -52,7 +54,7 @@ export function OrderForm({ packages, postings, initialPostingId }: {
         <span><strong>{pkg.name}</strong><small>{pkg.durationDays} ngày · {formatVnd(pkg.priceVnd)}</small></span>
       </label>)}
     </fieldset>
-    <button className="button button-primary" disabled={state.pending} type="submit">{state.pending ? 'Đang tạo đơn…' : 'Tạo đơn hàng'}</button>
+    <button className="button button-primary" disabled={state.pending} type="submit"><ShoppingCart {...icon} />{state.pending ? 'Đang tạo đơn…' : 'Tạo đơn hàng'}</button>
     <Messages error={state.error} success={state.success} />
   </form>;
 }
@@ -74,7 +76,7 @@ export function CheckoutActions({ orderId }: { orderId: string }) {
   }
   return <div className="billing-checkout-actions">
     <div className="billing-checkout-buttons">
-      <button className="button button-primary" disabled={state.pending} onClick={() => run('pay')} type="button">{state.pending ? 'Đang xử lý…' : 'Thanh toán (giả lập)'}</button>
+      <button className="button button-primary" disabled={state.pending} onClick={() => run('pay')} type="button"><CreditCard {...icon} />{state.pending ? 'Đang xử lý…' : 'Thanh toán (giả lập)'}</button>
       <button className="button button-quiet" disabled={state.pending} onClick={() => run('cancel')} type="button">Hủy đơn</button>
     </div>
     <Messages error={state.error} success={state.success} />

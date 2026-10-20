@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { PageHeader, Badge, Card, EmptyState } from '@/components/ui/primitives';
+import { Badge, Card, EmptyState, iconLg, PageHeader } from '@/components/ui/primitives';
+import { Search } from 'lucide-react';
 
 export function AdminHeading({ title, description, eyebrow = 'Trung tâm quản trị' }: { title: string; description: string; eyebrow?: string }) {
   return <PageHeader className="admin-heading" description={description} eyebrow={eyebrow} title={title} />;
@@ -15,7 +16,7 @@ export function AdminTable({ children, label }: { children: ReactNode; label: st
 }
 
 export function AdminEmpty({ title, description }: { title: string; description: string }) {
-  return <EmptyState description={description} icon="⌕" title={title} />;
+  return <EmptyState description={description} icon={<Search {...iconLg} />} title={title} />;
 }
 
 export function AdminPager({ page, total, pageSize, basePath, filters = {} }: { page: number; total: number; pageSize: number; basePath: string; filters?: Record<string, string | undefined> }) {

@@ -6,6 +6,8 @@ import { ArticleCover } from '@/components/articles/article-cover';
 import { ArticleMarkdown } from '@/components/articles/article-markdown';
 import { articleCategoryLabels, formatArticleDate } from '@/components/articles/labels';
 import { parseArticleMarkdown, tableOfContents } from '@/components/articles/markdown';
+import { ArrowLeft } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export default async function GuideArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const article = await getArticle((await params).slug);
@@ -15,7 +17,7 @@ export default async function GuideArticlePage({ params }: { params: Promise<{ s
 
   return (
     <main className="page-shell guide-article-page">
-      <Link className="back-link" href="/guide">← Cẩm nang nghề nghiệp</Link>
+      <Link className="back-link" href="/guide"><ArrowLeft {...icon} />Cẩm nang nghề nghiệp</Link>
       <article className="guide-article">
         <header className="guide-article-header">
           <Link className="article-category" href={`/guide?category=${article.category}`}>{articleCategoryLabels[article.category]}</Link>

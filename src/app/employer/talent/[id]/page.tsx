@@ -5,6 +5,8 @@ import { getTalent } from '@/actions/talent';
 import { CvDocument } from '@/components/cv/cv-document';
 import { avatarFor } from '@/components/avatar';
 import { InviteTalentForm, SaveTalentForm } from '@/components/talent/talent-actions';
+import { ArrowLeft, MapPin } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export const metadata = { title: 'Hồ sơ ứng viên — Job Portal' };
 
@@ -17,7 +19,7 @@ export default async function TalentDetailPage({ params }: { params: Promise<{ i
 
   return (
     <main className="page-shell talent-detail-page">
-      <Link className="back-link" href="/employer/talent">← Tìm ứng viên</Link>
+      <Link className="back-link" href="/employer/talent"><ArrowLeft {...icon} />Tìm ứng viên</Link>
       <div className="talent-detail-layout">
         <div className="talent-detail-main">
           <section aria-label="Hồ sơ ứng viên" className="surface-card talent-profile-card">
@@ -26,7 +28,7 @@ export default async function TalentDetailPage({ params }: { params: Promise<{ i
               <div><h1>{talent.fullName}</h1><p>{talent.headline || 'Chưa có tiêu đề hồ sơ'}</p></div>
             </div>
             <div className="posting-meta">
-              <span><span aria-hidden="true">⌖</span> {talent.location || 'Chưa cập nhật địa điểm'}</span>
+              <span><MapPin {...icon} />{talent.location || 'Chưa cập nhật địa điểm'}</span>
               <span>{talent.experienceYears === null ? 'Chưa cập nhật kinh nghiệm' : talent.experienceYears === 0 ? 'Chưa có kinh nghiệm' : `${talent.experienceYears} năm kinh nghiệm`}</span>
             </div>
             {profile.skills.length ? <ul aria-label="Kỹ năng" className="talent-skills">{profile.skills.map((skill) => <li className="skill-tag" key={skill}>{skill}</li>)}</ul> : null}

@@ -3,6 +3,8 @@ import { getCurrentProfile } from '@/actions/auth';
 import { getUnreadMessageCount } from '@/actions/messages';
 import { getUnreadNotificationCount } from '@/actions/notifications';
 import { SignOutButton } from './sign-out-button';
+import { Bell, Briefcase, CircleUser, LogIn, Menu, MessageSquare, Plus, UserPlus } from 'lucide-react';
+import { icon, iconLg } from '@/components/ui/primitives';
 
 type NavLink = [href: string, label: string];
 
@@ -27,7 +29,7 @@ export async function SiteHeader() {
     <header className={`site-header${profile ? ' has-wide-nav' : ''}`}>
       <div className="site-header-inner">
         <Link aria-label="Job Portal, trang chủ" className="brand" href="/">
-          <span aria-hidden="true" className="brand-mark" />
+          <span aria-hidden="true" className="brand-mark"><Briefcase {...icon} /></span>
           <span aria-hidden="true" className="brand-name">Job Portal</span>
         </Link>
         <nav aria-label="Điều hướng chính" className="main-nav">
@@ -35,14 +37,14 @@ export async function SiteHeader() {
           {links(roleLinks)}
         </nav>
         <details className="mobile-menu">
-          <summary aria-label="Mở menu"><span aria-hidden="true" className="mobile-menu-icon">☰</span><span className="mobile-menu-label">Menu</span></summary>
+          <summary aria-label="Mở menu"><Menu {...icon} className="mobile-menu-icon" size={18} /><span className="mobile-menu-label">Menu</span></summary>
           <nav aria-label="Điều hướng di động" className="mobile-menu-panel">
             {links(PUBLIC_LINKS)}
             {links(roleLinks)}
             {profile?.role === 'ADMIN' ? links(ADMIN_MOBILE_LINKS) : null}
-            {canPost ? <Link href="/employer/postings/new">Đăng tin</Link> : null}
-            {canMessage ? <Link href="/messages">Tin nhắn ({unreadMessages})</Link> : null}
-            {profile ? <Link href="/notifications">Thông báo ({unreadCount})</Link> : <><Link href="/login">Đăng nhập</Link><Link href="/signup">Tạo tài khoản</Link></>}
+            {canPost ? <Link href="/employer/postings/new"><Plus {...icon} />Đăng tin</Link> : null}
+            {canMessage ? <Link href="/messages"><MessageSquare {...icon} />Tin nhắn ({unreadMessages})</Link> : null}
+            {profile ? <><Link href="/notifications"><Bell {...icon} />Thông báo ({unreadCount})</Link><Link href="/account"><CircleUser {...icon} />Tài khoản</Link></> : <><Link href="/login"><LogIn {...icon} />Đăng nhập</Link><Link href="/signup"><UserPlus {...icon} />Tạo tài khoản</Link></>}
           </nav>
         </details>
         <div className="site-header-end">
@@ -50,27 +52,23 @@ export async function SiteHeader() {
             <>
               {canMessage ? (
                 <Link aria-label={`Tin nhắn, ${unreadMessages} chưa đọc`} className="notification-bell" href="/messages">
-                  <svg aria-hidden="true" fill="none" height="21" viewBox="0 0 24 24" width="21">
-                    <path d="M21 12a8 8 0 0 1-11.8 7L4 20.5l1.5-4.7A8 8 0 1 1 21 12Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                  </svg>
+                  <MessageSquare {...iconLg} />
                   {unreadMessages > 0 ? <span className="notification-badge">{unreadMessages > 99 ? '99+' : unreadMessages}</span> : null}
                 </Link>
               ) : null}
               <Link aria-label={`Thông báo, ${unreadCount} chưa đọc`} className="notification-bell" href="/notifications">
-                <svg aria-hidden="true" fill="none" height="21" viewBox="0 0 24 24" width="21">
-                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                </svg>
+                <Bell {...iconLg} />
                 {unreadCount > 0 ? <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span> : null}
               </Link>
-              <Link className="profile-link" href="/account">Tài khoản</Link>
-              {canPost ? <Link className="button button-dark button-small header-post-link" href="/employer/postings/new">Đăng tin</Link> : null}
+              <Link className="profile-link" href="/account" title="Tài khoản"><CircleUser {...iconLg} /><span className="profile-link-label">Tài khoản</span></Link>
+              {canPost ? <Link className="button button-primary button-small header-post-link" href="/employer/postings/new"><Plus {...icon} />Đăng tin</Link> : null}
               <SignOutButton />
             </>
           ) : (
             <>
               <Link className="login-link" href="/login">Đăng nhập</Link>
+              <Link className="button button-quiet button-small header-post-link" href="/employer/postings/new">Đăng tin</Link>
               <Link className="button button-primary button-small" href="/signup">Tạo tài khoản</Link>
-              <Link className="button button-dark button-small header-post-link" href="/employer/postings/new">Đăng tin</Link>
             </>
           )}
         </div>

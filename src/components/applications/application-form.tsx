@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 import { submitApplicationAction } from '@/actions/applications';
 import { MAX_RESUME_BYTES } from '@/actions/applications-schema';
+import { CircleCheck, Send } from 'lucide-react';
+import { icon, iconLg } from '@/components/ui/primitives';
 
 function resumeError(file: File | null) {
   if (!file || file.size === 0) return 'Vui lòng chọn file CV';
@@ -60,7 +62,7 @@ export function ApplicationForm({ postingId, hasOnlineCv }: { postingId: string;
   if (submitted) {
     return (
       <div aria-live="polite" className="application-submitted">
-        <span aria-hidden="true">✓</span>
+        <CircleCheck {...iconLg} />
         <div>
           <strong>Đã nộp hồ sơ</strong>
           <p>Hồ sơ ứng tuyển của bạn đã được gửi đến nhà tuyển dụng.</p>
@@ -104,7 +106,7 @@ export function ApplicationForm({ postingId, hasOnlineCv }: { postingId: string;
       {hasOnlineCv ? null : <p className="field-hint">Chưa có CV online? <Link href="/candidate/cv">Tạo CV online</Link></p>}
       {error ? <p className="form-error application-error" id="resume-error" role="alert">{error}</p> : null}
       <button className="button button-primary" disabled={pending} type="submit">
-        {pending ? 'Đang nộp hồ sơ…' : 'Nộp hồ sơ'}
+        <Send {...icon} />{pending ? 'Đang nộp hồ sơ…' : 'Nộp hồ sơ'}
       </button>
     </form>
   );

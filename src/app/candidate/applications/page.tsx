@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { listMyApplications } from '@/actions/applications';
 import { applicationStatusLabels, formatDate } from '@/components/format';
-import { Badge, PageHeader } from '@/components/ui/primitives';
+import { Badge, icon, PageHeader } from '@/components/ui/primitives';
+import { ArrowRight } from 'lucide-react';
 
 export default async function CandidateApplicationsPage() {
   const applications = await listMyApplications();
@@ -29,7 +30,7 @@ export default async function CandidateApplicationsPage() {
                   <span>Đã nộp ngày {formatDate(application.createdAt)}</span>
                   {application.cvSource === 'ONLINE' ? <Badge tone="info">CV online</Badge> : null}
                   <Link aria-label={`Xem lịch sử hồ sơ: ${application.postingTitle}`} href={`/candidate/applications/${application.id}`} prefetch={false}>
-                    Xem lịch sử <span aria-hidden="true">→</span>
+                    Xem lịch sử <ArrowRight {...icon} />
                   </Link>
                 </div>
               </div>

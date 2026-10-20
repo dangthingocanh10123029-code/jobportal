@@ -4,7 +4,8 @@ import { getCurrentProfile } from '@/actions/auth';
 import { listMyInterviews } from '@/actions/interviews';
 import { CandidateInterviewActions, EmployerInterviewActions } from '@/components/interviews/interview-actions';
 import { InterviewCard } from '@/components/interviews/interview-card';
-import { EmptyState, PageHeader } from '@/components/ui/primitives';
+import { EmptyState, iconLg, PageHeader } from '@/components/ui/primitives';
+import { Calendar } from 'lucide-react';
 
 export const metadata = { title: 'Lịch phỏng vấn — Job Portal' };
 
@@ -56,7 +57,7 @@ export default async function InterviewsPage({ searchParams }: { searchParams: P
               : <Link className="button button-primary button-small" href="/candidate/applications">Xem đơn ứng tuyển</Link>
           }
           description={scope === 'past' ? 'Các buổi phỏng vấn đã kết thúc sẽ hiện ở đây.' : isEmployer ? 'Đặt lịch từ trang hồ sơ ứng tuyển của từng tin.' : 'Khi nhà tuyển dụng mời phỏng vấn, lịch sẽ hiện ở đây.'}
-          icon="📅"
+          icon={<Calendar {...iconLg} />}
           title={scope === 'past' ? 'Chưa có buổi phỏng vấn nào đã qua' : 'Chưa có lịch phỏng vấn sắp tới'}
         />
       )}

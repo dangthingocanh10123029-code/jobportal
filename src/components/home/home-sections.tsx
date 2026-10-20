@@ -4,6 +4,8 @@ import { listCompanyReviews } from '@/actions/reviews';
 import type { CompanySummary } from '@/actions/types';
 import { formatDate } from '@/components/format';
 import { Stars } from '@/components/reviews/stars';
+import { icon, iconLg, VerifiedCheck } from '@/components/ui/primitives';
+import { ArrowRight, Briefcase, ChevronDown, Heart, Search, Send } from 'lucide-react';
 
 const STORY_COMPANIES = 4;
 const STORIES = 4;
@@ -23,7 +25,7 @@ export async function CompaniesAndStories() {
     <>
       {companies.length ? <TopCompanies companies={companies} /> : null}
       {stories.length ? (
-        <section aria-labelledby="stories-title" className="home-section reveal">
+        <section aria-labelledby="stories-title" className="home-section">
           <div className="section-heading">
             <span className="eyebrow">Nhật ký đi làm</span>
             <h2 id="stories-title">Người trong cuộc kể lại</h2>
@@ -52,7 +54,7 @@ export async function CompaniesAndStories() {
 
 function TopCompanies({ companies }: { companies: CompanySummary[] }) {
   return (
-    <section aria-labelledby="companies-title" className="home-section reveal">
+    <section aria-labelledby="companies-title" className="home-section">
       <div className="section-heading">
         <span className="eyebrow">Công ty hàng đầu</span>
         <h2 id="companies-title">Đang tuyển nhiều nhất</h2>
@@ -62,13 +64,13 @@ function TopCompanies({ companies }: { companies: CompanySummary[] }) {
           <li key={company.id}>
             <Link className="company-tile" href={`/companies/${company.id}`}>
               <img alt="" height="56" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="56" />
-              <strong>{company.name}{company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</strong>
-              <span>{company.openPostings} việc làm đang mở</span>
+              <strong>{company.name}{company.companyVerified ? <VerifiedCheck /> : null}</strong>
+              <span><Briefcase {...icon} />{company.openPostings} việc làm đang mở</span>
             </Link>
           </li>
         ))}
       </ul>
-      <Link className="text-link" href="/companies">Xem tất cả công ty <span aria-hidden="true">→</span></Link>
+      <Link className="text-link" href="/companies">Xem tất cả công ty <ArrowRight {...icon} /></Link>
     </section>
   );
 }
@@ -84,7 +86,7 @@ const FAQ: [string, string][] = [
 
 export function HomeFaq() {
   return (
-    <section aria-labelledby="faq-title" className="home-section faq-section reveal" id="faq">
+    <section aria-labelledby="faq-title" className="home-section faq-section" id="faq">
       <div className="section-heading is-centered">
         <span className="eyebrow">Câu hỏi thường gặp</span>
         <h2 id="faq-title">Bạn thắc mắc, chúng tôi trả lời</h2>
@@ -92,7 +94,7 @@ export function HomeFaq() {
       <div className="faq-list">
         {FAQ.map(([question, answer]) => (
           <details className="faq-item" key={question}>
-            <summary>{question}<span aria-hidden="true" className="faq-icon">+</span></summary>
+            <summary>{question}<ChevronDown {...icon} className="faq-icon" size={20} /></summary>
             <p>{answer}</p>
           </details>
         ))}
@@ -103,7 +105,7 @@ export function HomeFaq() {
 
 export function HowItWorks() {
   return (
-    <section aria-labelledby="how-title" className="home-section reveal" id="how-it-works">
+    <section aria-labelledby="how-title" className="home-section" id="how-it-works">
       <div className="section-heading is-centered">
         <span className="eyebrow">Cách hoạt động</span>
         <h2 id="how-title">Ba bước, không vội vàng</h2>
@@ -113,7 +115,7 @@ export function HowItWorks() {
         <li className="how-card how-card-search">
           <span className="how-step">Bước 1</span>
           <strong>Tìm</strong>
-          <span aria-hidden="true" className="mock-field">Kế toán · Hà Nội</span>
+          <span aria-hidden="true" className="mock-field"><Search {...icon} />Kế toán · Hà Nội</span>
           <span aria-hidden="true" className="mock-line" />
           <span aria-hidden="true" className="mock-line is-short" />
           <p>Lọc theo ngành, lương, cấp bậc và địa điểm.</p>
@@ -121,7 +123,7 @@ export function HowItWorks() {
         <li className="how-card how-card-save">
           <span className="how-step">Bước 2</span>
           <strong>Lưu</strong>
-          <span aria-hidden="true" className="mock-heart">♥</span>
+          <span aria-hidden="true" className="mock-heart"><Heart {...iconLg} /></span>
           <span aria-hidden="true" className="mock-line" />
           <p>Lưu tin để xem lại và so sánh trước khi quyết định.</p>
         </li>
@@ -130,7 +132,7 @@ export function HowItWorks() {
           <strong>Ứng tuyển</strong>
           <span aria-hidden="true" className="mock-line" />
           <span aria-hidden="true" className="mock-line is-short" />
-          <span aria-hidden="true" className="mock-apply">Ứng tuyển</span>
+          <span aria-hidden="true" className="mock-apply"><Send {...icon} />Ứng tuyển</span>
           <p>Nộp CV PDF hoặc CV online chỉ với một lần bấm.</p>
         </li>
       </ol>

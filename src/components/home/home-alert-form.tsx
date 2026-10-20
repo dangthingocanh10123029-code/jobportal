@@ -27,7 +27,7 @@ export function HomeAlertForm({ atLimit }: { atLimit: boolean }) {
   if (created) {
     return (
       <p className="alert-confirmation" role="status">
-        Đã bật thông báo. <Link href="/candidate/alerts">Quản lý thông báo</Link> <span className="hand-sign">hẹn gặp việc mới nhé!</span>
+        Đã bật thông báo. <Link href="/candidate/alerts">Quản lý thông báo</Link>
       </p>
     );
   }
@@ -36,10 +36,10 @@ export function HomeAlertForm({ atLimit }: { atLimit: boolean }) {
   }
   return (
     <>
-      <form className="pill-form" onSubmit={submit}>
+      <form className="inline-form" onSubmit={submit}>
         <label className="visually-hidden" htmlFor="home-alert-keyword">Từ khóa công việc</label>
-        <input id="home-alert-keyword" maxLength={100} name="q" placeholder="Ví dụ: kế toán, thiết kế…" required type="text" />
-        <button className="button button-dark" disabled={pending} type="submit">{pending ? 'Đang lưu…' : 'Nhận thông báo'}</button>
+        <input className="text-input" id="home-alert-keyword" maxLength={100} name="q" placeholder="Ví dụ: kế toán, thiết kế…" required type="text" />
+        <button className="button button-primary" disabled={pending} type="submit">{pending ? 'Đang lưu…' : 'Nhận thông báo'}</button>
       </form>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
     </>

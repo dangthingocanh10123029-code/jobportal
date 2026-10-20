@@ -5,6 +5,8 @@ import type { ReviewStatus } from '@/actions/types';
 import { AdminBadge, AdminEmpty, AdminHeading, AdminPager, AdminPanel, AdminTable, formatAdminDate } from '@/components/admin/admin-common';
 import { ReviewModerationControl } from '@/components/admin/admin-controls';
 import { Stars } from '@/components/reviews/stars';
+import { ExternalLink } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 type Params = Record<string, string | string[] | undefined>;
 const statusLabels: Record<ReviewStatus, string> = { PENDING: 'Chờ duyệt', APPROVED: 'Đã duyệt', REJECTED: 'Bị từ chối' };
@@ -30,7 +32,7 @@ export default async function AdminReviewsPage({ searchParams }: { searchParams:
               <thead><tr><th>Đánh giá</th><th>Số sao</th><th>Người viết</th><th>Trạng thái</th><th>Ngày gửi</th><th>Thao tác</th></tr></thead>
               <tbody>{data.items.map((review) => (
                 <tr key={review.id}>
-                  <td><span className="admin-primary-cell">{review.title}<small><Link href={`/companies/${review.companyId}#reviews`} prefetch={false} target="_blank">{review.companyName} ↗</Link></small></span></td>
+                  <td><span className="admin-primary-cell">{review.title}<small><Link href={`/companies/${review.companyId}#reviews`} prefetch={false} target="_blank">{review.companyName} <ExternalLink {...icon} /></Link></small></span></td>
                   <td><Stars size="sm" value={review.rating} /></td>
                   <td><span className="admin-primary-cell">{review.authorName}<small>{review.authorEmail}</small></span></td>
                   <td><AdminBadge tone={statusTones[review.status]}>{statusLabels[review.status]}</AdminBadge></td>

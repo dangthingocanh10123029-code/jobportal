@@ -3,14 +3,15 @@ import { notFound } from 'next/navigation';
 import { getAdminUser } from '@/actions/admin';
 import { UserLockControl } from '@/components/admin/admin-controls';
 import { AdminBadge, AdminHeading, AdminPanel, formatAdminDate, roleLabels } from '@/components/admin/admin-common';
-import { StatCard } from '@/components/ui/primitives';
+import { icon, StatCard } from '@/components/ui/primitives';
+import { ArrowLeft } from 'lucide-react';
 
 export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await getAdminUser(id);
   if (!user) notFound();
   return <div className="admin-page">
-    <Link className="admin-back-link-inline" href="/admin/users">← Danh sách người dùng</Link>
+    <Link className="admin-back-link-inline" href="/admin/users"><ArrowLeft {...icon} />Danh sách người dùng</Link>
     <AdminHeading description="Thông tin tài khoản và quyền truy cập trên hệ thống." eyebrow="Hồ sơ người dùng" title={user.displayName || user.email} />
     <section className="admin-detail-stats"><StatCard label="Tin tuyển dụng" value={user.postings} /><StatCard label="Đơn ứng tuyển" value={user.applications} /><StatCard label="Vai trò" value={roleLabels[user.role]} /></section>
     <div className="admin-detail-columns">

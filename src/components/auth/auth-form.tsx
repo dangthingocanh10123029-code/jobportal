@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { resendSignupOtpAction, signInAction, signUpAction } from '@/actions/auth';
 import type { Role } from '@/actions/types';
 import { OtpStep } from './otp-step';
+import { Building2, UserSearch } from 'lucide-react';
+import { iconLg } from '@/components/ui/primitives';
 
 type AuthMode = 'login' | 'signup';
 
@@ -96,12 +98,12 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           <legend>Bạn tham gia với vai trò nào?</legend>
           <label className={`role-option${role === 'CANDIDATE' ? ' selected' : ''}`}>
             <input checked={role === 'CANDIDATE'} name="role" onChange={() => setRole('CANDIDATE')} type="radio" value="CANDIDATE" />
-            <span className="role-icon" aria-hidden="true">⌕</span>
+            <span className="role-icon" aria-hidden="true"><UserSearch {...iconLg} /></span>
             <span><strong>Tôi đang tìm việc</strong><small>Tạo hồ sơ và theo dõi đơn ứng tuyển</small></span>
           </label>
           <label className={`role-option${role === 'EMPLOYER' ? ' selected' : ''}`}>
             <input checked={role === 'EMPLOYER'} name="role" onChange={() => setRole('EMPLOYER')} type="radio" value="EMPLOYER" />
-            <span className="role-icon" aria-hidden="true">▣</span>
+            <span className="role-icon" aria-hidden="true"><Building2 {...iconLg} /></span>
             <span><strong>Tôi đang tuyển dụng</strong><small>Đăng tin và tìm ứng viên phù hợp</small></span>
           </label>
         </fieldset>

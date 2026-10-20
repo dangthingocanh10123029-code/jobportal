@@ -6,6 +6,8 @@ import { createPostingDraftAction, updatePostingAction } from '@/actions/posting
 import type { EmploymentType, Industry, JobLevel, JobPosting, PostingInput } from '@/actions/types';
 import { industryLabels, jobLevelLabels } from '@/components/format';
 import { SkillsTagInput } from './skills-tag-input';
+import { Info } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 const employmentTypes: { value: EmploymentType; label: string }[] = [
   { value: 'FULL_TIME', label: 'Toàn thời gian' },
@@ -161,7 +163,7 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
         Hạn nhận hồ sơ <span className="required-mark">*</span>
         <input className="text-input date-input" defaultValue={initialPosting ? toLocalDateTime(initialPosting.applicationDeadline) : ''} name="applicationDeadline" required type="datetime-local" />
       </label>
-      <p className="posting-form-note"><span aria-hidden="true">ⓘ</span> Tin mới sẽ được lưu ở trạng thái bản nháp. Bạn có thể đăng tin ngay từ danh sách tin tuyển dụng.</p>
+      <p className="posting-form-note"><Info {...icon} /> Tin mới sẽ được lưu ở trạng thái bản nháp. Bạn có thể đăng tin ngay từ danh sách tin tuyển dụng.</p>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <div className="posting-form-actions">
         <button className="button button-primary" disabled={pending} type="submit">{pending ? 'Đang lưu…' : mode === 'create' ? 'Lưu bản nháp' : 'Lưu thay đổi'}</button>

@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { listCompanies } from '@/actions/companies';
 import { companySizeLabels } from '@/components/format';
 import { Stars, formatRating } from '@/components/reviews/stars';
-import { PageHeader } from '@/components/ui/primitives';
+import { iconLg, PageHeader, VerifiedCheck } from '@/components/ui/primitives';
+import { ArrowRight } from 'lucide-react';
 
 type CompanySearchParams = Record<string, string | string[] | undefined>;
 
@@ -36,12 +37,12 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
             <Link className="surface-card company-list-card" href={`/companies/${company.id}`} key={company.id} prefetch={false}>
               <img alt="" className="company-list-logo" height="64" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="64" />
               <span className="company-list-card-content">
-                <strong>{company.name}{company.companyVerified ? <span aria-label="Công ty đã xác minh" className="verified-check"> ✓</span> : null}</strong>
+                <strong>{company.name}{company.companyVerified ? <VerifiedCheck /> : null}</strong>
                 <span>{company.size ? companySizeLabels[company.size] : 'Quy mô chưa cập nhật'}</span>
                 <span>{company.openPostings} tin đang tuyển</span>
                 {company.rating !== null ? <span className="company-list-rating"><Stars size="sm" value={company.rating} /> {formatRating(company.rating)} · {company.reviewCount} đánh giá</span> : <span>Chưa có đánh giá</span>}
               </span>
-              <span aria-hidden="true" className="company-list-arrow">→</span>
+              <ArrowRight {...iconLg} className="company-list-arrow" />
             </Link>
           ))}
         </div>

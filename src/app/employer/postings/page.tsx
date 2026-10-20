@@ -3,7 +3,8 @@ import { listMyPostings } from '@/actions/postings';
 import type { JobPosting } from '@/actions/types';
 import { PostingControls } from '@/components/postings/posting-controls';
 import { formatDate, formatDateTime, formatSalary, postingStatusLabels } from '@/components/format';
-import { PageHeader, StatCard } from '@/components/ui/primitives';
+import { FeaturedBadge, icon, iconLg, PageHeader, StatCard } from '@/components/ui/primitives';
+import { CalendarClock, FilePen, FileText, MapPin, Megaphone, Plus, TrendingUp, Users, Wallet } from 'lucide-react';
 
 function PostingCard({ posting }: { posting: JobPosting }) {
   return (
@@ -20,18 +21,18 @@ function PostingCard({ posting }: { posting: JobPosting }) {
           </span>
         </div>
         <div className="posting-meta">
-          <span><span aria-hidden="true">⌖</span> {posting.location}</span>
-          <span><span aria-hidden="true">◷</span> {formatSalary(posting.salaryMin, posting.salaryMax)}</span>
-          <span>Hạn nộp {formatDate(posting.applicationDeadline)}</span>
-          {posting.featured && posting.featuredUntil ? <span><span className="featured-badge">Nổi bật</span> đến {formatDateTime(posting.featuredUntil)}</span> : null}
+          <span><MapPin {...icon} />{posting.location}</span>
+          <span><Wallet {...icon} />{formatSalary(posting.salaryMin, posting.salaryMax)}</span>
+          <span><CalendarClock {...icon} />Hạn nộp {formatDate(posting.applicationDeadline)}</span>
+          {posting.featured && posting.featuredUntil ? <span><FeaturedBadge /> đến {formatDateTime(posting.featuredUntil)}</span> : null}
         </div>
         {posting.hiddenAt ? <div className="hidden-posting-notice"><strong>Tin đã bị ẩn bởi quản trị viên</strong><p>{posting.hiddenReason}</p></div> : null}
       </div>
       <div className="posting-card-actions">
         <Link className="button button-quiet button-small" href={`/employer/postings/${posting.id}/applications`} prefetch={false}>
-          Xem hồ sơ
+          <Users {...icon} />Xem hồ sơ
         </Link>
-        {posting.displayStatus === 'PUBLISHED' && !posting.hiddenAt ? <Link aria-label={`Đẩy tin ${posting.title}`} className="button button-quiet button-small" href={`/employer/billing?posting=${posting.id}`} prefetch={false}>Đẩy tin</Link> : null}
+        {posting.displayStatus === 'PUBLISHED' && !posting.hiddenAt ? <Link aria-label={`Đẩy tin ${posting.title}`} className="button button-quiet button-small" href={`/employer/billing?posting=${posting.id}`} prefetch={false}><TrendingUp {...icon} />Đẩy tin</Link> : null}
         <PostingControls posting={posting} />
       </div>
     </article>
@@ -48,14 +49,14 @@ export default async function EmployerPostingsPage() {
       <div className="employer-page-topline">
         <PageHeader description="Quản lý tin đang đăng và chuẩn bị cơ hội mới cho ứng viên." eyebrow="Không gian nhà tuyển dụng" title="Tin tuyển dụng của tôi" />
         <Link className="button button-primary create-posting-button" href="/employer/postings/new">
-          <span aria-hidden="true">＋</span> Tạo tin tuyển dụng
+          <Plus {...icon} />Tạo tin tuyển dụng
         </Link>
       </div>
 
       <div aria-label="Tổng quan tin tuyển dụng" className="posting-stats">
-        <StatCard label="Tổng số tin" value={postings.length} />
-        <StatCard label="Đang tuyển" value={activeCount} />
-        <StatCard label="Bản nháp" value={draftCount} />
+        <StatCard icon={<FileText {...iconLg} />} label="Tổng số tin" value={postings.length} />
+        <StatCard icon={<Megaphone {...iconLg} />} label="Đang tuyển" value={activeCount} />
+        <StatCard icon={<FilePen {...iconLg} />} label="Bản nháp" value={draftCount} />
       </div>
 
       {postings.length ? (
@@ -67,7 +68,7 @@ export default async function EmployerPostingsPage() {
           <img alt="" height="180" src="/images/empty-postings.svg" width="240" />
           <h2>Chưa có tin tuyển dụng nào</h2>
           <p>Tạo tin đầu tiên để giới thiệu cơ hội việc làm tại công ty của bạn.</p>
-          <Link className="button button-primary" href="/employer/postings/new">Tạo tin đầu tiên</Link>
+          <Link className="button button-primary" href="/employer/postings/new"><Plus {...icon} />Tạo tin đầu tiên</Link>
         </section>
       )}
     </main>

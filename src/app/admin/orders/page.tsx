@@ -22,12 +22,12 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
         </form>
         {!data ? <AdminEmpty description="Phiên quản trị đã hết hạn hoặc bạn không có quyền." title="Không tải được đơn hàng" /> : data.items.length ? <>
           <AdminTable label="Danh sách đơn hàng">
-            <thead><tr><th>Tin tuyển dụng</th><th>Công ty</th><th>Gói</th><th>Số tiền</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thanh toán</th></tr></thead>
+            <thead><tr><th>Tin tuyển dụng</th><th>Công ty</th><th>Gói</th><th className="num">Số tiền</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thanh toán</th></tr></thead>
             <tbody>{data.items.map((order) => <tr key={order.id}>
               <td>{order.postingTitle}</td>
               <td><span className="admin-primary-cell">{order.companyName}<small>{order.employerEmail}</small></span></td>
               <td>{order.packageName}</td>
-              <td>{formatVnd(order.amountVnd)}</td>
+              <td className="num">{formatVnd(order.amountVnd)}</td>
               <td><AdminBadge tone={orderStatusTones[order.status]}>{orderStatusLabels[order.status]}</AdminBadge></td>
               <td>{formatAdminDate(order.createdAt)}</td>
               <td>{order.paidAt ? formatAdminDate(order.paidAt) : '—'}</td>

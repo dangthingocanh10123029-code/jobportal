@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { PostingForm } from '@/components/postings/posting-form';
+import { ArrowLeft } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export default function NewPostingPage() {
   return (
     <main className="page-shell narrow-shell posting-form-page">
-      <Link className="back-link" href="/employer/postings">← Tin tuyển dụng của tôi</Link>
+      <Link className="back-link" href="/employer/postings"><ArrowLeft {...icon} />Tin tuyển dụng của tôi</Link>
       <div className="page-heading">
         <span className="eyebrow">Tin tuyển dụng mới</span>
         <h1>Tạo tin tuyển dụng</h1>

@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { getEmployerDashboard } from '@/actions/dashboard';
 import type { ApplicationStatus } from '@/actions/types';
 import { applicationStatusLabels, postingStatusLabels } from '@/components/format';
-import { PageHeader, StatCard } from '@/components/ui/primitives';
+import { icon, iconLg, PageHeader, StatCard } from '@/components/ui/primitives';
+import { ArrowRight, Eye, FileText, Inbox, Megaphone } from 'lucide-react';
 
 const statuses: ApplicationStatus[] = ['SUBMITTED', 'REVIEWING', 'INTERVIEWING', 'OFFERED', 'HIRED', 'REJECTED', 'WITHDRAWN'];
 
@@ -17,10 +18,10 @@ export default async function EmployerDashboardPage() {
       <PageHeader className="dashboard-heading" description="Tổng quan hiệu quả tuyển dụng và hoạt động ứng tuyển của công ty." eyebrow="Không gian nhà tuyển dụng" title="Dashboard" />
 
       <section aria-label="Tổng quan tuyển dụng" className="dashboard-totals">
-        <StatCard icon="▤" label="Tin tuyển dụng" value={dashboard.totals.postings.toLocaleString('vi-VN')} />
-        <StatCard icon="◉" label="Đang mở" value={dashboard.totals.open.toLocaleString('vi-VN')} />
-        <StatCard icon="♧" label="Đơn ứng tuyển" value={dashboard.totals.applications.toLocaleString('vi-VN')} />
-        <StatCard icon="⌁" label="Lượt xem" value={dashboard.totals.views.toLocaleString('vi-VN')} />
+        <StatCard icon={<FileText {...iconLg} />} label="Tin tuyển dụng" value={dashboard.totals.postings.toLocaleString('vi-VN')} />
+        <StatCard icon={<Megaphone {...iconLg} />} label="Đang mở" value={dashboard.totals.open.toLocaleString('vi-VN')} />
+        <StatCard icon={<Inbox {...iconLg} />} label="Đơn ứng tuyển" value={dashboard.totals.applications.toLocaleString('vi-VN')} />
+        <StatCard icon={<Eye {...iconLg} />} label="Lượt xem" value={dashboard.totals.views.toLocaleString('vi-VN')} />
       </section>
 
       <section aria-labelledby="dashboard-status-title" className="surface-card dashboard-status-card">
@@ -47,7 +48,7 @@ export default async function EmployerDashboardPage() {
       <section aria-labelledby="dashboard-postings-title" className="surface-card dashboard-postings-card">
         <div className="dashboard-section-heading">
           <div><span className="eyebrow">Hiệu quả tin tuyển dụng</span><h2 id="dashboard-postings-title">Tin của tôi</h2></div>
-          <Link className="dashboard-view-all" href="/employer/postings">Quản lý tin <span aria-hidden="true">→</span></Link>
+          <Link className="dashboard-view-all" href="/employer/postings">Quản lý tin <ArrowRight {...icon} /></Link>
         </div>
         {dashboard.postings.length ? (
           <div className="dashboard-table-wrap">

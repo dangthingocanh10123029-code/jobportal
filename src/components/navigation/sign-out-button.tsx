@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOutAction } from '@/actions/auth';
+import { LogOut } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export function SignOutButton() {
   const router = useRouter();
@@ -28,7 +30,7 @@ export function SignOutButton() {
     <div className="nav-account-actions">
       {error ? <span className="nav-error" role="alert">{error}</span> : null}
       <button className="button button-quiet button-small" disabled={pending} onClick={signOut} type="button">
-        {pending ? 'Đang đăng xuất…' : 'Đăng xuất'}
+        <LogOut {...icon} />{pending ? 'Đang đăng xuất…' : 'Đăng xuất'}
       </button>
     </div>
   );

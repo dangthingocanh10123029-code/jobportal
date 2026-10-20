@@ -1,11 +1,13 @@
 import Link from 'next/link';
+import { Briefcase } from 'lucide-react';
+import { icon } from '@/components/ui/primitives';
 
 export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
         <Link aria-label="Job Portal, trang chủ" className="brand" href="/">
-          <span aria-hidden="true" className="brand-mark" />
+          <span aria-hidden="true" className="brand-mark"><Briefcase {...icon} /></span>
           <span aria-hidden="true" className="brand-name">Job Portal</span>
         </Link>
         <nav aria-label="Liên kết cuối trang">
