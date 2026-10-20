@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ### Phần A — Claude logic (DB + FastAPI + Server Actions) — branch `task/44-a-recommendations-alerts`
 - [ ] Migration `supabase/migrations/20261020000500_job_alerts.sql`:

@@ -13,7 +13,7 @@ export default async function NotificationsPage() {
         <div className="page-heading">
           <span className="eyebrow">Cập nhật mới nhất</span>
           <h1>Thông báo</h1>
-          <p>Theo dõi các cập nhật về hồ sơ ứng tuyển của bạn.</p>
+          <p>Theo dõi các cập nhật về hồ sơ ứng tuyển và việc làm mới khớp thông báo của bạn.</p>
         </div>
       </div>
       <NotificationsList notifications={notifications} />
