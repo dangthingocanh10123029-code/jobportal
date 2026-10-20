@@ -24,6 +24,8 @@ export default async function CheckoutPage({ params }: { params: Promise<{ order
           <div className="billing-checkout-total"><dt>Tổng tiền</dt><dd>{formatVnd(order.amountVnd)}</dd></div>
         </dl>
         {order.status === 'PENDING' ? <CheckoutActions orderId={order.id} /> : null}
+        {/* The refresh after paying unmounts CheckoutActions (and its message), so the paid state confirms itself. */}
+        {order.status === 'PAID' ? <p className="billing-message" role="status">Thanh toán giả lập thành công. Tin của bạn đã được đẩy nổi bật.</p> : null}
       </Card>
       <Link className="clear-search-link" href="/employer/billing">← Về gói dịch vụ</Link>
     </main>
