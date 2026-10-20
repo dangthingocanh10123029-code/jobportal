@@ -386,3 +386,191 @@ Phong cách minh họa: phẳng (flat), nét tròn, tối đa 4 màu từ bảng
 | `public/images/industries/<industry>.svg` (16 file, tên = giá trị `Industry` viết thường, vd `it_software.svg`) | Chip ngành nghề trên trang chủ, bộ lọc | SVG 48×48, nét đơn sắc dùng `currentColor` |
 | `public/images/empty-notifications.svg`, `public/images/empty-saved.svg` | Trạng thái rỗng | SVG 240×180, cùng phong cách |
 
+
+## v5 — 8 module mới (ticket 40–47)
+
+Quy ước như v3: mỗi hàm dưới đây có endpoint FastAPI tương ứng (Phần A ghi vào bảng REST của ticket) và Server Action mỏng gọi `apiFetch`. Thông báo mới do database tạo (trigger/RPC), không do frontend.
+
+```ts
+type NotificationType = ...
+  | 'INTERVIEW_SCHEDULED' | 'INTERVIEW_RESPONDED' | 'INTERVIEW_CANCELLED'   // 40
+  | 'TALENT_INVITED'                                                       // 43
+  | 'JOB_ALERT'                                                            // 44
+  | 'REVIEW_MODERATED'                                                     // 45
+  | 'ORDER_PAID';                                                          // 47
+type AuditEntry['action'] = ... | 'REVIEW_APPROVED' | 'REVIEW_REJECTED' | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED' | 'PACKAGE_UPDATED';
+```
+
+### 40 — Lịch phỏng vấn (`@/actions/interviews`)
+```ts
+type InterviewMode = 'ONLINE' | 'ONSITE';
+type InterviewStatus = 'PROPOSED' | 'CONFIRMED' | 'DECLINED' | 'RESCHEDULE_REQUESTED' | 'CANCELLED' | 'DONE';
+type Interview = {
+  id: string; applicationId: string; postingId: string; postingTitle: string;
+  companyName: string; candidateName: string;
+  scheduledAt: string; durationMinutes: number;       // 15–240
+  mode: InterviewMode; location: string;              // ONLINE: URL http(s); ONSITE: địa chỉ 5–300 ký tự
+  note: string | null;                                // ≤ 1000, của Employer
+  status: InterviewStatus; candidateNote: string | null;   // ≤ 500
+  createdAt: string; updatedAt: string;
+};
+scheduleInterviewAction(input: { applicationId: string; scheduledAt: string; durationMinutes: number; mode: InterviewMode; location: string; note?: string }): Promise<ActionResult<Interview>>
+  // Employer chủ tin; đơn ở REVIEWING hoặc INTERVIEWING; scheduledAt trong tương lai (≤ 90 ngày);
+  // đơn REVIEWING tự chuyển INTERVIEWING (cùng transaction, ghi lịch sử trạng thái); tối đa 1 lịch đang PROPOSED/CONFIRMED mỗi đơn
+respondInterviewAction(input: { interviewId: string; response: 'CONFIRM' | 'DECLINE' | 'RESCHEDULE'; note?: string }): Promise<ActionResult<Interview>>
+  // Candidate của đơn; chỉ khi PROPOSED; RESCHEDULE bắt buộc note (gợi ý giờ khác)
+cancelInterviewAction(input: { interviewId: string; reason?: string }): Promise<ActionResult<Interview>>   // Employer; PROPOSED/CONFIRMED/RESCHEDULE_REQUESTED
+markInterviewDoneAction(input: { interviewId: string }): Promise<ActionResult<Interview>>                  // Employer; CONFIRMED và đã qua giờ hẹn
+listMyInterviews(filter: { scope?: 'upcoming' | 'past' }): Promise<Interview[]>   // theo vai trò; upcoming tăng dần theo giờ, past giảm dần
+listInterviewsForApplication(applicationId: string): Promise<Interview[] | null>  // Candidate của đơn hoặc Employer chủ tin
+```
+Thông báo: đặt lịch → Candidate; Candidate trả lời → Employer; hủy → Candidate.
+
+### 41 — Nhắn tin (`@/actions/messages`)
+```ts
+type Message = { id: string; applicationId: string; senderId: string; mine: boolean; body: string; createdAt: string; readAt: string | null };
+type Conversation = {
+  applicationId: string; postingTitle: string; otherPartyName: string; otherPartyLogoUrl: string | null;
+  lastMessage: string | null; lastMessageAt: string | null; unread: number; canSend: boolean;
+};
+listConversations(): Promise<Conversation[]>   // các đơn có ≥ 1 tin nhắn hoặc đơn đang không ở trạng thái kết thúc; mới nhất trước
+getConversation(applicationId: string, before?: string): Promise<{ conversation: Conversation; messages: Message[]; hasMore: boolean } | null>
+  // 50 tin mỗi trang, tăng dần theo thời gian; before = createdAt của tin cũ nhất đang có
+sendMessageAction(input: { applicationId: string; body: string }): Promise<ActionResult<Message>>
+  // body 1–2000 sau trim; chỉ 2 bên của đơn; không gửi được khi đơn WITHDRAWN/REJECTED/HIRED (canSend=false); tối đa 30 tin/phút/người
+markConversationReadAction(input: { applicationId: string }): Promise<ActionResult<null>>
+getUnreadMessageCount(): Promise<number>   // 0 khi chưa đăng nhập
+```
+Không tạo notification cho từng tin nhắn (tránh spam). Header có biểu tượng tin nhắn với số chưa đọc. Trang chat làm mới bằng `router.refresh()` mỗi 10 giây khi tab đang mở (không thêm thư viện realtime).
+
+### 42 — CV online (`@/actions/cv`)
+```ts
+type CvTemplate = 'CLASSIC' | 'MODERN';
+type CvItem = { title: string; organization: string; startDate: string; endDate: string | null; description: string };
+  // title/organization 1–150; startDate/endDate 'YYYY-MM'; endDate null = hiện tại; description ≤ 2000
+type OnlineCv = {
+  candidateId: string; template: CvTemplate;
+  fullName: string; headline: string | null; email: string; phone: string | null; location: string | null;
+  summary: string | null;                  // ≤ 2000
+  experiences: CvItem[]; educations: CvItem[];   // mỗi loại ≤ 15
+  skills: string[];                         // ≤ 30, mỗi kỹ năng 1–30
+  languages: string[];                      // ≤ 10
+  certifications: { name: string; issuer: string | null; year: number | null }[];   // ≤ 15
+  updatedAt: string;
+};
+getMyCv(): Promise<OnlineCv | null>                       // Candidate; null khi chưa tạo
+saveMyCvAction(input: Omit<OnlineCv, 'candidateId' | 'updatedAt'>): Promise<ActionResult<OnlineCv>>
+deleteMyCvAction(): Promise<ActionResult<null>>
+getApplicationCv(applicationId: string): Promise<OnlineCv | null>   // Employer chủ tin: bản chụp CV lúc nộp
+```
+`submitApplicationAction(formData)` nhận thêm field `cvSource`: `'FILE'` (mặc định, field `resume` như cũ) hoặc `'ONLINE'` (không cần file; lưu bản chụp CV online vào đơn, sửa CV sau đó không đổi đơn đã nộp). `Application`/`EmployerApplicationSummary` bổ sung `cvSource: 'FILE' | 'ONLINE'`.
+Xuất PDF: trang `/candidate/cv/print` dùng CSS `@media print` + `window.print()`, không thêm thư viện.
+
+### 43 — Tìm ứng viên (`@/actions/talent`)
+```ts
+type TalentSummary = {
+  candidateId: string; fullName: string; headline: string | null; skills: string[];
+  location: string | null; experienceYears: number | null; hasOnlineCv: boolean; updatedAt: string; saved: boolean;
+};
+type TalentDetail = TalentSummary & { profile: CandidateProfile; cv: OnlineCv | null };   // KHÔNG có email/phone
+setOpenToWorkAction(input: { openToWork: boolean; location?: string; experienceYears?: number }): Promise<ActionResult<{ openToWork: boolean }>>   // Candidate; mặc định false
+searchTalent(filter: { q?: string; skill?: string; location?: string; minExperience?: number; page?: number }): Promise<Page<TalentSummary> | null>   // Employer; chỉ ứng viên openToWork, tài khoản không bị khóa
+getTalent(candidateId: string): Promise<TalentDetail | null>   // Employer; null nếu ứng viên tắt openToWork
+toggleSavedTalentAction(input: { candidateId: string; note?: string }): Promise<ActionResult<{ saved: boolean }>>
+listSavedTalent(): Promise<TalentSummary[]>
+inviteTalentAction(input: { candidateId: string; postingId: string; message?: string }): Promise<ActionResult<null>>
+  // tin PUBLISHED của chính Employer; mỗi cặp (ứng viên, tin) mời 1 lần; ≤ 20 lời mời/ngày/Employer → notification TALENT_INVITED (link /jobs/<postingId>)
+```
+`CandidateProfile` bổ sung `openToWork: boolean; location: string | null; experienceYears: number | null`.
+
+### 44 — Gợi ý việc + job alert (`@/actions/alerts`)
+```ts
+type AlertFilter = Pick<SearchFilter, 'q' | 'location' | 'type' | 'industry' | 'level' | 'minSalary'>;
+type JobAlert = { id: string; name: string; filter: AlertFilter; active: boolean; createdAt: string; lastMatchedAt: string | null };
+getRecommendedPostings(): Promise<(PostingSummary & { matchReasons: string[] })[]>
+  // Candidate: ≤ 10 tin đang mở, chưa nộp, điểm theo kỹ năng trùng + ngành/địa điểm từ đơn đã nộp & hồ sơ; matchReasons tiếng Việt, vd 'Khớp kỹ năng: Excel, MISA'. Khách/Employer → []
+listJobAlerts(): Promise<JobAlert[]>
+createJobAlertAction(input: { name: string; filter: AlertFilter }): Promise<ActionResult<JobAlert>>   // name 1–100; filter có ≥ 1 điều kiện; tối đa 5 alert/Candidate
+updateJobAlertAction(input: { id: string; active: boolean }): Promise<ActionResult<JobAlert>>
+deleteJobAlertAction(input: { id: string }): Promise<ActionResult<null>>
+```
+Khi một tin chuyển PUBLISHED, trigger tạo notification `JOB_ALERT` cho mỗi alert đang bật khớp tin (mỗi alert tối đa 1 thông báo/tin, link `/jobs/<id>`). Chỉ thông báo trong ứng dụng, không gửi email.
+
+### 45 — Đánh giá công ty (`@/actions/reviews`)
+```ts
+type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+type CompanyReview = {
+  id: string; companyId: string; rating: 1 | 2 | 3 | 4 | 5;
+  title: string; pros: string; cons: string;          // title 5–150; pros/cons 10–3000
+  authorName: string;                                 // 'Ứng viên ẩn danh' khi anonymous
+  anonymous: boolean; createdAt: string;
+};
+type MyReview = CompanyReview & { status: ReviewStatus; rejectReason: string | null };
+type CompanyRating = { average: number | null; count: number; distribution: Record<1 | 2 | 3 | 4 | 5, number> };   // chỉ review APPROVED
+listCompanyReviews(companyId: string, page?: number): Promise<{ rating: CompanyRating } & Page<CompanyReview>>
+getMyReview(companyId: string): Promise<MyReview | null>
+canReviewCompany(companyId: string): Promise<boolean>   // Candidate đã từng nộp đơn vào tin của công ty và chưa có review
+submitReviewAction(input: { companyId: string; rating: number; title: string; pros: string; cons: string; anonymous: boolean }): Promise<ActionResult<MyReview>>
+  // tạo PENDING; sửa review REJECTED → PENDING lại; mỗi Candidate 1 review/công ty
+// Admin (@/actions/admin):
+listAdminReviews(filter: { status?: ReviewStatus; page?: number }): Promise<Page<CompanyReview & { status: ReviewStatus; companyName: string; authorEmail: string }> | null>
+moderateReviewAction(input: { reviewId: string; approve: boolean; reason?: string }): Promise<ActionResult<null>>   // từ chối cần reason 5–500; ghi audit + notification REVIEW_MODERATED
+```
+`CompanySummary` bổ sung `rating: number | null; reviewCount: number`.
+
+### 46 — Cẩm nang nghề nghiệp (`@/actions/articles`)
+```ts
+type ArticleCategory = 'CV' | 'INTERVIEW' | 'SALARY' | 'CAREER' | 'WORKPLACE';
+type ArticleSummary = { id: string; slug: string; title: string; excerpt: string; category: ArticleCategory;
+  coverImage: string;           // '/images/articles/<category viết thường>.svg' (ảnh tĩnh Antigravity)
+  readingMinutes: number; publishedAt: string; views: number };
+type Article = ArticleSummary & { content: string };   // Markdown rút gọn: '## ', '### ', '- ', '1. ', **đậm**, đoạn văn; KHÔNG HTML
+listArticles(filter: { category?: ArticleCategory; q?: string; page?: number }): Promise<Page<ArticleSummary>>   // chỉ PUBLISHED, mới nhất trước, pageSize 12
+getArticle(slug: string): Promise<(Article & { related: ArticleSummary[] }) | null>   // tăng views; related ≤ 3 cùng danh mục
+// Admin:
+listAdminArticles(filter: { status?: 'DRAFT' | 'PUBLISHED'; page?: number }): Promise<Page<ArticleSummary & { status: 'DRAFT' | 'PUBLISHED' }> | null>
+getAdminArticle(id: string): Promise<(Article & { status: 'DRAFT' | 'PUBLISHED' }) | null>
+saveArticleAction(input: { id?: string; title: string; slug?: string; excerpt: string; category: ArticleCategory; content: string }): Promise<ActionResult<Article>>
+  // title 5–200; slug tự sinh không dấu từ title nếu thiếu, duy nhất; excerpt 20–300; content 100–50000
+setArticlePublishedAction(input: { id: string; published: boolean }): Promise<ActionResult<null>>   // ghi audit
+```
+Frontend render Markdown rút gọn bằng component tự viết, escape mọi ký tự HTML (không `dangerouslySetInnerHTML` với nội dung thô). Dữ liệu mẫu: ≥ 12 bài tự viết (không sao chép nguồn ngoài).
+
+### 47 — Gói dịch vụ / tin nổi bật (`@/actions/billing`)
+```ts
+type ServicePackage = { id: string; code: string; name: string; description: string;
+  priceVnd: number; durationDays: number; active: boolean };   // mặc định TOP_7 / TOP_14 / TOP_30
+type OrderStatus = 'PENDING' | 'PAID' | 'CANCELLED';
+type Order = { id: string; packageName: string; postingId: string; postingTitle: string;
+  amountVnd: number; status: OrderStatus; createdAt: string; paidAt: string | null; featuredUntil: string | null };
+listPackages(): Promise<ServicePackage[]>                     // gói active
+createOrderAction(input: { packageId: string; postingId: string }): Promise<ActionResult<Order>>   // Employer; tin PUBLISHED của mình; amount = giá gói lúc đặt
+payOrderAction(input: { orderId: string }): Promise<ActionResult<Order>>
+  // THANH TOÁN GIẢ LẬP — không thu tiền thật. PENDING → PAID; featured_until = max(now, featured_until) + durationDays; notification ORDER_PAID
+cancelOrderAction(input: { orderId: string }): Promise<ActionResult<Order>>   // chỉ PENDING
+listMyOrders(): Promise<Order[]>
+// Admin:
+listAdminPackages(): Promise<ServicePackage[] | null>
+savePackageAction(input: { id?: string; code: string; name: string; description: string; priceVnd: number; durationDays: number; active: boolean }): Promise<ActionResult<ServicePackage>>
+  // code A–Z0–9_ 2–30 duy nhất; priceVnd 0–100.000.000; durationDays 1–90; ghi audit
+listAdminOrders(filter: { status?: OrderStatus; page?: number }): Promise<Page<Order & { employerEmail: string; companyName: string }> | null>
+```
+`PostingSummary`/`PostingDetail` bổ sung `featured: boolean` (featured_until > now). Danh sách công khai: tin nổi bật lên đầu khi sort = 'newest'; trang chủ có khối "Việc làm nổi bật" (≤ 6). `AdminStats` bổ sung `revenue: { paidOrders: number; totalVnd: number; last30DaysVnd: number }`. Trang thanh toán ghi rõ "Thanh toán giả lập — không thu tiền thật".
+
+### Routes v5 (Codex)
+
+| Route | Ai vào được | Ticket |
+|---|---|---|
+| `/interviews` | Candidate, Employer | 40 |
+| `/messages`, `/messages/[applicationId]` | Candidate, Employer (2 bên của đơn) | 41 |
+| `/candidate/cv`, `/candidate/cv/print` | Candidate | 42 |
+| `/employer/applications/[id]/cv` | Employer chủ tin | 42 |
+| `/employer/talent`, `/employer/talent/[id]`, `/employer/talent/saved` | Employer | 43 |
+| `/candidate/alerts` | Candidate | 44 |
+| `/admin/reviews` | ADMIN | 45 |
+| `/guide`, `/guide/[slug]` | mọi người | 46 |
+| `/admin/articles`, `/admin/articles/new`, `/admin/articles/[id]` | ADMIN | 46 |
+| `/employer/billing`, `/employer/billing/checkout/[orderId]` | Employer | 47 |
+| `/admin/packages`, `/admin/orders` | ADMIN | 47 |
+
+Middleware: thêm `/interviews`, `/messages` (đã đăng nhập), `/employer/*`, `/candidate/*`, `/admin/*` như cũ.
