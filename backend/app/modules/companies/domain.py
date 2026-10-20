@@ -32,9 +32,12 @@ class Company:
 class CompanySummary:
     company: Company
     open_postings: int
+    rating: float | None = None
+    review_count: int = 0
 
     def json(self) -> dict:
-        return {**self.company.json(), "openPostings": self.open_postings}
+        return {**self.company.json(), "openPostings": self.open_postings, "rating": self.rating,
+                "reviewCount": self.review_count}
 
 
 @dataclass(frozen=True)

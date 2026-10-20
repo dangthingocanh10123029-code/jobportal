@@ -11,7 +11,7 @@ def company(row):
 
 
 def summary(row):
-    return CompanySummary(company(row[:8]), row[8])
+    return CompanySummary(company(row[:8]), *row[8:11])
 
 
 def camel_posting(r):
@@ -66,7 +66,7 @@ class PostgresCompanyRepository:
                 "select count(*) from public.company_summaries" + where, params
             ).fetchone()[0]
             rows = conn.execute(
-                f"select {COLS},open_postings from public.company_summaries{where} order by open_postings desc,name,id offset %s limit %s",
+                f"select {COLS},open_postings,rating,review_count from public.company_summaries{where} order by open_postings desc,name,id offset %s limit %s",
                 (*params, offset, limit),
             ).fetchall()
         return [summary(r) for r in rows], total

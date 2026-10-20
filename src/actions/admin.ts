@@ -14,10 +14,12 @@ import {
   toQuery,
 } from './admin-schema';
 import { firstError } from './auth-schema';
+import { adminReviewFilterSchema, moderateReviewSchema } from './reviews-schema';
 import type {
   ActionResult,
   AdminCompany,
   AdminPosting,
+  AdminReview,
   AdminStats,
   AdminUser,
   AdminUserDetail,
@@ -25,6 +27,7 @@ import type {
   AuditEntry,
   DisplayPostingStatus,
   Page,
+  ReviewStatus,
   Role,
 } from './types';
 
@@ -83,4 +86,17 @@ export async function setCompanyVerifiedAction(input: { companyId: string; verif
 
 export async function listAuditLog(filter: { action?: AuditAction; actorId?: string; page?: number }): Promise<Page<AuditEntry> | null> {
   return readOr(await apiFetch<Page<AuditEntry>>(`/admin/audit?${toQuery(auditFilterSchema.parse(filter))}`), null);
+}
+
+/** Every review, newest first, 10 per page. */
+export async function listAdminReviews(filter: { status?: ReviewStatus; page?: number }): Promise<Page<AdminReview, 10> | null> {
+  return readOr(await apiFetch<Page<AdminReview, 10>>(`/admin/reviews?${toQuery(adminReviewFilterSchema.parse(filter))}`), null);
+}
+
+/** Rejecting needs a 5–500 character reason; writes the audit entry and notifies the author (REVIEW_MODERATED). */
+export async function moderateReviewAction(input: { reviewId: string; approve: boolean; reason?: string }): Promise<ActionResult<null>> {
+  const parsed = moderateReviewSchema.safeParse(input);
+  if (!parsed.success) return fail(firstError(parsed.error));
+  const { reviewId, ...body } = parsed.data;
+  return toAction(await apiFetch<null>(`/admin/reviews/${reviewId}/moderate`, { method: 'POST', body }));
 }

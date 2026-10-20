@@ -125,7 +125,12 @@ export type Company = {
   companyVerified: boolean;
 };
 
-export type CompanySummary = Company & { openPostings: number };
+export type CompanySummary = Company & {
+  openPostings: number;
+  /** Average of APPROVED reviews, 1 decimal; null without reviews (§45). */
+  rating: number | null;
+  reviewCount: number;
+};
 
 export type CompanyInput = {
   name?: string;
@@ -211,14 +216,14 @@ export type AdminCompany = CompanySummary & { verifiedAt: string | null; employe
 
 export type AuditAction =
   | 'USER_LOCKED' | 'USER_UNLOCKED' | 'POSTING_HIDDEN' | 'POSTING_UNHIDDEN' | 'COMPANY_VERIFIED' | 'COMPANY_UNVERIFIED'
-  | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED';
+  | 'ARTICLE_PUBLISHED' | 'ARTICLE_UNPUBLISHED' | 'REVIEW_APPROVED' | 'REVIEW_REJECTED';
 
 export type AuditEntry = {
   id: string;
   actorId: string;
   actorEmail: string;
   action: AuditAction;
-  targetType: 'USER' | 'POSTING' | 'COMPANY' | 'ARTICLE';
+  targetType: 'USER' | 'POSTING' | 'COMPANY' | 'ARTICLE' | 'REVIEW';
   targetId: string;
   targetLabel: string;
   details: Record<string, string>;
@@ -293,3 +298,24 @@ export type Conversation = {
   /** false once the Application is WITHDRAWN, REJECTED or HIRED. */
   canSend: boolean;
 };
+
+// v5 §45 — company reviews.
+export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+export type CompanyReview = {
+  id: string;
+  companyId: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  /** 5–150 */
+  title: string;
+  /** 10–3000 each. */
+  pros: string;
+  cons: string;
+  /** 'Ứng viên ẩn danh' when anonymous. */
+  authorName: string;
+  anonymous: boolean;
+  createdAt: string;
+};
+export type MyReview = CompanyReview & { status: ReviewStatus; rejectReason: string | null };
+/** APPROVED reviews only. */
+export type CompanyRating = { average: number | null; count: number; distribution: Record<1 | 2 | 3 | 4 | 5, number> };
+export type AdminReview = CompanyReview & { status: ReviewStatus; rejectReason: string | null; companyName: string; authorEmail: string };

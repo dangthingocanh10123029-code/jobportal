@@ -84,3 +84,11 @@ psql "$DATABASE_URL" -v email=ten@congty.vn -f supabase/seed/make-admin.sql
 ```sh
 psql "$DATABASE_URL" -f supabase/seed/articles.sql
 ```
+
+## Đánh giá công ty (ticket 45)
+
+60 đánh giá tự viết, đã duyệt (APPROVED), gắn vào 60 cặp (ứng viên demo, công ty demo) **có đơn ứng tuyển thật** trong seed — đúng điều kiện app yêu cầu. Chạy sau `seed-demo.sql` và migration `20261020000600_company_reviews.sql`; chạy lại chỉ cập nhật đúng các dòng đó. `wipe-demo.sql` xóa chúng theo ứng viên.
+
+```sh
+psql "$DATABASE_URL" -f supabase/seed/reviews.sql
+```
