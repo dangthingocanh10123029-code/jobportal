@@ -81,12 +81,16 @@ export function formatSalary(salaryMin: number | null, salaryMax: number | null)
   return `Đến ${amount(salaryMax!)} / tháng`;
 }
 
+// Fixed zone: the server (UTC on Vercel) and the browser must print the same text, or hydration fails (#418).
+const VN_TIME = { timeZone: 'Asia/Ho_Chi_Minh' } as const;
+
 export function formatDate(value: string, month: '2-digit' | 'long' = '2-digit') {
-  return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month, year: 'numeric' }).format(new Date(value));
+  return new Intl.DateTimeFormat('vi-VN', { ...VN_TIME, day: '2-digit', month, year: 'numeric' }).format(new Date(value));
 }
 
 export function formatDateTime(value: string) {
   return new Intl.DateTimeFormat('vi-VN', {
+    ...VN_TIME,
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
