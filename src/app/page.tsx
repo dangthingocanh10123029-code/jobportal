@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { listOpenPostings } from '@/actions/postings';
 import { getSavedPostingIds } from '@/actions/candidates';
+import { listCompanies } from '@/actions/companies';
 import { getCurrentProfile } from '@/actions/auth';
 import { getRecommendedPostings, listJobAlerts } from '@/actions/alerts';
 import { searchFilterSchema } from '@/actions/postings-schema';
@@ -10,7 +11,11 @@ import { employmentLabels, formatDate, formatPostedAgo, formatSalary, industryLa
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 import { CreateAlertButton } from '@/components/alerts/create-alert-button';
 import { alertFilterFromSearch } from '@/components/alerts/describe';
-import { CompaniesAndStories, HomeFaq, HowItWorks } from '@/components/home/home-sections';
+import { CompaniesAndStories, HomeFaq, HowItWorks, LatestArticles } from '@/components/home/home-sections';
+import { EmployerCTA } from '@/components/home/employer-cta';
+import { FreshCarousel } from '@/components/home/fresh-carousel';
+import { HeroBanner } from '@/components/home/hero-banner';
+import { LogoStrip } from '@/components/home/logo-strip';
 import { HomeAlertForm } from '@/components/home/home-alert-form';
 import { SalaryRange } from '@/components/home/salary-range';
 import { Button, FeaturedBadge, icon, iconLg, Input, VerifiedCheck } from '@/components/ui/primitives';
@@ -30,7 +35,7 @@ function PostingCard({ posting, savedIds, isCandidate, matchReasons }: { posting
         </div>
         <p className="public-posting-meta">
           <span><MapPin {...icon} />{posting.location}</span>
-          <span><Wallet {...icon} />{formatSalary(posting.salaryMin, posting.salaryMax)}</span>
+          <span className="posting-salary"><Wallet {...icon} />{formatSalary(posting.salaryMin, posting.salaryMax)}</span>
           <span><Layers {...icon} />{jobLevelLabels[posting.level]}</span>
           <span><Briefcase {...icon} />{industryLabels[posting.industry]}</span>
           <span><CalendarClock {...icon} />Hạn nộp {formatDate(posting.applicationDeadline)}</span>
@@ -119,14 +124,17 @@ function PillRadios({ legend, name, options, value }: { legend: string; name: st
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<HomeSearchParams> }) {
   const filter = searchFilterFromParams(await searchParams);
-  const [postingsPage, savedIds, profile, recommendations, alerts, thisWeek] = await Promise.all([
+  const hasFilters = [...filterParams(filter)].some(([key, value]) => key !== 'sort' || value !== 'newest');
+  const [postingsPage, savedIds, profile, recommendations, alerts, thisWeek, allOpen, companiesPage] = await Promise.all([
     listOpenPostings(filter), getSavedPostingIds(), getCurrentProfile(), getRecommendedPostings(), listJobAlerts(),
     listOpenPostings({ postedWithinDays: 7 }).then((page) => page.total).catch(() => 0),
+    // Unfiltered, the listing's own total is already every open posting.
+    hasFilters ? listOpenPostings({}).then((page) => page.total).catch(() => null) : null,
+    listCompanies({}).catch(() => null),
   ]);
   const isCandidate = profile?.role === 'CANDIDATE';
   const pageCount = Math.max(1, Math.ceil(postingsPage.total / postingsPage.pageSize));
   const alertFilter = alertFilterFromSearch(filter);
-  const hasFilters = [...filterParams(filter)].some(([key, value]) => key !== 'sort' || value !== 'newest');
   // The landing blocks only frame the unfiltered first page; a search goes straight from the hero to its results.
   const isLanding = !hasFilters && postingsPage.page === 1;
   // 'newest' lists featured postings first, so the unfiltered first page already holds the block's ≤ 6.
@@ -137,47 +145,48 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
   return (
     <main className="home-page">
-      <section aria-labelledby="home-title" className="home-hero">
-        <div className="home-hero-content">
-          {thisWeek > 0 ? (
-            <Link className="hero-badge" href="/?posted=7#job-search"><Sparkles {...icon} />{thisWeek} việc làm mới tuần này</Link>
-          ) : null}
-          <h1 id="home-title">Tìm công việc thật vừa ý</h1>
-          <p>Tin tuyển dụng đang mở từ các công ty trên khắp Việt Nam. Tìm chậm rãi, lưu lại, ứng tuyển khi bạn sẵn sàng.</p>
-          <form action="/" aria-label="Tìm việc làm" className="hero-search" method="get">
-            <label className="visually-hidden" htmlFor="search-keyword">Từ khóa</label>
-            <Input autoComplete="off" defaultValue={filter.q ?? ''} id="search-keyword" name="q" placeholder="Chức danh, kỹ năng, từ khóa…" type="search" />
-            <label className="visually-hidden" htmlFor="search-location">Địa điểm</label>
-            <input className="text-input" defaultValue={filter.location ?? ''} id="search-location" name="location" placeholder="Tỉnh, thành phố" type="search" />
-            <HiddenFilters filter={filter} keys={['type', 'minSalary', 'industry', 'level', 'exp', 'skill', 'posted', 'sort']} />
-            <Button type="submit"><Search {...icon} />Tìm việc</Button>
-          </form>
-          {skills.length ? (
-            <nav aria-label="Kỹ năng được tìm nhiều" className="popular-chips">
-              {skills.map((skill) => <Link className="chip" href={`/?skill=${encodeURIComponent(skill)}#job-search`} key={skill}>{skill}</Link>)}
-            </nav>
-          ) : null}
-        </div>
-      </section>
+      <HeroBanner companies={companiesPage?.total ?? 0} openPostings={allOpen ?? postingsPage.total}>
+        {thisWeek > 0 ? (
+          <Link className="hero-badge" href="/?posted=7#job-search"><Sparkles {...icon} />{thisWeek} việc làm mới tuần này</Link>
+        ) : null}
+        <h1 id="home-title">Tìm công việc thật vừa ý</h1>
+        <p>Tin tuyển dụng đang mở từ các công ty trên khắp Việt Nam. Tìm chậm rãi, lưu lại, ứng tuyển khi bạn sẵn sàng.</p>
+        <form action="/" aria-label="Tìm việc làm" className="hero-search" method="get">
+          <label className="visually-hidden" htmlFor="search-keyword">Từ khóa</label>
+          <Input autoComplete="off" defaultValue={filter.q ?? ''} id="search-keyword" name="q" placeholder="Chức danh, kỹ năng, từ khóa…" type="search" />
+          <label className="visually-hidden" htmlFor="search-location">Địa điểm</label>
+          <input className="text-input" defaultValue={filter.location ?? ''} id="search-location" name="location" placeholder="Tỉnh, thành phố" type="search" />
+          <HiddenFilters filter={filter} keys={['type', 'minSalary', 'industry', 'level', 'exp', 'skill', 'posted', 'sort']} />
+          <Button type="submit"><Search {...icon} />Tìm việc</Button>
+        </form>
+        {skills.length ? (
+          <nav aria-label="Kỹ năng được tìm nhiều" className="popular-chips">
+            {skills.map((skill) => <Link className="chip" href={`/?skill=${encodeURIComponent(skill)}#job-search`} key={skill}>{skill}</Link>)}
+          </nav>
+        ) : null}
+      </HeroBanner>
+
+      {isLanding && companiesPage ? <LogoStrip companies={companiesPage.items.filter((c) => c.openPostings > 0).slice(0, 10)} /> : null}
 
       {fresh.length ? (
-        <section aria-labelledby="fresh-title" className="home-section fresh-section">
-          <div className="section-heading">
-            <span className="eyebrow">Việc mới đăng</span>
-            <h2 id="fresh-title">Vừa lên bảng tin</h2>
-          </div>
-          <ul className="fresh-scroller">
-            {fresh.map((posting) => (
-              <li key={posting.id}>
-                <Link className="fresh-card" href={`/jobs/${posting.id}`} prefetch={false}>
-                  <span className="fresh-card-top"><span>{formatPostedAgo(posting.createdAt, now)}</span><span className="fresh-tag">{posting.location}</span></span>
-                  <span className="fresh-card-title">{posting.title}</span>
-                  <span className="fresh-card-company">{posting.companyName}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <div className="home-band">
+          <section aria-labelledby="fresh-title" className="home-section fresh-section">
+            <FreshCarousel heading={<div className="section-heading"><span className="eyebrow">Việc mới đăng</span><h2 id="fresh-title">Vừa lên bảng tin</h2></div>}>
+              {fresh.map((posting) => (
+                <li key={posting.id}>
+                  <Link className="fresh-card" href={`/jobs/${posting.id}`} prefetch={false}>
+                    <span className="fresh-card-top">{formatPostedAgo(posting.createdAt, now)}</span>
+                    <span className="fresh-card-main">
+                      <img alt="" height="40" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="40" />
+                      <span><span className="fresh-card-title">{posting.title}</span><span className="fresh-card-company">{posting.companyName}</span></span>
+                    </span>
+                    <span className="fresh-card-meta"><strong>{formatSalary(posting.salaryMin, posting.salaryMax)}</strong> · {posting.location}</span>
+                  </Link>
+                </li>
+              ))}
+            </FreshCarousel>
+          </section>
+        </div>
       ) : null}
 
       {isCandidate && isLanding && recommendations.length ? (
@@ -269,6 +278,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
       {isLanding ? (
         <>
+          {isCandidate || profile?.role === 'ADMIN' ? null : <EmployerCTA isEmployer={profile?.role === 'EMPLOYER'} />}
+          <Suspense fallback={null}>
+            <LatestArticles />
+          </Suspense>
           <HowItWorks />
           <Suspense fallback={null}>
             <CompaniesAndStories />

@@ -81,6 +81,11 @@ export function formatSalary(salaryMin: number | null, salaryMax: number | null)
   return `Đến ${amount(salaryMax!)} / tháng`;
 }
 
+/** Display name without the legal-form prefix: "Công ty TNHH Bao bì Cánh Diều" → "Bao bì Cánh Diều". */
+export function shortCompanyName(name: string) {
+  return name.replace(/^công ty\s+(tnhh|cổ phần|cp)?\s*/iu, '') || name;
+}
+
 // Fixed zone: the server (UTC on Vercel) and the browser must print the same text, or hydration fails (#418).
 const VN_TIME = { timeZone: 'Asia/Ho_Chi_Minh' } as const;
 
