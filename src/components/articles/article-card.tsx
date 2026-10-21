@@ -7,7 +7,7 @@ export function ArticleCard({ article, headingLevel = 2 }: { article: ArticleSum
   const Heading = headingLevel === 3 ? 'h3' : 'h2';
   return (
     <article className="surface-card article-card">
-      <ArticleCover src={article.coverImage} />
+      <ArticleCover slug={article.slug} src={article.coverImage} />
       <div className="article-card-body">
         <span className="article-category">{articleCategoryLabels[article.category]}</span>
         <Heading><Link className="article-card-link" href={`/guide/${article.slug}`}>{article.title}</Link></Heading>

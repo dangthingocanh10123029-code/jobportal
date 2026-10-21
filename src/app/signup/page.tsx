@@ -4,7 +4,7 @@ import { AuthForm } from '@/components/auth/auth-form';
 export default function SignupPage() {
   return (
     <main className="auth-page">
-      <div className="auth-image" role="img" aria-label="Không gian làm việc truyền cảm hứng" />
+      <div className="auth-image auth-image-signup" role="img" aria-label="Người tìm việc và nhà tuyển dụng cùng bắt đầu trên Job Portal" />
       <section className="auth-panel">
         <div className="auth-content">
           <span className="eyebrow">Bắt đầu miễn phí</span>

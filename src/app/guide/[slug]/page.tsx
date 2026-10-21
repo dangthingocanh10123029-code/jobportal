@@ -29,7 +29,7 @@ export default async function GuideArticlePage({ params }: { params: Promise<{ s
             <span>{article.views.toLocaleString('vi-VN')} lượt xem</span>
           </div>
         </header>
-        <ArticleCover className="guide-article-cover" src={article.coverImage} />
+        <ArticleCover className="guide-article-cover" priority slug={article.slug} src={article.coverImage} />
         <div className="guide-article-layout">
           {toc.length ? (
             <nav aria-label="Mục lục" className="surface-card guide-toc">

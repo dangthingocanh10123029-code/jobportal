@@ -101,6 +101,7 @@ h1 { margin: 0; line-height: 1.12; }
   background-position: center;
   background-size: cover;
 }
+.auth-image-signup { background-image: url('/images/signup.webp'); }
 .auth-panel { display: flex; align-items: center; justify-content: center; padding: 64px 48px; }
 .auth-content { width: min(100%, 440px); }
 .auth-content .page-intro { margin-bottom: 30px; }
@@ -1880,4 +1881,12 @@ legend.filter-legend { margin-bottom: 8px; padding: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .button-primary:hover:not(:disabled), .public-posting-card:hover { transform: none; }
+}
+
+/* Guide banner (ticket 58): art in the right half per topic; the copy and search stay in the left half. Narrow screens drop the art. */
+.guide-page .guide-hero { background: var(--guide-hero-image) right center / auto 100% no-repeat, var(--bg); }
+.guide-page .guide-hero > *, .guide-page .guide-hero > p { max-width: min(640px, 55%); }
+@media (max-width: 860px) {
+  .guide-page .guide-hero { background: var(--bg); }
+  .guide-page .guide-hero > *, .guide-page .guide-hero > p { max-width: none; }
 }

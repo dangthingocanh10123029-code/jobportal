@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import { listArticles } from '@/actions/articles';
 import { ARTICLE_CATEGORIES, articleFilterSchema } from '@/actions/articles-schema';
 import { ArticleCard } from '@/components/articles/article-card';
@@ -27,8 +28,8 @@ export default async function GuidePage({ searchParams }: { searchParams: Promis
 
   return (
     <main className="page-shell guide-page">
-      <section className="guide-hero">
-        <span className="eyebrow">Cẩm nang nghề nghiệp</span>
+      <section className="guide-hero" style={{ '--guide-hero-image': `url(/images/guide/hero-${(filter.category ?? 'all').toLowerCase()}.webp)` } as CSSProperties}>
+        <span className="eyebrow">{filter.category ? `Cẩm nang · ${articleCategoryLabels[filter.category]}` : 'Cẩm nang nghề nghiệp'}</span>
         <h1>Kinh nghiệm cho từng bước trên hành trình sự nghiệp</h1>
         <p>Bài viết thực tế về CV, phỏng vấn, lương thưởng, phát triển bản thân và môi trường làm việc.</p>
         <form action="/guide" className="guide-search" method="get" role="search">
