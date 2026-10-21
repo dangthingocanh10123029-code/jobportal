@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { setOpenToWorkAction } from '@/actions/talent';
 import type { CandidateProfile } from '@/actions/types';
+import { PROVINCES, SuggestionList } from '@/components/ui/suggestions';
 
 export function OpenToWorkForm({ profile }: { profile: CandidateProfile }) {
   const router = useRouter();
@@ -43,7 +44,7 @@ export function OpenToWorkForm({ profile }: { profile: CandidateProfile }) {
         <span><strong>Sẵn sàng tìm việc</strong><small>Khi bật, nhà tuyển dụng có thể tìm thấy hồ sơ và CV online của bạn. Email và số điện thoại luôn được ẩn.</small></span>
       </label>
       <div className="open-to-work-fields">
-        <label className="field-label">Địa điểm mong muốn <span className="field-optional">(tối đa 150 ký tự)</span><input className="text-input" defaultValue={profile.location ?? ''} maxLength={150} name="location" placeholder="Ví dụ: Hà Nội" /></label>
+        <label className="field-label">Địa điểm mong muốn <span className="field-optional">(tối đa 150 ký tự)</span><input autoComplete="off" className="text-input" defaultValue={profile.location ?? ''} list="open-to-work-location-options" maxLength={150} name="location" placeholder="Ví dụ: Hà Nội" /><SuggestionList id="open-to-work-location-options" options={PROVINCES} /></label>
         <label className="field-label">Số năm kinh nghiệm<input className="text-input" defaultValue={profile.experienceYears ?? ''} inputMode="numeric" max={50} min={0} name="experienceYears" step={1} type="number" /></label>
       </div>
       {error ? <p className="form-error" role="alert">{error}</p> : null}

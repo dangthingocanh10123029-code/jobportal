@@ -19,6 +19,7 @@ import { HomeAlertForm } from '@/components/home/home-alert-form';
 import { SalaryRange } from '@/components/home/salary-range';
 import { Button, FeaturedBadge, icon, iconLg, Input, VerifiedCheck } from '@/components/ui/primitives';
 import { ArrowRight, BellRing, Briefcase, CalendarClock, Check, Clock, Layers, MapPin, Plus, Search, Wallet } from 'lucide-react';
+import { JOB_TITLES, PROVINCES, SuggestionList } from '@/components/ui/suggestions';
 
 function PostingCard({ posting, savedIds, isCandidate, matchReasons }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean; matchReasons?: string[] }) {
   return (
@@ -148,9 +149,9 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         <p>Tin tuyển dụng đang mở từ các công ty trên khắp Việt Nam. Tìm chậm rãi, lưu lại, ứng tuyển khi bạn sẵn sàng.</p>
         <form action="/" aria-label="Tìm việc làm" className="hero-search" method="get">
           <label className="visually-hidden" htmlFor="search-keyword">Từ khóa</label>
-          <Input autoComplete="off" defaultValue={filter.q ?? ''} id="search-keyword" name="q" placeholder="Chức danh, kỹ năng, từ khóa…" type="search" />
+          <Input autoComplete="off" defaultValue={filter.q ?? ''} id="search-keyword" list="search-keyword-options" name="q" placeholder="Chức danh, kỹ năng, từ khóa…" type="search" /><SuggestionList id="search-keyword-options" options={JOB_TITLES} />
           <label className="visually-hidden" htmlFor="search-location">Địa điểm</label>
-          <input className="text-input" defaultValue={filter.location ?? ''} id="search-location" name="location" placeholder="Tỉnh, thành phố" type="search" />
+          <input autoComplete="off" className="text-input" defaultValue={filter.location ?? ''} id="search-location" list="search-location-options" name="location" placeholder="Tỉnh, thành phố" type="search" /><SuggestionList id="search-location-options" options={PROVINCES} />
           <HiddenFilters filter={filter} keys={['type', 'minSalary', 'industry', 'level', 'exp', 'skill', 'posted', 'sort']} />
           <Button type="submit"><Search {...icon} />Tìm việc</Button>
         </form>

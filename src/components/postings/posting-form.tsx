@@ -8,6 +8,7 @@ import { industryLabels, jobLevelLabels } from '@/components/format';
 import { SkillsTagInput } from './skills-tag-input';
 import { Info } from 'lucide-react';
 import { icon } from '@/components/ui/primitives';
+import { JOB_TITLES, PROVINCES, SuggestionList } from '@/components/ui/suggestions';
 
 const employmentTypes: { value: EmploymentType; label: string }[] = [
   { value: 'FULL_TIME', label: 'Toàn thời gian' },
@@ -89,7 +90,7 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
     <form className="form-stack posting-form" onSubmit={handleSubmit}>
       <label className="field-label">
         Tiêu đề công việc <span className="required-mark">*</span>
-        <input autoComplete="off" className="text-input" defaultValue={initialPosting?.title ?? ''} maxLength={150} minLength={5} name="title" placeholder="Ví dụ: Chuyên viên Marketing" required />
+        <input autoComplete="off" className="text-input" defaultValue={initialPosting?.title ?? ''} list="posting-title-options" maxLength={150} minLength={5} name="title" placeholder="Ví dụ: Chuyên viên Marketing" required /><SuggestionList id="posting-title-options" options={JOB_TITLES} />
       </label>
       <div className="form-field-grid">
         <label className="field-label">
@@ -135,7 +136,7 @@ export function PostingForm({ mode, initialPosting }: { mode: 'create' | 'edit';
       <div className="form-field-grid">
         <label className="field-label">
           Địa điểm làm việc <span className="required-mark">*</span>
-          <input className="text-input" defaultValue={initialPosting?.location ?? ''} name="location" placeholder="Hà Nội, TP. Hồ Chí Minh, Remote…" required />
+          <input autoComplete="off" className="text-input" defaultValue={initialPosting?.location ?? ''} list="posting-location-options" name="location" placeholder="Hà Nội, TP. Hồ Chí Minh, Remote…" required /><SuggestionList id="posting-location-options" options={PROVINCES} />
         </label>
         <label className="field-label">
           Hình thức làm việc <span className="required-mark">*</span>
