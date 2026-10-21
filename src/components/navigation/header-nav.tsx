@@ -1,20 +1,34 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { Suspense, useEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export type NavLink = [href: string, label: string];
 
-// ponytail: compares the path only, so '/guide?category=SALARY' never lights up; read search params if that matters.
-const isCurrent = (pathname: string, href: string) =>
-  !href.includes('?') && (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
+// A link with a query ('/guide?category=SALARY') is current only when its params match; it then wins over the plain path link.
+export const isCurrent = (pathname: string, search: URLSearchParams | null, href: string) => {
+  const [path, query] = href.split('?');
+  if (query) return pathname === path && !!search && [...new URLSearchParams(query)].every(([k, v]) => search.get(k) === v);
+  return pathname === path || (path !== '/' && pathname.startsWith(`${path}/`));
+};
+
+function Links({ items, search }: { items: NavLink[]; search: URLSearchParams | null }) {
+  const pathname = usePathname();
+  const queryHit = items.some(([href]) => href.includes('?') && isCurrent(pathname, search, href));
+  return items.map(([href, label]) => {
+    const current = isCurrent(pathname, search, href) && (href.includes('?') || !queryHit);
+    return <Link aria-current={current ? 'page' : undefined} href={href} key={href}>{label}</Link>;
+  });
+}
+
+function LinksWithSearch({ items }: { items: NavLink[] }) {
+  return <Links items={items} search={useSearchParams()} />;
+}
 
 export function NavLinks({ items }: { items: NavLink[] }) {
-  const pathname = usePathname();
-  return items.map(([href, label]) => (
-    <Link aria-current={isCurrent(pathname, href) ? 'page' : undefined} href={href} key={href}>{label}</Link>
-  ));
+  // useSearchParams needs a Suspense boundary on prerendered pages; the fallback matches by path only.
+  return <Suspense fallback={<Links items={items} search={null} />}><LinksWithSearch items={items} /></Suspense>;
 }
 
 /** `<details>` dropdown that closes on navigation, outside click and Escape. */
