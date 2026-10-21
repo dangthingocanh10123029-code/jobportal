@@ -96,10 +96,12 @@ h1 { margin: 0; line-height: 1.12; }
 .auth-page { display: grid; min-height: calc(100vh - 76px); grid-template-columns: minmax(0, 1fr) minmax(480px, 0.9fr); }
 .auth-image {
   min-height: 650px;
-  background-color: var(--primary-soft);
+  background-color: var(--bg);
   background-image: url('/images/auth.webp');
   background-position: center;
-  background-size: cover;
+  /* ~2/3 of the old full-bleed cover size: the 800×1000 art looked pixelated stretched across the panel. */
+  background-size: auto 72%;
+  background-repeat: no-repeat;
 }
 .auth-image-signup { background-color: var(--bg); background-image: url('/images/signup.webp'); background-size: auto 80%; background-repeat: no-repeat; }
 .auth-panel { display: flex; align-items: center; justify-content: center; padding: 64px 48px; }
