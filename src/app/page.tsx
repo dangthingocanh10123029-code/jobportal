@@ -18,7 +18,7 @@ import { LogoStrip } from '@/components/home/logo-strip';
 import { HomeAlertForm } from '@/components/home/home-alert-form';
 import { SalaryRange } from '@/components/home/salary-range';
 import { Button, FeaturedBadge, icon, iconLg, Input, VerifiedCheck } from '@/components/ui/primitives';
-import { ArrowRight, BellRing, Briefcase, CalendarClock, Check, Clock, Layers, MapPin, Plus, Search, Sparkles, Wallet } from 'lucide-react';
+import { ArrowRight, BellRing, Briefcase, CalendarClock, Check, Clock, Layers, MapPin, Plus, Search, Wallet } from 'lucide-react';
 
 function PostingCard({ posting, savedIds, isCandidate, matchReasons }: { posting: PostingSummary; savedIds: string[]; isCandidate: boolean; matchReasons?: string[] }) {
   return (
@@ -124,9 +124,8 @@ function PillRadios({ legend, name, options, value }: { legend: string; name: st
 export default async function HomePage({ searchParams }: { searchParams: Promise<HomeSearchParams> }) {
   const filter = searchFilterFromParams(await searchParams);
   const hasFilters = [...filterParams(filter)].some(([key, value]) => key !== 'sort' || value !== 'newest');
-  const [postingsPage, savedIds, profile, recommendations, alerts, thisWeek, allOpen, companiesPage] = await Promise.all([
+  const [postingsPage, savedIds, profile, recommendations, alerts, allOpen, companiesPage] = await Promise.all([
     listOpenPostings(filter), getSavedPostingIds(), getCurrentProfile(), getRecommendedPostings(), listJobAlerts(),
-    listOpenPostings({ postedWithinDays: 7 }).then((page) => page.total).catch(() => 0),
     // Unfiltered, the listing's own total is already every open posting.
     hasFilters ? listOpenPostings({}).then((page) => page.total).catch(() => null) : null,
     listCompanies({}).catch(() => null),
@@ -143,9 +142,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return (
     <main className="home-page">
       <HeroBanner companies={companiesPage?.total ?? 0} openPostings={allOpen ?? postingsPage.total}>
-        {thisWeek > 0 ? (
-          <Link className="hero-badge" href="/?posted=7#job-search"><Sparkles {...icon} />{thisWeek} việc làm mới tuần này</Link>
-        ) : null}
         <h1 id="home-title">Tìm công việc thật vừa ý</h1>
         <p>Tin tuyển dụng đang mở từ các công ty trên khắp Việt Nam. Tìm chậm rãi, lưu lại, ứng tuyển khi bạn sẵn sàng.</p>
         <form action="/" aria-label="Tìm việc làm" className="hero-search" method="get">

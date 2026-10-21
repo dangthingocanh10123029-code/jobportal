@@ -1690,8 +1690,6 @@ h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
 .hero-stats strong { color: var(--primary); font-weight: 700; }
 .popular-chips .chip { border-color: color-mix(in srgb, var(--border) 70%, transparent); background: color-mix(in srgb, var(--bg) 80%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .popular-chips .chip:hover { border-color: var(--accent); color: var(--primary); background: var(--bg); }
-.hero-badge { display: inline-flex; min-height: 32px; align-items: center; gap: 8px; margin-bottom: 16px; padding: 0 12px; border-radius: 999px; color: var(--primary); background: var(--primary-soft); font-size: 12px; font-weight: 500; transition: all 150ms ease; }
-.hero-badge:hover { background: var(--surface-muted); }
 .home-hero h1 { max-width: 720px; }
 .home-hero-content > p { max-width: 520px; margin: 12px auto 24px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 .hero-search { display: flex; width: min(720px, 100%); gap: 8px; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg); box-shadow: var(--shadow-raised); }
