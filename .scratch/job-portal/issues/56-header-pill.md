@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** open
+**Status:** resolved
 
 ## Quyết định của Coordinator
 - **Khung:** sticky, `top: 12px`, `width: min(92%, 1240px)`, cao 60px (mobile 56px), nền `color-mix(in srgb, var(--bg) 90%, transparent)` + `backdrop-filter: blur(12px)`, viền 1px `var(--border)`, bóng rất nhẹ (lớp đầu của bóng thẻ v7), `border-radius: 9999px`, padding ngang 8px 20px. Bỏ kiểu thanh trắng full-width của ticket 53. Áp cho mọi trang kể cả admin layout (sidebar admin không bị header đè).
