@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** open
+**Status:** resolved
 
 ## 10 công ty (tên phải khớp đúng `companies.name` trong DB)
 | slug | Wordmark | companies.name |
