@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F7FEE7"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#D9F99D" stroke-width="2"/>
+  <!-- Terraced rice fields & golden sun -->
+  <circle cx="88" cy="38" r="16" fill="#EAB308" />
+  <!-- Terrace 1 (Top) -->
+  <path fill="#84CC16" d="M 16,68 C 42,60 78,64 112,54 L 112,70 C 80,78 44,74 16,80 Z" />
+  <!-- Terrace 2 (Middle) -->
+  <path fill="#65A30D" d="M 16,80 C 44,74 80,78 112,70 L 112,86 C 80,94 44,88 16,94 Z" />
+  <!-- Terrace 3 (Base) -->
+  <path fill="#15803D" d="M 16,94 C 44,88 80,94 112,86 L 112,108 C 76,112 40,110 16,108 Z" />
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F59E0B"/>
+  <!-- Ringing brass bell emitting soundwave arcs -->
+  <!-- Top handle -->
+  <circle cx="64" cy="28" r="6" fill="none" stroke="#FFFFFF" stroke-width="4" />
+  <!-- Bell body -->
+  <path fill="#FFFFFF" d="M 64,34 C 50,34 46,60 38,82 C 34,88 40,92 64,92 C 88,92 94,88 90,82 C 82,60 78,34 64,34 Z" />
+  <!-- Clapper -->
+  <circle cx="64" cy="98" r="6" fill="#78350F" />
+  <!-- Soundwave arcs left & right -->
+  <path fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" d="M 22,50 C 16,60 16,74 22,84" />
+  <path fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" d="M 106,50 C 112,60 112,74 106,84" />
+</svg>

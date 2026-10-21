@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#FEFCE8"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#FEF08A" stroke-width="2"/>
+  <!-- Spreading tropical almond (cây bàng) canopy with broad leaves & brown trunk -->
+  <path fill="#78350F" d="M 58,106 L 70,106 L 68,76 L 78,64 L 72,60 L 64,70 L 56,60 L 50,64 L 60,76 Z" />
+  <!-- Tier 1 lower canopy -->
+  <ellipse cx="64" cy="62" rx="42" ry="18" fill="#15803D" />
+  <!-- Tier 2 upper canopy -->
+  <ellipse cx="64" cy="45" rx="32" ry="15" fill="#16A34A" />
+  <!-- Top canopy crown -->
+  <ellipse cx="64" cy="32" rx="20" ry="11" fill="#22C55E" />
+  <!-- Iconic autumnal bàng leaf in amber -->
+  <path fill="#EA580C" d="M 64,48 C 69,45 74,48 72,55 C 68,57 65,54 64,48 Z" />
+</svg>

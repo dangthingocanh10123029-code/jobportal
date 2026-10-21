@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#ECFDF5"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#A7F3D0" stroke-width="2"/>
+  <!-- Three-leaf clover with central healthcare cross -->
+  <!-- Stem -->
+  <path fill="none" stroke="#059669" stroke-width="5" stroke-linecap="round" d="M 64,70 C 64,88 56,104 46,110" />
+  <!-- Leaflet Top -->
+  <path fill="#10B981" d="M 64,64 C 48,50 40,24 64,24 C 88,24 80,50 64,64 Z" />
+  <!-- Leaflet Left -->
+  <path fill="#059669" d="M 64,64 C 50,80 24,88 24,64 C 24,40 50,48 64,64 Z" />
+  <!-- Leaflet Right -->
+  <path fill="#059669" d="M 64,64 C 78,80 104,88 104,64 C 104,40 78,48 64,64 Z" />
+  <!-- Small medical cross in white -->
+  <path fill="#FFFFFF" d="M 61,54 L 67,54 L 67,61 L 74,61 L 74,67 L 67,67 L 67,74 L 61,74 L 61,67 L 54,67 L 54,61 L 61,61 Z" />
+</svg>

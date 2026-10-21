@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#ECFDF5"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#A7F3D0" stroke-width="2"/>
+  <!-- Green cybersecurity heraldic shield with digital padlock -->
+  <path fill="#059669" d="M 64,22 C 84,22 98,28 98,42 C 98,76 80,98 64,108 C 48,98 30,76 30,42 C 30,28 44,22 64,22 Z" />
+  <path fill="#10B981" d="M 64,30 C 78,30 90,35 90,46 C 90,72 76,90 64,98 C 52,90 38,72 38,46 C 38,35 50,30 64,30 Z" />
+  <!-- Padlock in center -->
+  <rect x="52" y="60" width="24" height="18" rx="3" fill="#FFFFFF" />
+  <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" d="M 57,60 L 57,52 C 57,48 60,45 64,45 C 68,45 71,48 71,52 L 71,60" />
+  <circle cx="64" cy="69" r="2.5" fill="#059669" />
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F0F9FF"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#BAE6FD" stroke-width="2"/>
+  <!-- Diamond kite matching horizontal logo -->
+  <path fill="#0284C7" d="M 64,18 L 28,58 L 64,94 L 64,18 Z" />
+  <path fill="#0369A1" d="M 64,18 L 100,58 L 64,94 L 64,18 Z" />
+  <!-- Kite string -->
+  <path fill="none" stroke="#0284C7" stroke-width="4" stroke-linecap="round" d="M 64,94 C 60,106 42,106 42,114 C 42,120 48,122 54,120" />
+  <!-- Ribbon bows on string -->
+  <polygon points="46,104 58,100 52,108" fill="#0369A1" />
+  <polygon points="42,114 54,112 48,118" fill="#0369A1" />
+</svg>

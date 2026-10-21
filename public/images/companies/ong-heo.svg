@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#FFF1F2"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#FECDD3" stroke-width="2"/>
+  <!-- Piggy bank matching horizontal logo -->
+  <!-- Coin dropping into piggy bank -->
+  <circle cx="58" cy="28" r="12" fill="#E11D48" />
+  <circle cx="58" cy="28" r="5.5" fill="#FFFFFF" />
+  <!-- Piggy bank body -->
+  <path fill="#E11D48" d="
+    M 78,42
+    L 88,28 C 90,25 93,27 92,30 L 86,46
+    C 92,51 97,58 98,64
+    L 104,64 C 107,64 108,67 108,70 L 108,74 C 108,77 107,80 104,80
+    L 98,80
+    C 96,92 84,102 70,104
+    L 70,114 C 70,116 68,118 66,118 L 60,118 C 58,118 56,116 56,114 L 56,105
+    L 44,105 L 44,114 C 44,116 42,118 40,118 L 34,118 C 32,118 30,116 30,114 L 30,100
+    C 24,92 22,82 22,72
+    C 22,54 36,41 54,41
+    C 62,41 71,43 78,42 Z
+    M 50,45 L 66,45 L 66,50 L 50,50 Z
+    M 84,60 A 3.6 3.6 0 1 0 84,67.2 A 3.6 3.6 0 1 0 84,60 Z
+  " />
+  <!-- Curly tail -->
+  <path fill="none" stroke="#E11D48" stroke-width="4.5" stroke-linecap="round" d="M 22,70 C 17,70 15,65 18,62 C 21,59 24,64 20,68" />
+</svg>

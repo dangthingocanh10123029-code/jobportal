@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F0FDF4"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#BBF7D0" stroke-width="2"/>
+  <!-- Three vertical bamboo stalks with joints and graceful leaves -->
+  <!-- Stalk 1 (Left) -->
+  <rect x="36" y="24" width="8" height="22" rx="2" fill="#16A34A" />
+  <rect x="36" y="48" width="8" height="26" rx="2" fill="#16A34A" />
+  <rect x="36" y="76" width="8" height="28" rx="2" fill="#16A34A" />
+  <!-- Stalk 2 (Center tall) -->
+  <rect x="58" y="18" width="9" height="26" rx="2" fill="#15803D" />
+  <rect x="58" y="46" width="9" height="30" rx="2" fill="#15803D" />
+  <rect x="58" y="78" width="9" height="32" rx="2" fill="#15803D" />
+  <!-- Stalk 3 (Right) -->
+  <rect x="82" y="28" width="8" height="22" rx="2" fill="#16A34A" />
+  <rect x="82" y="52" width="8" height="26" rx="2" fill="#16A34A" />
+  <rect x="82" y="80" width="8" height="26" rx="2" fill="#16A34A" />
+  <!-- Bamboo Leaves -->
+  <path fill="#22C55E" d="M 67,46 C 78,42 90,46 96,52 C 86,52 76,50 67,46 Z" />
+  <path fill="#22C55E" d="M 36,48 C 24,44 14,50 8,56 C 18,56 28,54 36,48 Z" />
+  <path fill="#22C55E" d="M 58,22 C 46,16 38,20 32,26 C 42,26 50,24 58,22 Z" />
+</svg>

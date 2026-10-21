@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#0284C7"/>
+  <!-- Two wind-filled billowing sails over ocean waves -->
+  <!-- Main Sail (Left) -->
+  <path fill="#FFFFFF" d="M 60,22 C 60,22 62,60 30,76 C 45,74 60,65 60,22 Z" />
+  <!-- Jib Sail (Right) -->
+  <path fill="#BAE6FD" d="M 66,32 C 66,32 88,60 98,76 C 85,74 72,66 66,32 Z" />
+  <!-- Boat hull -->
+  <path fill="#0369A1" d="M 24,84 C 44,84 84,84 104,84 C 94,96 74,100 50,100 C 34,100 26,92 24,84 Z" />
+  <!-- Wave crest -->
+  <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" d="M 18,94 C 28,94 36,90 46,90 C 56,90 64,94 74,94 C 84,94 92,90 102,90 C 108,90 114,92 118,94" />
+</svg>

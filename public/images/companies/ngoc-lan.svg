@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F0FDFA"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#99F6E4" stroke-width="2"/>
+  <!-- Elegant magnolia / champaca flower with slender petals -->
+  <!-- Stem & base leaves -->
+  <path fill="#0D9488" d="M 64,78 C 50,86 42,100 40,110 C 56,106 64,94 64,78 Z" />
+  <path fill="#14B8A6" d="M 64,78 C 78,86 86,100 88,110 C 72,106 64,94 64,78 Z" />
+  <!-- Center Petal -->
+  <path fill="#F59E0B" d="M 64,22 C 58,40 58,68 64,80 C 70,68 70,40 64,22 Z" />
+  <!-- Left Petal -->
+  <path fill="#FBBF24" d="M 64,80 C 54,68 36,46 42,32 C 54,42 60,64 64,80 Z" />
+  <!-- Right Petal -->
+  <path fill="#FBBF24" d="M 64,80 C 74,68 92,46 86,32 C 74,42 68,64 64,80 Z" />
+</svg>

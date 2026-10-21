@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F0FDF4"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#BBF7D0" stroke-width="2"/>
+  <!-- Pine trees on hill slope matching horizontal logo -->
+  <!-- Taller back pine -->
+  <polygon points="48,24 32,48 39,48 26,68 35,68 22,90 74,90 61,68 70,68 57,48 64,48" fill="#15803D" />
+  <rect x="44" y="90" width="8" height="12" fill="#15803D" />
+  <!-- Smaller front pine -->
+  <polygon points="76,46 62,66 68,66 56,84 62,84 50,98 102,98 90,84 96,84 84,66 90,66" fill="#22C55E" />
+  <rect x="72" y="98" width="8" height="8" fill="#166534" />
+  <!-- Hill slope base -->
+  <path fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" d="M 12,108 C 32,105 64,103 116,108" />
+</svg>

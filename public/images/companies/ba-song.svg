@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F0F9FF"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#BAE6FD" stroke-width="2"/>
+  <!-- Three parallel converging river currents -->
+  <path fill="none" stroke="#0284C7" stroke-width="9" stroke-linecap="round" d="M 20,40 C 50,40 60,60 85,60 C 105,60 110,48 116,48" />
+  <path fill="none" stroke="#0369A1" stroke-width="9" stroke-linecap="round" d="M 16,64 C 46,64 56,84 85,84 C 105,84 110,72 116,72" />
+  <path fill="none" stroke="#38BDF8" stroke-width="9" stroke-linecap="round" d="M 20,88 C 50,88 60,108 85,108 C 105,108 110,96 116,96" />
+</svg>
