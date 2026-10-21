@@ -590,6 +590,7 @@ await check('Điện thoại 360px: trang Ứng viên đã đăng nhập không 
 // ---------- Sign out ----------
 await check('Đăng xuất → về /login, header có "Đăng nhập"', cand, async () => {
   await cand.goto(`${BASE}/`);
+  await cand.locator('summary[aria-label="Menu tài khoản"]').click(); // Đăng xuất sits in the account menu (ticket 56)
   await cand.getByRole('button', { name: 'Đăng xuất' }).click();
   await cand.waitForURL(/\/login/);
   await cand.goto(`${BASE}/candidate/applications`);

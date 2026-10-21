@@ -438,7 +438,6 @@ h1 { margin: 0; line-height: 1.12; }
   .withdraw-application-error { text-align: left; }
 }
 @media (max-width: 700px) {
-  .profile-link, .nav-account-actions { display: none; }
   .page-shell, .narrow-shell { width: calc(100% - 32px); padding-top: 42px; }
   .account-card { padding: 22px; }
   .auth-page { min-height: calc(100vh - 68px); display: block; }
@@ -1420,51 +1419,61 @@ h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 .lucide { flex: 0 0 auto; vertical-align: -0.2em; }
 
-/* Header: white full-width bar */
-.site-header { position: sticky; top: 0; z-index: 40; height: 64px; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--bg) 80%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-.site-header-inner { display: flex; width: min(1200px, calc(100% - 32px)); height: 100%; align-items: center; gap: 12px; margin: 0 auto; }
-.has-wide-nav .site-header-inner { width: min(1440px, calc(100% - 32px)); gap: 8px; }
+/* Header: floating pill (ticket 56) — brand left, nav centre, actions + CTA right */
+.site-header { position: sticky; top: 12px; z-index: 40; display: flex; width: min(92%, 1240px); height: 60px; align-items: center; gap: 16px; margin: 12px auto 0; padding: 8px 12px 8px 20px; border: 1px solid var(--border); border-radius: 9999px; background: color-mix(in srgb, var(--bg) 90%, transparent); box-shadow: 0 1px 2px rgba(12,30,46,.04); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .brand { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 10px; color: var(--text-strong); font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
 .brand-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; color: var(--bg); background: var(--primary); }
-.main-nav { display: flex; gap: 4px; margin-left: 16px; color: var(--text); font-size: 14px; font-weight: 500; white-space: nowrap; }
-.main-nav a, .login-link, .profile-link { display: inline-flex; height: 40px; align-items: center; gap: 8px; padding: 0 12px; border-radius: var(--radius-control); color: var(--text); white-space: nowrap; transition: all 150ms ease; }
-.has-wide-nav .main-nav { gap: 0; margin-left: 4px; }
-.has-wide-nav .main-nav a { padding: 0 6px; }
-.has-wide-nav .site-header-end { gap: 4px; }
-/* Signed-in bars carry up to 10 links: the account link shrinks to its icon (name kept for screen readers). */
-.has-wide-nav .profile-link { width: 40px; justify-content: center; padding: 0; }
-.has-wide-nav .profile-link-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.main-nav a:hover, .login-link:hover, .profile-link:hover { color: var(--primary); background: var(--surface-muted); }
-.site-header-end { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 14px; font-weight: 500; }
-.notification-bell { position: relative; display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: var(--radius-control); color: var(--text); transition: all 150ms ease; }
-.notification-bell:hover { color: var(--primary); background: var(--surface-muted); }
+.main-nav { display: flex; min-width: 0; flex: 1 1 auto; justify-content: center; gap: 28px; font-size: 14px; font-weight: 500; white-space: nowrap; }
+.main-nav a, .login-link { color: var(--text); white-space: nowrap; transition: color 150ms ease; }
+.main-nav a:hover, .login-link:hover { color: var(--text-strong); }
+.main-nav a[aria-current="page"] { color: var(--primary); }
+.site-header-end { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; margin-left: auto; font-size: 14px; font-weight: 500; }
+.login-link { margin-right: 12px; }
+.notification-bell { position: relative; display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 9999px; color: var(--text); transition: all 150ms ease; }
+.notification-bell:hover { color: var(--text-strong); background: var(--surface-muted); }
 .notification-badge { position: absolute; top: 2px; right: 2px; display: grid; min-width: 18px; height: 18px; place-items: center; padding: 0 4px; border: 2px solid var(--bg); border-radius: 999px; color: var(--bg); background: var(--danger); font-size: 10px; font-weight: 600; line-height: 1; }
-.mobile-menu { position: relative; display: none; margin-left: auto; }
-.mobile-menu summary { display: inline-flex; height: 40px; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text-strong); background: var(--bg); cursor: pointer; font-size: 14px; font-weight: 500; list-style: none; transition: all 150ms ease; }
-.mobile-menu summary:hover { background: var(--surface-muted); }
-.mobile-menu summary::-webkit-details-marker { display: none; }
-.mobile-menu-panel { position: absolute; top: calc(100% + 12px); right: 0; display: flex; width: min(280px, calc(100vw - 32px)); max-height: calc(100vh - 96px); flex-direction: column; gap: 2px; overflow-y: auto; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg); box-shadow: var(--shadow-card-hover); }
-.mobile-menu-panel a { display: flex; min-height: 40px; flex: 0 0 auto; align-items: center; gap: 10px; padding: 0 12px; border-radius: var(--radius-control); color: var(--text); font-size: 14px; font-weight: 500; }
-.mobile-menu-panel a svg { color: var(--text-muted); }
-.mobile-menu-panel a:hover { color: var(--primary); background: var(--surface-muted); }
-@media (max-width: 1439px) {
-  .has-wide-nav .main-nav { display: none; }
-  .has-wide-nav .mobile-menu { display: block; }
-  .has-wide-nav .site-header-end { margin-left: 0; }
+/* Pill CTA: a deliberate exception to the 12px button radius, header only. */
+.header-cta { display: inline-flex; height: 36px; flex: 0 0 auto; align-items: center; gap: 6px; margin-left: 4px; padding: 0 22px; border-radius: 9999px; color: #fff; background: var(--navy); font-size: 13px; font-weight: 600; white-space: nowrap; transition: background 150ms ease; }
+.header-cta:hover { background: color-mix(in srgb, var(--navy) 80%, white); }
+.header-cta-icon { display: none; }
+.account-menu, .mobile-menu { position: relative; }
+.account-menu summary, .mobile-menu summary { display: inline-flex; height: 40px; align-items: center; gap: 2px; padding: 0 4px; border-radius: 9999px; color: var(--text); cursor: pointer; list-style: none; transition: background 150ms ease; }
+.account-menu summary:hover, .mobile-menu summary:hover, .account-menu[open] summary, .mobile-menu[open] summary { background: var(--surface-muted); }
+.account-menu summary::-webkit-details-marker, .mobile-menu summary::-webkit-details-marker { display: none; }
+.account-avatar { width: 32px; height: 32px; border-radius: 9999px; background: var(--surface-muted); }
+.account-chevron { color: var(--text-muted); transition: transform 150ms ease; }
+.account-menu[open] .account-chevron { transform: rotate(180deg); }
+.mobile-menu { display: none; }
+.mobile-menu summary { width: 40px; justify-content: center; padding: 0; color: var(--text-strong); }
+.header-menu-panel { position: absolute; top: calc(100% + 14px); right: 0; display: flex; width: min(260px, calc(100vw - 32px)); max-height: calc(100vh - 96px); flex-direction: column; gap: 2px; overflow-y: auto; padding: 8px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg); box-shadow: var(--shadow-card); }
+.header-menu-panel a, .header-menu-panel .nav-account-actions button { display: flex; width: 100%; min-height: 40px; flex: 0 0 auto; align-items: center; justify-content: flex-start; gap: 10px; padding: 0 12px; border: 0; border-radius: var(--radius-control); color: var(--text); background: none; box-shadow: none; font-size: 14px; font-weight: 500; }
+.header-menu-panel a:hover, .header-menu-panel button:hover { color: var(--text-strong); background: var(--surface-muted); }
+.header-menu-panel a[aria-current="page"] { color: var(--primary); }
+.header-menu-panel svg { display: none; } /* SignOutButton brings its own icon; menus are text-only */
+.header-menu-panel .nav-account-actions { flex-direction: column; align-items: stretch; gap: 4px; margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--border); }
+.account-menu-name { overflow: hidden; margin: 0; padding: 8px 12px 10px; color: var(--text-strong); font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 1099px) {
+  .main-nav { gap: 18px; }
 }
-@media (max-width: 1000px) {
-  .main-nav, .site-header .header-post-link { display: none; }
+@media (min-width: 1000px) and (max-width: 1099px) {
+  /* Signed-in bars carry icons + avatar: the logo alone keeps 5 links on one row (name stays in aria-label). */
+  .site-header:has(.account-menu) .brand-name { display: none; }
+}
+@media (max-width: 999px) {
+  .main-nav { display: none; }
   .mobile-menu { display: block; }
-  .site-header-end { margin-left: 0; }
 }
 @media (max-width: 700px) {
-  .site-header { height: 56px; }
-  .login-link, .profile-link, .nav-account-actions { display: none; }
+  .site-header { height: 56px; padding: 8px 8px 8px 16px; }
+  .login-link, .header-messages { display: none; }
 }
 @media (max-width: 420px) {
-  .mobile-menu-label { display: none; }
-  .site-header-end { gap: 4px; }
-  .site-header-end .button { padding: 0 12px; }
+  .site-header { gap: 8px; padding-left: 12px; }
+  .site-header-end { gap: 2px; }
+  .account-chevron { display: none; }
+  .header-cta { width: 36px; justify-content: center; margin-left: 2px; padding: 0; }
+  .header-cta-icon { display: block; }
+  .header-cta-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 
 /* Footer */
