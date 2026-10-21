@@ -1679,6 +1679,8 @@ h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
 
 /* Home */
 .home-hero { position: relative; display: flex; min-height: 520px; align-items: center; overflow: hidden; padding: 64px 16px; background: linear-gradient(180deg, var(--primary-soft) 0%, var(--surface-muted) 55%, var(--bg) 100%); text-align: center; }
+/* Pull the banner up behind the floating header (12px gap + 60px bar) so its background covers the top of the page. */
+.home-hero { margin-top: -72px; padding-top: 136px; }
 .home-hero::before { position: absolute; inset: 0; background-image: radial-gradient(var(--primary) 1px, transparent 1.5px); background-size: 24px 24px; content: ''; opacity: .06; pointer-events: none; -webkit-mask-image: linear-gradient(180deg, black 0%, transparent 85%); mask-image: linear-gradient(180deg, black 0%, transparent 85%); }
 .hero-blob { position: absolute; width: 420px; height: 420px; border-radius: 50%; filter: blur(80px); opacity: .2; pointer-events: none; }
 .hero-blob-left { top: -160px; left: -120px; background: radial-gradient(circle, var(--accent), transparent 70%); }
@@ -1867,7 +1869,7 @@ legend.filter-legend { margin-bottom: 8px; padding: 0; }
 }
 @media (max-width: 640px) {
   .button { white-space: normal; }
-  .home-hero { min-height: 0; padding: 40px 16px 48px; }
+  .home-hero { min-height: 0; margin-top: -68px; padding: 108px 16px 48px; }
   .hero-search, .inline-form { flex-direction: column; }
   .hero-search .button, .inline-form .button { width: 100%; }
   .home-section { padding-top: 40px; }
