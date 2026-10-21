@@ -7,13 +7,12 @@ import { getCurrentProfile } from '@/actions/auth';
 import { getRecommendedPostings, listJobAlerts } from '@/actions/alerts';
 import { searchFilterSchema } from '@/actions/postings-schema';
 import type { PostingSort, PostingSummary, SearchFilter } from '@/actions/types';
-import { employmentLabels, formatDate, formatPostedAgo, formatSalary, industryLabels, jobLevelLabels, postingSortLabels } from '@/components/format';
+import { employmentLabels, formatDate, formatSalary, industryLabels, jobLevelLabels, postingSortLabels } from '@/components/format';
 import { SavedPostingButton } from '@/components/candidates/saved-posting-button';
 import { CreateAlertButton } from '@/components/alerts/create-alert-button';
 import { alertFilterFromSearch } from '@/components/alerts/describe';
 import { CompaniesAndStories, HomeFaq, HowItWorks, LatestArticles } from '@/components/home/home-sections';
 import { EmployerCTA } from '@/components/home/employer-cta';
-import { FreshCarousel } from '@/components/home/fresh-carousel';
 import { HeroBanner } from '@/components/home/hero-banner';
 import { LogoStrip } from '@/components/home/logo-strip';
 import { HomeAlertForm } from '@/components/home/home-alert-form';
@@ -139,9 +138,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const isLanding = !hasFilters && postingsPage.page === 1;
   // 'newest' lists featured postings first, so the unfiltered first page already holds the block's ≤ 6.
   const featured = isLanding ? postingsPage.items.filter((p) => p.featured).slice(0, 6) : [];
-  const fresh = isLanding ? [...postingsPage.items].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 10) : [];
   const skills = popularSkills(postingsPage.items);
-  const now = Date.now();
 
   return (
     <main className="home-page">
@@ -167,27 +164,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </HeroBanner>
 
       {isLanding && companiesPage ? <LogoStrip companies={companiesPage.items.filter((c) => c.openPostings > 0).slice(0, 10)} /> : null}
-
-      {fresh.length ? (
-        <div className="home-band">
-          <section aria-labelledby="fresh-title" className="home-section fresh-section">
-            <FreshCarousel heading={<div className="section-heading"><span className="eyebrow">Việc mới đăng</span><h2 id="fresh-title">Vừa lên bảng tin</h2></div>}>
-              {fresh.map((posting) => (
-                <li key={posting.id}>
-                  <Link className="fresh-card" href={`/jobs/${posting.id}`} prefetch={false}>
-                    <span className="fresh-card-top">{formatPostedAgo(posting.createdAt, now)}</span>
-                    <span className="fresh-card-main">
-                      <img alt="" height="40" src={posting.companyLogoUrl ?? '/images/company-placeholder.svg'} width="40" />
-                      <span><span className="fresh-card-title">{posting.title}</span><span className="fresh-card-company">{posting.companyName}</span></span>
-                    </span>
-                    <span className="fresh-card-meta"><strong>{formatSalary(posting.salaryMin, posting.salaryMax)}</strong> · {posting.location}</span>
-                  </Link>
-                </li>
-              ))}
-            </FreshCarousel>
-          </section>
-        </div>
-      ) : null}
 
       {isCandidate && isLanding && recommendations.length ? (
         <section aria-labelledby="recommended-postings" className="home-section">

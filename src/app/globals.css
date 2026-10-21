@@ -1540,13 +1540,13 @@ h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
 
 /* Cards: white, 1px border, 16px radius, layered shadow */
 .surface-card, .posting-card, .public-posting-card, .candidate-application-card, .company-list-card, .company-open-posting-card, .shared-stat-card, .saved-posting-card,
-.related-posting-card, .posting-stat, .talent-card, .article-card, .companies-search-form, .talent-filter-form, .notification-list, .messages-layout, .fresh-card,
+.related-posting-card, .posting-stat, .talent-card, .article-card, .companies-search-form, .talent-filter-form, .notification-list, .messages-layout,
 .filter-panel, .featured-posting-card, .how-card, .company-tile, .story-card, .faq-item, .create-alert-form, .dashboard-total-card, .guide-hero, .schedule-interview-form, .alert-section {
   border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg); box-shadow: var(--shadow-card);
 }
 .interview-card, .review-mine { border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg); box-shadow: var(--shadow-card); }
 .posting-card:hover, .public-posting-card:hover, .company-list-card:hover, .company-open-posting-card:hover, .saved-posting-card:hover, .candidate-application-card:hover,
-.related-posting-card:hover, .talent-card:hover, .article-card:hover, .fresh-card:hover, .featured-posting-card:hover, .company-tile:hover {
+.related-posting-card:hover, .talent-card:hover, .article-card:hover, .featured-posting-card:hover, .company-tile:hover {
   border-color: var(--border-strong); box-shadow: var(--shadow-card-hover); transform: none;
 }
 .public-posting-card.is-featured, .featured-posting-card { border-color: var(--primary-soft); }
@@ -1694,27 +1694,8 @@ h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
 .section-heading p { margin: 8px 0 0; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 .home-band { background: var(--surface-muted); }
 .home-band > .home-section { padding-block: 64px; }
-.carousel-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-.carousel-head .section-heading { margin-bottom: 0; }
-.carousel-buttons { display: flex; flex: 0 0 auto; gap: 8px; }
-.carousel-button { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--text-strong); background: var(--bg); box-shadow: var(--shadow-card); cursor: pointer; transition: all 150ms ease; }
-.carousel-button:hover:not(:disabled) { border-color: var(--accent); color: var(--primary); }
-.carousel-button:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--ring); }
-.carousel-button:disabled { opacity: .4; cursor: default; box-shadow: none; }
-.fresh-scroller { display: flex; gap: 16px; margin: 0 -12px; padding: 4px 12px 24px; overflow-x: auto; list-style: none; scroll-padding-inline: 12px; scroll-snap-type: x mandatory; scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, black 12px, black calc(100% - 32px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, black 12px, black calc(100% - 32px), transparent 100%); }
-.fresh-scroller::-webkit-scrollbar { display: none; }
-.fresh-scroller li { width: 280px; min-width: 0; flex: 0 0 auto; scroll-snap-align: start; }
-.fresh-card { display: flex; height: 100%; flex-direction: column; gap: 12px; padding: 20px; transition: all 150ms ease; }
-.fresh-card-top { color: var(--text-muted); font-size: 12px; }
-.fresh-card-main { display: flex; min-width: 0; align-items: flex-start; gap: 12px; }
-.fresh-card-main img { flex: 0 0 auto; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; object-fit: cover; }
-.fresh-card-main > span { min-width: 0; }
-.fresh-card-title { display: -webkit-box; overflow: hidden; color: var(--text-strong); font-size: 16px; font-weight: 600; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.fresh-card:hover .fresh-card-title { color: var(--primary); }
-.fresh-card-company { display: block; margin-top: 4px; overflow: hidden; color: var(--text-muted); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
-.fresh-card-meta { margin-top: auto; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.5; }
-.fresh-card-meta strong, .posting-salary { color: var(--primary); font-weight: 600; }
+
+.posting-salary { color: var(--primary); font-weight: 600; }
 
 /* Logo strip */
 .logo-strip { width: min(1200px, calc(100% - 48px)); margin: 0 auto; padding: 8px 0 48px; text-align: center; }
