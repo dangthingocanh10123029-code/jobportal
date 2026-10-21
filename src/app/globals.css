@@ -101,7 +101,7 @@ h1 { margin: 0; line-height: 1.12; }
   background-position: center;
   background-size: cover;
 }
-.auth-image-signup { background-image: url('/images/signup.webp'); }
+.auth-image-signup { background-color: var(--bg); background-image: url('/images/signup.webp'); background-size: contain; background-repeat: no-repeat; }
 .auth-panel { display: flex; align-items: center; justify-content: center; padding: 64px 48px; }
 .auth-content { width: min(100%, 440px); }
 .auth-content .page-intro { margin-bottom: 30px; }
