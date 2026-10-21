@@ -24,3 +24,10 @@
 - [ ] npm test, typecheck, next build xanh
 - [ ] Bản production local + `sweep.mjs` 0 vấn đề
 - [ ] Chụp trang chủ 1440 + 390 (khách và Candidate đăng nhập), 1 trang trong (vd /companies) để thấy footer; tự xem và sửa; gửi đường dẫn ảnh trong worker_done
+
+## Bổ sung (2026-10-21): đồng nhất control sidebar bộ lọc — `docs/design/filter-controls-brief.md`
+- Không dùng shadcn (dự án không có). Giữ `<select>` native (a11y, không thêm dependency), chỉ đổi CSS: appearance none + chevron SVG inline. Màu chevron qua biến: dùng `mask-image` trên pseudo-element của wrapper, hoặc 2 background-image (thường/focus) — chevron mặc định var(--text-muted), focus var(--primary); không hex lẻ ngoài `:root` (data-URI SVG được phép chứa màu nếu không làm được bằng biến, ghi chú lý do).
+- Input number: ẩn spinner; KHÔNG thêm nút −/+ (phím mũi tên vẫn tăng/giảm; giữ gọn).
+- Áp class chung cho mọi control trong sidebar (và nên dùng chung cho control toàn site nếu không vỡ trang khác; sweep phải 0 vấn đề).
+- "Xóa bộ lọc": giữ là `<Link>` (E2E dùng role link "Xóa bộ lọc"), đổi style thành nút ghost full width dưới "Áp dụng bộ lọc"; giữ điều kiện chỉ hiện khi có bộ lọc.
+- Chụp sidebar trước/sau (1440) vào scratchpad/e2e/t55/; nếu có Firefox/WebKit của Playwright thì chụp thêm, không có thì ghi rõ chỉ kiểm Chrome.
