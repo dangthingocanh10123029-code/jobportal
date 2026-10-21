@@ -1703,8 +1703,8 @@ h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
 .logo-strip-track { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 32px; margin: 0; padding: 0; list-style: none; }
 .logo-strip-copy { display: none; }
 .logo-strip-item { display: block; padding: 4px; border-radius: var(--radius-control); }
-.logo-strip-item img { display: block; width: 48px; height: 48px; border-radius: 12px; filter: grayscale(1); opacity: .6; transition: filter 150ms ease, opacity 150ms ease; }
-.logo-strip-item:hover img, .logo-strip-item:focus-visible img { filter: none; opacity: 1; }
+.logo-strip-item img { display: block; width: 48px; height: 48px; border-radius: 12px; transition: transform 150ms ease; }
+.logo-strip-item:hover img, .logo-strip-item:focus-visible img { transform: translateY(-2px); }
 .logo-strip-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @keyframes logo-marquee { to { transform: translateX(-50%); } }
 @media (max-width: 700px) {
