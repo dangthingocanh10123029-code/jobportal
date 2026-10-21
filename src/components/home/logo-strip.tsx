@@ -1,13 +1,11 @@
 import Link from 'next/link';
 import type { CompanySummary } from '@/actions/types';
-import { shortCompanyName } from '@/components/format';
 
 function Logos({ companies, copy }: { companies: CompanySummary[]; copy?: boolean }) {
   return companies.map((company) => (
     <li aria-hidden={copy || undefined} className={copy ? 'logo-strip-copy' : undefined} key={company.id}>
-      <Link aria-label={company.name} className="logo-strip-item" href={`/companies/${company.id}`} prefetch={false} tabIndex={copy ? -1 : undefined}>
-        <img alt="" height="40" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="40" />
-        <span>{shortCompanyName(company.name)}</span>
+      <Link aria-label={company.name} className="logo-strip-item" href={`/companies/${company.id}`} prefetch={false} tabIndex={copy ? -1 : undefined} title={company.name}>
+        <img alt="" height="48" src={company.logoUrl ?? '/images/company-placeholder.svg'} width="48" />
       </Link>
     </li>
   ));
