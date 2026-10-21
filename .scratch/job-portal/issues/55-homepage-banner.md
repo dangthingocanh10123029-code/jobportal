@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** open
+**Status:** resolved
 
 ## Quyết định của Coordinator
 - **Hàng số liệu hero:** KHÔNG dùng số trong brief (241 / 120+ / 63 là ví dụ). Dùng số thật: "N việc làm" = `listOpenPostings({}).total`, "M công ty" = `listCompanies({}).total` (số chính xác, không làm tròn kiểu "120+"). Không có nguồn đếm tỉnh/thành → BỎ mục "tỉnh thành" (không ghi 63). Số định dạng `toLocaleString('vi-VN')`.
