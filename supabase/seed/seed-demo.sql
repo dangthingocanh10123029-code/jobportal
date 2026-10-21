@@ -389,6 +389,47 @@ update public.companies co set
   size = c.size, address = c.address, website = 'https://' || c.slug || '.example',
   created_at = now() - make_interval(days => 60 + c.n)
 from demo_company c where co.id = c.id;
+-- Ticket 57: mỗi công ty demo một logo riêng (chỉ đổi logo seed /images/companies/logo-NN.svg, không đụng logo người dùng tự tải lên).
+update public.companies set logo_url = '/images/companies/muoi-phuong.svg' where name = 'Công ty Cổ phần Chuỗi Nhà thuốc Mười Phương' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/may-bac.svg' where name = 'Công ty Cổ phần Công nghệ Mây Bạc' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/bai-boi.svg' where name = 'Công ty Cổ phần Địa ốc Bãi Bồi' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ban-tron.svg' where name = 'Công ty Cổ phần Dịch vụ Văn phòng Bàn Tròn' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/luc-lam.svg' where name = 'Công ty Cổ phần Dữ liệu Lục Lam' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/cay-bang.svg' where name = 'Công ty Cổ phần Giáo dục Cây Bàng' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/hat-mam-xanh.svg' where name = 'Công ty Cổ phần Giáo dục Hạt Mầm Xanh' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/canh-buom.svg' where name = 'Công ty Cổ phần Giao vận Cánh Buồm' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ruong-bac.svg' where name = 'Công ty Cổ phần Nông nghiệp Ruộng Bậc' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/truc-xanh.svg' where name = 'Công ty Cổ phần Phân phối Trúc Xanh Miền Nam' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/mat-troi-hong.svg' where name = 'Công ty Cổ phần Quảng cáo Mặt Trời Hồng' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/hat-de.svg' where name = 'Công ty Cổ phần Thanh toán Hạt Dẻ' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/dong-que-ngot.svg' where name = 'Công ty Cổ phần Thực phẩm Đồng Quê Ngọt' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/hai-dang.svg' where name = 'Công ty Cổ phần Trí tuệ Nhân tạo Hải Đăng' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/phu-sa.svg' where name = 'Công ty Cổ phần Tư vấn Tài chính Phù Sa' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/mong-da.svg' where name = 'Công ty Cổ phần Xây dựng Móng Đá' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ngay-thang.svg' where name = 'Công ty Luật Hợp danh Ngay Thẳng' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/can-can.svg' where name = 'Công ty Luật TNHH Cán Cân' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ong-heo.svg' where name = 'Công ty Tài chính Tiêu dùng Ống Heo' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/la-chan-xanh.svg' where name = 'Công ty TNHH An ninh Mạng Lá Chắn Xanh' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/canh-dieu.svg' where name = 'Công ty TNHH Bao bì Cánh Diều' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/hoa-anh-dao.svg' where name = 'Công ty TNHH Biên phiên dịch Hoa Anh Đào' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/bep-me-nau.svg' where name = 'Công ty TNHH Chuỗi Nhà hàng Bếp Mẹ Nấu' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/luoi-thep.svg' where name = 'Công ty TNHH Cơ điện Lưới Thép' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/nha-vui.svg' where name = 'Công ty TNHH Điện máy Nhà Vui' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/doi-thong.svg' where name = 'Công ty TNHH Giải pháp Phần mềm Đồi Thông' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/hai-au-trang.svg' where name = 'Công ty TNHH Khách sạn Hải Âu Trắng' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ba-song.svg' where name = 'Công ty TNHH Kho vận Ba Sông' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/minh-bach.svg' where name = 'Công ty TNHH Kiểm toán và Tư vấn Thuế Minh Bạch' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/dom-dom.svg' where name = 'Công ty TNHH Linh kiện Chính xác Đom Đóm' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/canh-cam.svg' where name = 'Công ty TNHH Nhân lực Cánh Cam' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/mai-ngoi.svg' where name = 'Công ty TNHH Nội thất Mái Ngói' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/cau-vong-so.svg' where name = 'Công ty TNHH Phần mềm Cầu Vồng Số' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/co-ba-la.svg' where name = 'Công ty TNHH Phòng khám Đa khoa Cỏ Ba Lá' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ngoc-lan.svg' where name = 'Công ty TNHH Thiết bị Văn phòng Ngọc Lan' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/giay-xep.svg' where name = 'Công ty TNHH Thiết kế Giấy Xếp' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/ro-tre.svg' where name = 'Công ty TNHH Thương mại Điện tử Rổ Tre' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/tieng-chuong.svg' where name = 'Công ty TNHH Trung tâm Liên lạc Tiếng Chuông' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/gio-nom.svg' where name = 'Công ty TNHH Truyền thông Gió Nồm' and (logo_url is null or logo_url like '/images/companies/logo-%');
+update public.companies set logo_url = '/images/companies/chim-se.svg' where name = 'Công ty TNHH Ứng dụng Di động Chim Sẻ' and (logo_url is null or logo_url like '/images/companies/logo-%');
 
 -- Candidate profiles: headline, skills, experience, education built from a role of their industry.
 do $$

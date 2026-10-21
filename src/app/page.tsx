@@ -124,11 +124,13 @@ function PillRadios({ legend, name, options, value }: { legend: string; name: st
 export default async function HomePage({ searchParams }: { searchParams: Promise<HomeSearchParams> }) {
   const filter = searchFilterFromParams(await searchParams);
   const hasFilters = [...filterParams(filter)].some(([key, value]) => key !== 'sort' || value !== 'newest');
-  const [postingsPage, savedIds, profile, recommendations, alerts, allOpen, companiesPage] = await Promise.all([
+  const [postingsPage, savedIds, profile, recommendations, alerts, allOpen, companiesPage, companiesPage2] = await Promise.all([
     listOpenPostings(filter), getSavedPostingIds(), getCurrentProfile(), getRecommendedPostings(), listJobAlerts(),
     // Unfiltered, the listing's own total is already every open posting.
     hasFilters ? listOpenPostings({}).then((page) => page.total).catch(() => null) : null,
     listCompanies({}).catch(() => null),
+    // The logo strip looks partners up by name across every company (2 pages of 20 cover the demo set).
+    hasFilters ? null : listCompanies({ page: 2 }).catch(() => null),
   ]);
   const isCandidate = profile?.role === 'CANDIDATE';
   const pageCount = Math.max(1, Math.ceil(postingsPage.total / postingsPage.pageSize));
@@ -159,7 +161,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         ) : null}
       </HeroBanner>
 
-      {isLanding && companiesPage ? <LogoStrip companies={companiesPage.items.filter((c) => c.openPostings > 0).slice(0, 10)} /> : null}
+      {isLanding && companiesPage ? <LogoStrip companies={[...companiesPage.items, ...(companiesPage2?.items ?? [])]} /> : null}
 
       {isCandidate && isLanding && recommendations.length ? (
         <section aria-labelledby="recommended-postings" className="home-section">
