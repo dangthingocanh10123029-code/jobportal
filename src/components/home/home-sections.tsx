@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { listArticles } from '@/actions/articles';
 import { listCompanies } from '@/actions/companies';
 import { listCompanyReviews } from '@/actions/reviews';
 import type { CompanySummary } from '@/actions/types';
+import { ArticleCard } from '@/components/articles/article-card';
 import { formatDate } from '@/components/format';
 import { Stars } from '@/components/reviews/stars';
 import { icon, iconLg, VerifiedCheck } from '@/components/ui/primitives';
@@ -72,6 +74,26 @@ function TopCompanies({ companies }: { companies: CompanySummary[] }) {
       </ul>
       <Link className="text-link" href="/companies">Xem tất cả công ty <ArrowRight {...icon} /></Link>
     </section>
+  );
+}
+
+/** "Cẩm nang nghề nghiệp": the 3 newest published articles; hidden when there are none or the API fails. */
+export async function LatestArticles() {
+  const articles = (await listArticles({}).catch(() => null))?.items.slice(0, 3) ?? [];
+  if (!articles.length) return null;
+  return (
+    <div className="home-band">
+      <section aria-labelledby="guide-title" className="home-section home-guide">
+        <div className="section-heading">
+          <span className="eyebrow">Cẩm nang nghề nghiệp</span>
+          <h2 id="guide-title">Đọc trước khi ứng tuyển</h2>
+        </div>
+        <div className="home-guide-grid">
+          {articles.map((article) => <ArticleCard article={article} headingLevel={3} key={article.id} />)}
+        </div>
+        <Link className="text-link" href="/guide">Xem tất cả bài viết <ArrowRight {...icon} /></Link>
+      </section>
+    </div>
   );
 }
 
