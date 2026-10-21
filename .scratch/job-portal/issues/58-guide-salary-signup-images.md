@@ -4,7 +4,7 @@
 
 **Blocked by:** —
 
-**Status:** open
+**Status:** resolved
 
 ## Phần A — Antigravity (hình ảnh) — branch `task/58-a-guide-images`
 Phong cách: minh họa phẳng hiện đại có chiều sâu nhẹ, bảng màu v7 (`docs/design/white-blue-design-system.md`: #0369A1, #0EA5E9, #E0F2FE, #F0F9FF, #0C1E2E, #334155, nền trắng; được thêm tối đa 1 màu nhấn ấm cho mỗi ảnh). **KHÔNG chữ, KHÔNG con số/mức lương/tên công ty/logo thật** trong ảnh (phiếu lương, biểu đồ chỉ là khối/vạch tượng trưng).
