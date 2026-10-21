@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#059669"/>
+  <!-- Compass star pharmacy cross -->
+  <path fill="#FFFFFF" d="M 64,22 L 69,50 L 97,55 L 75,70 L 83,98 L 64,80 L 45,98 L 53,70 L 31,55 L 59,50 Z" />
+  <!-- Medical cross core -->
+  <path fill="#059669" d="M 58,46 L 70,46 L 70,58 L 82,58 L 82,70 L 70,70 L 70,82 L 58,82 L 58,70 L 46,70 L 46,58 L 58,58 Z" />
+  <circle cx="64" cy="64" r="3" fill="#A7F3D0" />
+</svg>

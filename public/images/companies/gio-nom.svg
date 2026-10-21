@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#06B6D4"/>
+  <!-- Sweeping dynamic southern breeze / aerodynamic vortex streams -->
+  <path fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" d="M 20,44 C 54,44 76,28 92,28 C 104,28 110,36 104,44 C 98,52 86,52 86,44" />
+  <path fill="none" stroke="#CFFAFE" stroke-width="7" stroke-linecap="round" d="M 16,68 C 60,68 82,54 98,54 C 110,54 116,62 110,70 C 104,78 92,78 92,70" />
+  <path fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" d="M 24,92 C 58,92 78,82 92,82 C 102,82 106,88 102,94 C 98,100 90,100 90,94" />
+</svg>

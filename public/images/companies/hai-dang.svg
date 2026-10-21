@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#0B132B"/>
+  <!-- Beams of intelligent AI light -->
+  <polygon points="64,46 120,24 124,56" fill="#FBBF24" opacity="0.4" />
+  <polygon points="64,46 8,24 4,56" fill="#FBBF24" opacity="0.4" />
+  <!-- Lighthouse Tower -->
+  <path fill="#FFFFFF" d="M 54,48 L 74,48 L 78,98 L 50,98 Z" />
+  <!-- Tower red/blue stripes -->
+  <polygon points="53,62 75,62 76,74 52,74" fill="#3B82F6" />
+  <polygon points="51,86 77,86 78,98 50,98" fill="#1D4ED8" />
+  <!-- Lantern room -->
+  <rect x="56" y="38" width="16" height="10" rx="1" fill="#FDE047" />
+  <path fill="#3B82F6" d="M 54,38 L 74,38 L 64,26 Z" />
+  <!-- Base rock -->
+  <path fill="#1E293B" d="M 36,98 L 92,98 L 98,108 L 30,108 Z" />
+</svg>

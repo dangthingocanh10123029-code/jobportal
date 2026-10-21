@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#4F46E5"/>
+  <!-- Central round table -->
+  <circle cx="64" cy="64" r="22" fill="#FFFFFF" />
+  <circle cx="64" cy="64" r="14" fill="#EEF2FF" />
+  <!-- 4 surrounding collaborative chairs/arcs -->
+  <path fill="none" stroke="#C7D2FE" stroke-width="6" stroke-linecap="round" d="M 44,28 A 38 38 0 0 1 84,28" />
+  <path fill="none" stroke="#C7D2FE" stroke-width="6" stroke-linecap="round" d="M 100,44 A 38 38 0 0 1 100,84" />
+  <path fill="none" stroke="#C7D2FE" stroke-width="6" stroke-linecap="round" d="M 84,100 A 38 38 0 0 1 44,100" />
+  <path fill="none" stroke="#C7D2FE" stroke-width="6" stroke-linecap="round" d="M 28,84 A 38 38 0 0 1 28,44" />
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#FFFBEB"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#FDE68A" stroke-width="2"/>
+  <!-- Golden ear of wheat matching horizontal logo -->
+  <path fill="none" stroke="#B45309" stroke-width="4.5" stroke-linecap="round" d="M 64,110 C 64,88 65,48 66,18" />
+  <!-- Tip grain -->
+  <path fill="#B45309" d="M 66,18 C 62,26 62,34 66,40 C 70,34 70,26 66,18 Z" />
+  <!-- Pair 1 -->
+  <path fill="#D97706" d="M 64,34 C 54,32 46,40 50,50 C 56,52 64,44 64,34 Z" />
+  <path fill="#B45309" d="M 68,34 C 78,32 86,40 82,50 C 76,52 68,44 68,34 Z" />
+  <!-- Pair 2 -->
+  <path fill="#D97706" d="M 64,50 C 50,48 42,57 47,68 C 55,70 64,61 64,50 Z" />
+  <path fill="#B45309" d="M 68,50 C 82,48 90,57 85,68 C 77,70 68,61 68,50 Z" />
+  <!-- Pair 3 -->
+  <path fill="#D97706" d="M 64,68 C 50,66 42,76 48,86 C 56,88 64,79 64,68 Z" />
+  <path fill="#B45309" d="M 68,68 C 82,66 90,76 84,86 C 76,88 68,79 68,68 Z" />
+  <!-- Pair 4 -->
+  <path fill="#D97706" d="M 64,86 C 52,86 46,94 52,102 C 59,103 64,96 64,86 Z" />
+  <path fill="#B45309" d="M 68,86 C 80,86 86,94 80,102 C 73,103 68,96 68,86 Z" />
+</svg>

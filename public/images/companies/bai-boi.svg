@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F8FAFC"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+  <!-- Alluvial sediment layers & coastal river delta curves -->
+  <path fill="#0284C7" d="M 16,36 C 42,32 76,46 112,38 L 112,56 C 78,64 44,52 16,56 Z" />
+  <path fill="#D97706" d="M 16,58 C 46,54 78,68 112,60 L 112,78 C 76,86 42,74 16,78 Z" />
+  <path fill="#B45309" opacity="0.85" d="M 16,80 C 48,76 80,90 112,82 L 112,96 C 80,104 46,94 16,98 Z" />
+  <circle cx="94" cy="26" r="6" fill="#F59E0B" />
+</svg>

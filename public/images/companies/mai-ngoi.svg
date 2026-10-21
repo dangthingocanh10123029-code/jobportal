@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#FFF7ED"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#FFEDD5" stroke-width="2"/>
+  <!-- Traditional terracotta scallop roof tiles -->
+  <g fill="#EA580C" stroke="#C2410C" stroke-width="3">
+    <!-- Row 1 (Top) -->
+    <path d="M 44,42 C 44,30 64,30 64,42 Z" />
+    <path d="M 64,42 C 64,30 84,30 84,42 Z" />
+    <!-- Row 2 -->
+    <path d="M 34,62 C 34,50 54,50 54,62 Z" />
+    <path d="M 54,62 C 54,50 74,50 74,62 Z" />
+    <path d="M 74,62 C 74,50 94,50 94,62 Z" />
+    <!-- Row 3 (Bottom) -->
+    <path d="M 24,84 C 24,70 44,70 44,84 Z" />
+    <path d="M 44,84 C 44,70 64,70 64,84 Z" />
+    <path d="M 64,84 C 64,70 84,70 84,84 Z" />
+    <path d="M 84,84 C 84,70 104,70 104,84 Z" />
+  </g>
+  <!-- Architectural ridge line -->
+  <line x1="20" y1="96" x2="108" y2="96" stroke="#C2410C" stroke-width="5" stroke-linecap="round" />
+</svg>

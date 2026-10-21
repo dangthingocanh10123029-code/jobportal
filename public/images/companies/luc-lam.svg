@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#0F172A"/>
+  <!-- Isometric data hexagon / cube: Lục (Green) + Lam (Blue) -->
+  <!-- Top Face -->
+  <polygon points="64,24 96,42 64,60 32,42" fill="#38BDF8" opacity="0.9" />
+  <!-- Left Face: Lục (Green) -->
+  <polygon points="32,42 64,60 64,98 32,80" fill="#10B981" />
+  <!-- Right Face: Lam (Blue) -->
+  <polygon points="64,60 96,42 96,80 64,98" fill="#2563EB" />
+  <!-- Data node grid lines -->
+  <circle cx="64" cy="60" r="4" fill="#FFFFFF" />
+  <circle cx="64" cy="24" r="3" fill="#A7F3D0" />
+  <circle cx="96" cy="80" r="3" fill="#93C5FD" />
+</svg>

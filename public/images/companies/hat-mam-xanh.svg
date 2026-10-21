@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#F0FDF4"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#BBF7D0" stroke-width="2"/>
+  <!-- Sprouting seedling matching horizontal logo -->
+  <!-- Teardrop seed base -->
+  <path fill="#15803D" d="M 64,80 C 52,80 44,90 44,100 C 44,108 52,114 64,114 C 76,114 84,108 84,100 C 84,90 76,80 64,80 Z" />
+  <!-- Sprout central stem -->
+  <path fill="none" stroke="#16A34A" stroke-width="7" stroke-linecap="round" d="M 64,84 L 64,52" />
+  <!-- Left fresh leaf -->
+  <path fill="#16A34A" d="M 64,60 C 48,60 32,48 28,28 C 46,26 62,40 64,60 Z" />
+  <!-- Right larger vibrant leaf -->
+  <path fill="#22C55E" d="M 64,52 C 80,52 96,40 100,20 C 82,18 66,32 64,52 Z" />
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#FDF2F8"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#FBCFE8" stroke-width="2"/>
+  <!-- 5-petaled Japanese cherry blossom (sakura) -->
+  <g fill="#EC4899">
+    <!-- Petal Top -->
+    <path d="M 64,64 C 54,46 52,24 64,24 C 76,24 74,46 64,64 Z" />
+    <!-- Petal Top Right -->
+    <path d="M 64,64 C 78,50 100,44 104,56 C 108,68 86,72 64,64 Z" />
+    <!-- Petal Bottom Right -->
+    <path d="M 64,64 C 76,76 86,98 74,104 C 62,110 58,88 64,64 Z" />
+    <!-- Petal Bottom Left -->
+    <path d="M 64,64 C 52,76 42,98 54,104 C 66,110 70,88 64,64 Z" transform="rotate(288 64 64)" />
+    <!-- Petal Top Left -->
+    <path d="M 64,64 C 50,50 28,44 24,56 C 20,68 42,72 64,64 Z" />
+  </g>
+  <!-- Center Pistil & Stamens -->
+  <circle cx="64" cy="64" r="8" fill="#BE185D" />
+  <circle cx="64" cy="64" r="4" fill="#FDF2F8" />
+</svg>

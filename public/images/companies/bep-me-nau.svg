@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#FEF2F2"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="#FECACA" stroke-width="2"/>
+  <!-- Casserole pot matching horizontal logo -->
+  <!-- Pot Body -->
+  <path fill="#DC2626" d="M 32,62 L 96,62 C 96,88 87,106 64,106 C 41,106 32,88 32,62 Z" />
+  <!-- Side Handles -->
+  <path fill="none" stroke="#DC2626" stroke-width="6" stroke-linecap="round" d="M 32,72 C 22,72 22,86 32,86 M 96,72 C 106,72 106,86 96,86" />
+  <!-- Lid Rim -->
+  <rect x="28" y="56" width="72" height="8" rx="4" fill="#DC2626" />
+  <!-- Lid Dome -->
+  <path fill="#DC2626" d="M 38,56 C 42,48 52,46 64,46 C 76,46 86,48 90,56 Z" />
+  <!-- Lid Knob -->
+  <circle cx="64" cy="41" r="5.5" fill="#DC2626" />
+  <!-- Steam Wisps -->
+  <path fill="none" stroke="#DC2626" stroke-width="4" stroke-linecap="round" d="M 54,32 C 50,24 52,19 58,14 M 74,32 C 78,24 76,19 70,14" />
+</svg>
