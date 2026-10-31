@@ -27,8 +27,9 @@ class InMemoryTalentRepository:
         return c if c and c["open_to_work"] and not c["locked"] else None
 
     def _summary(self, c: dict, employer_id: UUID) -> TalentSummary:
-        saved = (employer_id, c["candidate_id"]) in self.saved_rows
-        return TalentSummary.model_validate({**c, "has_online_cv": c.get("cv") is not None, "saved": saved})
+        key = (employer_id, c["candidate_id"])
+        return TalentSummary.model_validate(
+            {**c, "has_online_cv": c.get("cv") is not None, "saved": key in self.saved_rows, "note": self.saved_rows.get(key)})
 
     def set_open_to_work(self, candidate_id: UUID, data: OpenToWorkInput) -> bool:
         self.candidates[candidate_id].update(data.model_dump(exclude_unset=True))

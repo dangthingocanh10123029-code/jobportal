@@ -17,6 +17,9 @@ from app.modules.talent.schemas import (
 )
 
 _SUMMARY = "candidate_id, full_name, headline, skills, location, experience_years, has_online_cv, updated_at, saved"
+# The caller's own private note (RLS on saved_candidates only shows their rows).
+_NOTE = ("(select s.note from public.saved_candidates s where s.employer_id = (select auth.uid()) "
+         "and s.candidate_id = talent_profiles.candidate_id) as note")
 
 
 def _where(q: TalentQuery) -> tuple[str, list[Any]]:
@@ -59,7 +62,7 @@ class PostgresTalentRepository:
         with user_tx(self._claims) as conn, conn.cursor(row_factory=dict_row) as cur:
             total = cur.execute(f"select count(*) as n from public.talent_profiles{where}", params).fetchone()["n"]
             rows = cur.execute(
-                f"select {_SUMMARY} from public.talent_profiles{where} "
+                f"select {_SUMMARY}, {_NOTE} from public.talent_profiles{where} "
                 "order by updated_at desc, candidate_id limit %s offset %s",
                 (*params, limit, offset),
             ).fetchall()
@@ -68,7 +71,7 @@ class PostgresTalentRepository:
     def get(self, employer_id: UUID, candidate_id: UUID) -> TalentDetail | None:
         with user_tx(self._claims) as conn, conn.cursor(row_factory=dict_row) as cur:
             row = cur.execute(
-                f"select {_SUMMARY}, experience, education, cv from public.talent_profiles where candidate_id = %s",
+                f"select {_SUMMARY}, {_NOTE}, experience, education, cv from public.talent_profiles where candidate_id = %s",
                 (candidate_id,),
             ).fetchone()
         if row is None:
@@ -101,7 +104,7 @@ class PostgresTalentRepository:
         cols = ", ".join(f"t.{c.strip()}" for c in _SUMMARY.split(","))
         with user_tx(self._claims) as conn, conn.cursor(row_factory=dict_row) as cur:
             rows = cur.execute(
-                f"select {cols} from public.saved_candidates s "
+                f"select {cols}, s.note from public.saved_candidates s "
                 "join public.talent_profiles t on t.candidate_id = s.candidate_id "
                 "where s.employer_id = %s order by s.created_at desc",
                 (employer_id,),

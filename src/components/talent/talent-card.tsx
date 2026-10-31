@@ -22,6 +22,7 @@ export function TalentCard({ talent }: { talent: TalentSummary }) {
         {talent.hasOnlineCv ? <span className="ui-badge ui-badge-success">CV online</span> : null}
       </div>
       {talent.skills.length ? <ul aria-label="Kỹ năng" className="talent-skills">{talent.skills.slice(0, 8).map((skill) => <li className="skill-tag" key={skill}>{skill}</li>)}</ul> : null}
+      {talent.note ? <p className="talent-note"><strong>Ghi chú riêng:</strong> {talent.note}</p> : null}
       <p className="field-hint">Cập nhật {formatDate(talent.updatedAt)}</p>
     </article>
   );

@@ -385,6 +385,8 @@ export type TalentSummary = {
   updatedAt: string;
   /** Saved by the signed-in Employer. */
   saved: boolean;
+  /** That Employer's private note when saved. */
+  note: string | null;
 };
 
 /** Never carries email or phone (no such keys in the response). */

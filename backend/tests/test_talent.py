@@ -141,7 +141,10 @@ def test_save_toggle_and_saved_list(api):
     assert http.post(f"/talent/{BINH}/save").json() == {"saved": True}
     assert [t["candidateId"] for t in http.get("/me/saved-talent").json()] == [str(BINH), str(ANNA)]
     assert http.get(f"/talent/{ANNA}").json()["saved"] is True
+    assert http.get(f"/talent/{ANNA}").json()["note"] == "Hợp vị trí kế toán"
+    assert [t["note"] for t in http.get("/me/saved-talent").json()] == [None, "Hợp vị trí kế toán"]
     assert api.as_(OTHER_EMP).get(f"/talent/{ANNA}").json()["saved"] is False
+    assert api.as_(OTHER_EMP).get(f"/talent/{ANNA}").json()["note"] is None
     assert api.as_(OTHER_EMP).get("/me/saved-talent").json() == []
     _no_contact(api.as_(EMP).get("/me/saved-talent").json())
 

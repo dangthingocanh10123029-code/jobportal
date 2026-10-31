@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { searchTalent } from '@/actions/talent';
 import { TalentCard } from '@/components/talent/talent-card';
 import { PageHeader } from '@/components/ui/primitives';
-import { PROVINCES, SuggestionList } from '@/components/ui/suggestions';
+import { PROVINCES } from '@/components/ui/suggestions';
+import { SuggestInput } from '@/components/ui/suggest-input';
 
 export const metadata = { title: 'Tìm ứng viên — Job Portal' };
 
@@ -32,7 +33,7 @@ export default async function TalentSearchPage({ searchParams }: { searchParams:
       <form action="/employer/talent" aria-label="Bộ lọc ứng viên" className="talent-filter-form" method="get">
         <label className="field-label">Từ khóa<input className="text-input" defaultValue={filter.q ?? ''} maxLength={100} name="q" placeholder="Tên, tiêu đề hồ sơ…" type="search" /></label>
         <label className="field-label">Kỹ năng<input className="text-input" defaultValue={filter.skill ?? ''} maxLength={100} name="skill" placeholder="Ví dụ: Excel" /></label>
-        <label className="field-label">Địa điểm<input autoComplete="off" className="text-input" defaultValue={filter.location ?? ''} list="talent-location-options" maxLength={100} name="location" placeholder="Ví dụ: Hà Nội" /><SuggestionList id="talent-location-options" options={PROVINCES} /></label>
+        <label className="field-label">Địa điểm<SuggestInput className="text-input" defaultValue={filter.location ?? ''} maxLength={100} name="location" placeholder="Ví dụ: Hà Nội" options={PROVINCES} /></label>
         <label className="field-label">Kinh nghiệm tối thiểu (năm)<input className="text-input" defaultValue={filter.minExperience ?? ''} inputMode="numeric" max={50} min={0} name="minExperience" type="number" /></label>
         <div className="talent-filter-actions"><button className="button button-primary" type="submit">Tìm ứng viên</button>{hasFilter ? <Link className="button button-quiet" href="/employer/talent">Xóa lọc</Link> : null}</div>
       </form>

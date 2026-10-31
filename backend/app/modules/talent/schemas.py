@@ -53,6 +53,8 @@ class TalentSummary(CamelModel):
     has_online_cv: bool
     updated_at: datetime
     saved: bool
+    # The calling Employer's private note on a saved Candidate.
+    note: str | None = None
 
 
 class TalentProfile(CamelModel):

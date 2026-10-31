@@ -479,12 +479,13 @@ Xuất PDF: trang `/candidate/cv/print` dùng CSS `@media print` + `window.print
 type TalentSummary = {
   candidateId: string; fullName: string; headline: string | null; skills: string[];
   location: string | null; experienceYears: number | null; hasOnlineCv: boolean; updatedAt: string; saved: boolean;
+  note: string | null;   // ghi chú riêng của Employer đang đăng nhập khi đã lưu
 };
 type TalentDetail = TalentSummary & { profile: Omit<CandidateProfile, 'phone'>; cv: Omit<OnlineCv, 'email' | 'phone'> | null };   // view + API bỏ hẳn email/phone (không trả key)
 setOpenToWorkAction(input: { openToWork: boolean; location?: string; experienceYears?: number }): Promise<ActionResult<{ openToWork: boolean }>>   // Candidate; mặc định false
 searchTalent(filter: { q?: string; skill?: string; location?: string; minExperience?: number; page?: number }): Promise<Page<TalentSummary> | null>   // Employer; chỉ ứng viên openToWork, tài khoản không bị khóa
 getTalent(candidateId: string): Promise<TalentDetail | null>   // Employer; null nếu ứng viên tắt openToWork
-toggleSavedTalentAction(input: { candidateId: string; note?: string }): Promise<ActionResult<{ saved: boolean }>>
+toggleSavedTalentAction(input: { candidateId: string; note?: string }): Promise<ActionResult<{ saved: boolean }>>   // note đọc lại qua TalentSummary.note (ghi chú riêng của Employer đang đăng nhập)
 listSavedTalent(): Promise<TalentSummary[]>
 inviteTalentAction(input: { candidateId: string; postingId: string; message?: string }): Promise<ActionResult<null>>
   // tin PUBLISHED của chính Employer; mỗi cặp (ứng viên, tin) mời 1 lần; ≤ 20 lời mời/ngày/Employer → notification TALENT_INVITED (link /jobs/<postingId>)

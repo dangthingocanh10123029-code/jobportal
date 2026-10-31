@@ -14,6 +14,8 @@ Trình duyệt → Vercel service "web" (Next.js, sin1) ──binding API_URL─
 - Frontend và backend luôn deploy và rollback cùng nhau.
 
 ## 1. Supabase
+
+Gói Free tạm dừng project sau ~7 ngày không hoạt động (đã xảy ra 31/10/2026, khôi phục bằng nút Restore trên dashboard). `vercel.json` có cron hằng ngày 01:00 UTC gọi `/`, trang chủ đọc tin và công ty từ DB nên giữ project luôn hoạt động.
 Project `jobportal-sg` (`nsnhygqjpbgxxueqtkrl`) đã có đủ migration, dữ liệu demo, CV mẫu, admin `admin@demo.jobportal.test`.
 
 - SMTP Gmail (`hiuh1329@gmail.com`) và template "Mã xác nhận Job Portal" (`{{ .Token }}`) đã cấu hình.

@@ -1892,3 +1892,11 @@ legend.filter-legend { margin-bottom: 8px; padding: 0; }
   .guide-page .guide-hero { background: var(--bg); }
   .guide-page .guide-hero > *, .guide-page .guide-hero > p { max-width: none; }
 }
+.talent-note { margin: 0; padding: 10px 12px; border-radius: var(--radius-control); background: var(--surface-muted); color: var(--text); font-size: 13px; overflow-wrap: anywhere; white-space: pre-line; }
+/* SuggestInput: the wrapper stands in for the input in flex/grid layouts. */
+.suggest { position: relative; display: block; min-width: 0; }
+.suggest > .text-input { width: 100%; }
+.hero-search .suggest { flex: 1; }
+.suggest-list { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0; max-height: 296px; margin: 0; padding: 4px; overflow-y: auto; list-style: none; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg); box-shadow: var(--shadow-raised); text-align: left; }
+.suggest-list li { padding: 8px 12px; border-radius: 8px; color: var(--text); font-size: 14px; font-weight: 400; cursor: pointer; }
+.suggest-list li:hover, .suggest-list li[aria-selected="true"] { background: var(--primary-soft); color: var(--primary); }

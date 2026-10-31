@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { inviteTalentAction, toggleSavedTalentAction } from '@/actions/talent';
 
-export function SaveTalentForm({ candidateId, initialSaved }: { candidateId: string; initialSaved: boolean }) {
+export function SaveTalentForm({ candidateId, initialSaved, note }: { candidateId: string; initialSaved: boolean; note: string | null }) {
   const router = useRouter();
   const [saved, setSaved] = useState(initialSaved);
   const [pending, setPending] = useState(false);
@@ -34,7 +34,7 @@ export function SaveTalentForm({ candidateId, initialSaved }: { candidateId: str
   return (
     <form className="form-stack talent-side-form" onSubmit={submit}>
       <h2>Lưu ứng viên</h2>
-      {saved ? <p className="field-hint">Ứng viên đã nằm trong danh sách đã lưu của bạn.</p> : <label className="field-label">Ghi chú riêng <span className="field-optional">(tối đa 500 ký tự)</span><textarea className="text-input textarea-input" maxLength={500} name="note" placeholder="Chỉ bạn nhìn thấy ghi chú này" rows={3} /></label>}
+      {saved ? <><p className="field-hint">Ứng viên đã nằm trong danh sách đã lưu của bạn.</p>{note ? <p className="talent-note"><strong>Ghi chú riêng:</strong> {note}</p> : null}</> : <label className="field-label">Ghi chú riêng <span className="field-optional">(tối đa 500 ký tự)</span><textarea className="text-input textarea-input" maxLength={500} name="note" placeholder="Chỉ bạn nhìn thấy ghi chú này" rows={3} /></label>}
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <p aria-live="polite" className="form-success" role="status">{status}</p>
       <button className={`button ${saved ? 'button-quiet' : 'button-primary'}`} disabled={pending} type="submit">{pending ? 'Đang lưu…' : saved ? 'Bỏ lưu' : 'Lưu ứng viên'}</button>

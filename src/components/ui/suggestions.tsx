@@ -1,5 +1,4 @@
-// Typed-input suggestions via native <datalist>: free text still allowed, the browser filters as the user types.
-// ponytail: browser matching is accent-sensitive ("ha noi" won't suggest "Hà Nội"); swap for a custom combobox if that hurts.
+// Suggestion lists for SuggestInput.
 
 // 63 provinces before the 2025 merger — the names job postings already use. "Remote" for remote jobs.
 export const PROVINCES = [
@@ -37,6 +36,5 @@ export const JOB_TITLES = [
   'Đầu bếp', 'Nhân viên Nhập liệu', 'Thực tập sinh',
 ] as const;
 
-export function SuggestionList({ id, options }: { id: string; options: readonly string[] }) {
-  return <datalist id={id}>{options.map((option) => <option key={option} value={option} />)}</datalist>;
-}
+/** Lowercase without Vietnamese diacritics, so "ha noi" matches "Hà Nội". */
+export const foldAccents = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'd').toLowerCase();

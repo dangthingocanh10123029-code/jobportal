@@ -39,7 +39,7 @@ export default async function TalentDetailPage({ params }: { params: Promise<{ i
           {talent.cv ? <section aria-label="CV online" className="talent-cv"><h2>CV online</h2><CvDocument cv={talent.cv} /></section> : null}
         </div>
         <aside aria-label="Thao tác với ứng viên" className="talent-detail-side">
-          <section className="surface-card"><SaveTalentForm candidateId={talent.candidateId} initialSaved={talent.saved} /></section>
+          <section className="surface-card"><SaveTalentForm candidateId={talent.candidateId} initialSaved={talent.saved} note={talent.note} /></section>
           <section className="surface-card"><InviteTalentForm candidateId={talent.candidateId} postings={openPostings} /></section>
         </aside>
       </div>

@@ -124,6 +124,9 @@ def test_saved_candidates(db):
     assert repo.toggle_saved(db["employer"], db["candidate"], "Ghi chú") is True
     assert [t.candidate_id for t in repo.saved(db["employer"])] == [db["candidate"]]
     assert repo.get(db["employer"], db["candidate"]).saved is True
+    assert [t.note for t in repo.saved(db["employer"])] == ["Ghi chú"]
+    assert repo.get(db["employer"], db["candidate"]).note == "Ghi chú"
+    assert _repo(db["other_employer"]).get(db["other_employer"], db["candidate"]).note is None  # notes are private
     assert _repo(db["other_employer"]).saved(db["other_employer"]) == []
     with pytest.raises(TalentError):
         repo.toggle_saved(db["employer"], db["hidden"], None)

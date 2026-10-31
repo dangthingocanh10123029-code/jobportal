@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 import { createJobAlertAction } from '@/actions/alerts';
-import { JOB_TITLES, SuggestionList } from '@/components/ui/suggestions';
+import { JOB_TITLES } from '@/components/ui/suggestions';
+import { SuggestInput } from '@/components/ui/suggest-input';
 
 export function HomeAlertForm({ atLimit }: { atLimit: boolean }) {
   const [pending, setPending] = useState(false);
@@ -39,7 +40,7 @@ export function HomeAlertForm({ atLimit }: { atLimit: boolean }) {
     <>
       <form className="inline-form" onSubmit={submit}>
         <label className="visually-hidden" htmlFor="home-alert-keyword">Từ khóa công việc</label>
-        <input autoComplete="off" className="text-input" id="home-alert-keyword" list="home-alert-keyword-options" maxLength={100} name="q" placeholder="Ví dụ: kế toán, thiết kế…" required type="text" /><SuggestionList id="home-alert-keyword-options" options={JOB_TITLES} />
+        <SuggestInput className="text-input" id="home-alert-keyword" maxLength={100} name="q" placeholder="Ví dụ: kế toán, thiết kế…" required type="text" options={JOB_TITLES} />
         <button className="button button-primary" disabled={pending} type="submit">{pending ? 'Đang lưu…' : 'Nhận thông báo'}</button>
       </form>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
